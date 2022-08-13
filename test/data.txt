@@ -1,0 +1,7 @@
+insert into workshop_data_order values (1, '2022-07-15', 464, 1, 400, '10,20,30', 100, 4.12, 5.66, 1, 1, 1);
+insert into workshop_data_order values (2, '2022-07-15', 464, 1, 423, '30,40', 96, 13.22, 34.44, 2, 2, 2),(3, '2022-07-16', 464, 1, 423, '30,40', 50, 33.22, 3.44, 3, 3, 3);
+
+insert into workshop_data_product values (1, 'mkt-165'), (2, 'egp-102'), (3, 'mkv-251'), (4, 'ek-69');
+insert into workshop_data_detail values (1, '663247', 1), (2, '635008', 2), (3, '652133', 3), (4, '438006', 4);
+
+insert into workshop_data_categorydetail values (1, 'корпус'), (2, 'кожух'), (3, 'штуцер'), (4, 'якорь');

@@ -1,0 +1,9 @@
+{% extends 'workshop_data/worker/order/order_main_template.html' %}
+
+{% block title %}
+    Наряды за {{ month }}
+{% endblock title %}
+
+{% block data_order %}
+    {% include 'workshop_data/worker/includes/table_orders_template.html' %}
+{% endblock data_order %}

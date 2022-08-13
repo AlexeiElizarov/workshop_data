@@ -1,0 +1,21 @@
+{% extends 'main.html' %}
+
+{% block title %}
+    Новый нараяд
+{% endblock title %}
+
+{% block content %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        {{ form.media }}
+<!--        <div class="order_operations_choices">-->
+<!--        {% for checkbox in form.operations %}-->
+<!--            {{ checkbox.tag }} {{ checkbox.choice_label }}-->
+<!--        {% endfor %}-->
+<!--        </div>-->
+        <input type="submit" value="Отправить" class="btn btn-primary">
+    </form>
+{% endblock content %}

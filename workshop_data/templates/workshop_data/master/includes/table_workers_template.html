@@ -1,0 +1,40 @@
+<tbody>
+    {% for worker in workers %}
+        <tr>
+            <th scope="row">{{ forloop.counter }}</th>
+            <td>{{ worker.username }}</td>
+            <td>{{ worker.surname }}</td>
+
+            <td>
+                <a href="">
+                {{ worker.name }}
+                </a>
+            </td>
+
+            <td>{{ worker.patronymic }}</td>
+            <td>{{ worker.employee_number }}</td>
+
+            <td>
+                <a href="">
+                    {{ worker.employee_rank }}
+                </a>
+            </td>
+
+            <td>
+                <a href="">
+                    {{ worker.get_position_display }}
+                </a>
+            </td>
+
+            <td>
+                <a href="">
+                    {{ worker.birthday }}
+                </a>
+            </td>
+            <td>
+                <a href="{% url 'orders-worker-for-master' surname=worker.surname name=worker.name %}">Смотреть</a>
+            </td>
+        </tr>
+    {% endfor %}
+
+</tbody>>

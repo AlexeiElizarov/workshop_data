@@ -1,0 +1,53 @@
+<tbody>
+    {% for order in orders %}
+        <tr>
+            <th scope="row">{{ forloop.counter }}</th>
+            <td>{{ order.date }}</td>
+            {% if request.user.position == 'MSR' %}
+                <td>
+                    <a href="{% url 'orders-worker-month-for-master' surname=order.surname.surname name=order.surname.name month=order.month %}">
+                    {{ order.get_month_display }}
+                    </a>
+                </td>
+            {% else %}
+                <td>
+                    <a href="{% url 'orders_user_month_list' username=user.username month=order.month %}">
+                    {{ order.get_month_display }}
+                    </a>
+                </td>
+            {% endif %}
+
+
+            <td>{{ order.workshop }}</td>
+            <td>{{ order.surname }}</td>
+
+            <td>
+                <a href="{% url 'orders_user_product_list' username=user.username product=order.product %}">
+                    {{ order.product }}
+                </a>
+            </td>
+
+            <td>
+                <a href="{% url 'orders_user_detail_list' username=user.username detail=order.detail %}">
+                    {{ order.detail }}
+                </a>
+            </td>
+
+            <td>
+                <a href="{% url 'orders_user_detailcategory_list' username=user.username category=order.detail.category %}">
+                    {{ order.detail.category }}
+                </a>
+            </td>
+            <td>{{ order.operations }}</td>
+            <td>{{ order.quantity }}</td>
+            <td>{{ order.price }}</td>
+            {% if request.user.position != 'MSR' %}
+                <td>
+                    {% include 'workshop_data/worker/includes/dropdown_menu.html' %}
+                </td>
+            {% endif %}
+
+        </tr>
+    {% endfor %}
+
+</tbody>>
