@@ -11,6 +11,7 @@ from .models import *
 
 
 class OrderForm(forms.ModelForm):
+    '''Отображает форму добавления нового Наряда'''
     class Meta:
         NUMBERS_OPERATIONS = [('i', i) for i in range(10)]
 
@@ -39,14 +40,44 @@ class OrderForm(forms.ModelForm):
 
 
 class ProductCreateForm(forms.ModelForm):
+    '''Отображает форму добавления нового Изделия'''
     class Meta:
         model = Product
         fields = ('name',)
 
 
+class ProductAddDetailForm(forms.ModelForm):
+    '''Отображает форму добавления новой Детали в Изделие'''
+    class Meta:
+        model = Product
+        fields = ('name',
+                  'detail',)
+
+        widgets = {
+            'detail': autocomplete.ModelSelect2(url='data_autocomplete_detail'),
+        }
+
+
 class DetailCreateForm(forms.ModelForm):
+    '''Отображает форму добавления новой Детали и Категории к которой она относится'''
     class Meta:
         model = Detail
         fields = ('name', 'category')
 
+        widgets = {
+            'category': autocomplete.ModelSelect2(url='data_autocomplete_category_detail'),
+        }
+
+
+class WorkshopPlanCreateForm(forms.ModelForm):
+    '''Отображает форму создания нового Плана'''
+    class Meta:
+        model = WorkshopPlan
+        # fields = ('product', 'detail', 'month', 'year')
+        fields = ('__all__')
+
+        widgets = {
+            'product': autocomplete.ModelSelect2(url='data_autocomplete_product'),
+            'detail': autocomplete.ModelSelect2(url='data_autocomplete_detail'),
+        }
 

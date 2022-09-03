@@ -43,7 +43,7 @@
             <td>{{ order.price }}</td>
             {% if request.user.position != 'MSR' %}
                 <td>
-                    {% include 'workshop_data/worker/includes/dropdown_menu.html' %}
+                    {% include 'workshop_data/worker/includes/button_dropdown_menu.html' %}
                 </td>
             {% endif %}
 

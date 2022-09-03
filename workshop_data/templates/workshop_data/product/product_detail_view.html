@@ -1,0 +1,11 @@
+{% extends 'workshop_data/detail/detail_main_template.html' %}
+
+{% block title %}
+    Детали {{ product }}
+{% endblock title %}
+
+{% block data_detail %}
+    {% for detail in details %}
+        {% include 'workshop_data/detail/includes/table_header_details_template.html' %}
+    {% endfor %}
+{% endblock data_detail %}

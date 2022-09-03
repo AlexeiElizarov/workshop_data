@@ -1,0 +1,21 @@
+{% extends 'main.html' %}
+{% load test_tag %}
+
+{% block title %}
+    Изделия
+{% endblock title %}
+
+{% block content %}
+    <form method="GET">
+        {{ filter.form }}
+        {{ filter.form.media }}
+        <input type="submit" value="Найти">
+    </form>
+    <hr>
+    {% include 'workshop_data/plan/includes/plan_table_header_template.html' %}
+    <!--    <form action="#" method="get">-->
+<!--        <input type="submit" class="btn btn-primary" onclick="" name="mybtn">-->
+<!--        <input type="text" value="8" name="mytextbox" size="1"/>-->
+<!--    </form>-->
+
+{% endblock content %}

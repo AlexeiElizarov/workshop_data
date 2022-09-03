@@ -6,12 +6,13 @@ from django.shortcuts import render, redirect
 from dal import autocomplete
 from django.urls import reverse, reverse_lazy
 from django.views import View
-from django.views.generic import CreateView, ListView, UpdateView, DeleteView
+from django.views.generic import CreateView, ListView, UpdateView, DeleteView, DetailView
 from .forms import *
 from .models import *
 from sign.models import User
 from django.utils.html import format_html
 from django.db.models import Q
+from .filters import *
 
 
 
@@ -57,6 +58,17 @@ class DetailAutocomplete(autocomplete.Select2QuerySetView):
         return qs
 
 
+class CategoryDetailAutocomplete(autocomplete.Select2QuerySetView):
+    '''Реализует поле автоподсказки Категории Деталей по вводимыи символам'''
+    def get_queryset(self):
+        if not self.request.user.is_authenticated:
+            return CategoryDetail.objects.none()
+        qs = CategoryDetail.objects.all()
+        if self.q:
+            qs = qs.filter(name__istartswith=self.q)
+        return qs
+
+
 class OrderUserCreateView(LoginRequiredMixin, CreateView):
     '''Отображает страницу заполнения нового наряда'''
     model = Order
@@ -93,7 +105,8 @@ class OrderUserParametrListView(LoginRequiredMixin, ListView):
     template_name = 'workshop_data/worker/orders_user_parametr_list.html'
 
     def get_context_data(self, *args, **kwargs):
-        user_id = User.objects.get(username=self.request.user).id
+        print(self.request.user)
+        user_id = User.objects.get(username=self.request.user.username).id
         context = super().get_context_data(**kwargs)
         if 'month' in self.kwargs:
             context['orders'] = Order.objects.filter(surname_id=user_id).filter(month=self.kwargs['month'])
@@ -144,12 +157,85 @@ class OrderDeleteView(DeleteView):
         return Order.objects.get(pk=id)
 
 
+##################### Product ####################################
+
+
+class ProductAllView(ListView):
+    '''Отображает страницу со всеми Изделиями'''
+    model = Product
+    template_name = 'workshop_data/product/product_list_all.html'
+    context_object_name = 'products'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context['filter'] = ProductFilter(self.request.GET, queryset=self.get_queryset())
+        return context
+
+
 class ProductCreateView(CreateView):
     '''Отображает страницу создания нового Изделия'''
     model = Product
     form_class = ProductCreateForm
     template_name = 'workshop_data/worker/product_create.html'
     success_url = reverse_lazy('create_new_product_complite')
+
+
+class ProductAddDetailView(UpdateView):
+    '''Отображает страницу добавления Детали в  Изделия'''
+    model = Product
+    form_class = ProductAddDetailForm
+    template_name = 'workshop_data/product/product_add_detail.html'
+    success_url = reverse_lazy('product_add_detail_complite')
+
+    def get_object(self, **kwargs):
+        obj = Product.objects.get(name=self.kwargs['product'])
+        return obj
+
+    def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> "HttpResponse":
+        obj = self.get_object()
+        if request.method == "POST":
+            form = self.form_class(request.POST)
+            detail_id = Detail.objects.get(id=form.data['detail'])
+            obj.detail.add(detail_id)
+        return redirect('product_add_detail_complite')
+
+
+class ProductDataView(DetailView):
+    model = Product
+    template_name = 'workshop_data/product/product_detail_view.html'
+    context_object_name = 'product'
+
+
+    def get_object(self, **kwargs):
+        print(self.kwargs)
+        id = Product.objects.get(name=self.kwargs.get('product')).id
+        print('55555', id)
+        return Product.objects.get(id=id)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context['details'] = self.get_object().detail.all()
+        return context
+
+    # def get_queryset(self):
+    #     id = self.get_object().id
+    #     print('44444', id)
+    #     q = super().get_queryset()
+    #     return q.filter(id=id)
+
+
+########################## Detail ##################################
+
+class DetailAllView(ListView):
+    '''Отображает страницу со всеми Деталями'''
+    model = Detail
+    template_name = 'workshop_data/detail/detail_list_all.html'
+    context_object_name = 'details'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context['filter'] = DetailFilter(self.request.GET, queryset=self.get_queryset())
+        return context
 
 
 class DetailCreateView(CreateView):
@@ -160,11 +246,20 @@ class DetailCreateView(CreateView):
     success_url = reverse_lazy('create_new_detail_complite')
 
 
+#######################################################################################################
+
+
 def product_create_complite(request):
     return render(request, 'workshop_data/worker/product_create_complite.html')
 
 def detaile_create_complite(request):
-    return render(request, 'workshop_data/worker/detail_create_complite.html')
+    return render(request, 'workshop_data/detail/detail_create_complite.html')
+
+def product_add_detail(request):
+    return render(request, 'workshop_data/product/product_add_detail_complite.html')
+
+def product_add_in_plan(request):
+    return render(request, 'workshop_data/plan/product_add_in_plan.html')
 
 
 ####################################         MASTER          ###########################################
@@ -212,3 +307,46 @@ class WorkerOrdersListForMaster(ListView):
             )
             context['month'] = context['orders'][0]
         return context
+
+
+
+#######################    WorkshopPlan   ######################
+
+
+
+class WorkshopPlanView(ListView):
+    '''Отображает страницу План цеха'''
+    model = WorkshopPlan
+    template_name = 'workshop_data/plan/plan_list_all.html'
+    context_object_name = 'plan'
+
+    def get_context_data(self, **kwargs):
+        from django.http import QueryDict
+
+        context = super().get_context_data(**kwargs)
+        list_product = WorkshopPlan.objects.filter(month=current_month()).order_by('product')
+        q = QueryDict('', mutable=True)
+        for product in list_product:
+            if q.__contains__(product):
+                print('1', product)
+                q[product] = product.detail
+                print('2', q)
+            else:
+                print('3')
+                q.update({product.product : product.detail})
+        print('4', q)
+        print('5', list_product)
+
+        context['dict_product'] = q
+        context['list_product'] = WorkshopPlan.objects.filter(month=current_month()).order_by('product')
+        return context
+
+
+class WorkshopPlanCreateView(CreateView):
+    '''Отображает страницу создания нового Плана'''
+    model = WorkshopPlan
+    form_class = WorkshopPlanCreateForm
+    template_name = 'workshop_data/plan/plan_create.html'
+    success_url = reverse_lazy('product_add_plan_complite')
+
+

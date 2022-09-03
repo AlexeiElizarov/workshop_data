@@ -33,7 +33,19 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         {% if request.user.is_authenticated %}
+                            {% now "Y" as current_year %}
+                            {% now "M" as current_month %}
                             {% if request.user.position == 'MSR' %}
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        План
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        <li><a class="dropdown-item" href="{% url 'plan' year=current_year month=current_month %}">План</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'product_add_plan' %}">Добавить в План</a></li>
+                                    </ul>
+                                </li>
+
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         Сотрудники
@@ -44,7 +56,7 @@
                                             <li><a class="dropdown-item" href="{% url 'workers_LSM_all' %}">Слесари</a></li>
                                             <li><a class="dropdown-item" href="{% url 'workers_TRN_all' %}">Токари</a></li>
                                             <li><a class="dropdown-item" href="">Фрезеровщики</a></li>
-                                        {% elif  request.user.profile %}
+                                        {% elif request.user.profile %}
                                             <li><a class="dropdown-item" href="">Profile</a></li>
                                             <li><a class="dropdown-item" href="">Update profile</a></li>
                                         {% endif %}
@@ -52,6 +64,16 @@
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" href="{% url 'order_user_create' username=user.username %}">Выписать наряд</a>
+                                </li>
+
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Просмотр
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        <li><a class="dropdown-item" href="{% url 'product_list_all' %}">Все Изделия</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'detail_list_all' %}">Все Детали</a></li>
+                                    </ul>
                                 </li>
 
                                 <li class="nav-item dropdown">

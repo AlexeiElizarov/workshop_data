@@ -1,0 +1,18 @@
+<table class="table table-primary">
+    <thead>
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col">Изделие</th>
+        <th scope="col">Деталь</th>
+        <th scope="col">Колличество</th>
+        <th scope="col">SOS</th>
+        <th scope="col"></th>
+    </tr>
+    </thead>
+    {% block data_plan %}
+        {% for product in list_product %}
+            {% include 'workshop_data/plan/includes/plan_table_body_template.html' %}
+        {% endfor %}
+
+    {% endblock data_plan %}
+</table>
