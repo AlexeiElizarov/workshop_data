@@ -12,7 +12,7 @@ urlpatterns = [
     path('detail/all/', DetailAllView.as_view(), name='detail_list_all'),
     path('new-detail/', DetailCreateView.as_view(), name='create_new_detail'),
     path('new-detail-complite/', detaile_create_complite, name='create_new_detail_complite'),
-    path('add-detail-complite/', product_add_detail, name='product_add_detail_complite'),
+    path('add-detail-complite/', product_add_detail_complite, name='product_add_detail_complite'),
 
     path('<product>/add-detail/', ProductAddDetailView.as_view(), name='product_add_detail'),
     path('<product>/detail/', ProductDataView.as_view(), name='product_detail_data'),
@@ -35,7 +35,7 @@ urlpatterns = [
     path('master/orders-<surname>-<name>/', WorkerOrdersListForMaster.as_view(), name='orders-worker-for-master'),
     path('master/orders-<surname>-<name>/month_<month>/', WorkerOrdersListForMaster.as_view(), name='orders-worker-month-for-master'),
 
-    path('plan/product-add-in-plan-complite/', product_add_in_plan, name='product_add_plan_complite'),
+    path('plan/product-add-in-plan-complite/', product_add_in_plan_complite, name='product_add_plan_complite'),
     path('plan/product-add-in-plan/', WorkshopPlanCreateView.as_view(), name='product_add_plan'),
     path('plan/<year>-<month>/', WorkshopPlanView.as_view(), name='plan'),
 ]

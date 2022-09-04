@@ -31,7 +31,7 @@ class Month(models.IntegerChoices):
 
 class WorkshopPlan(models.Model):
     '''Класс описывает План цеха'''
-    product = models.ForeignKey("Product", on_delete=models.CASCADE)
+    product = models.ForeignKey("Product", on_delete=models.CASCADE, verbose_name='_Изделие_')
     detail = models.ForeignKey("Detail", on_delete=models.CASCADE)
     quantity = models.SmallIntegerField(default=0, verbose_name='Колличество')
     month = models.PositiveSmallIntegerField(choices=Month.choices, default=Month.NOT_SPECIFIED, verbose_name='_Месяц_')

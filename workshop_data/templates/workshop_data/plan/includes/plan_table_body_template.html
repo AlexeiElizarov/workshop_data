@@ -1,24 +1,33 @@
 
 
 <tbody>
-        <tr>
-            <th scope="row">{{ forloop.counter }}</th>
-            {% ifchanged %}
-                <td><a href="">{{ product }}</a></td>
-            {% else %}
-                <td><a href=""></a></td>
-            {% endifchanged %}
-            <td><a href="">{{ product.detail }}</a></td>
-            <td><a href="">{{ product.quantity }}</a></td>
-            <td><a href="">{{ product.sos }}</a></td>
 
+    {% ifchanged product.product %}
+    <tr class="table-light">
+        <td></td>
+        <td>    <h5>{{ product.product }}</h5></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+    </tr>
+    {% endifchanged %}
+    <tr class="{% if product.sos == True %}table-danger
+               {% else %}{% endif %}">
+        <th scope="row">{{ forloop.counter }}</th>
 
+        <td></td>
+        <td><a href="">{{ product.detail }}</a></td>
+        <td><a href="">{{ product.quantity }}</a></td>
 
-            <td>
-                Инструменты
-            </td>
+        <td><a href="">{{ product.sos }}</a></td>
 
-        </tr>
+        <td>
+            Инструменты
+        </td>
+
+    </tr>
+
 
 
 

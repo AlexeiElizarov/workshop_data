@@ -9,8 +9,11 @@
         <th scope="col"></th>
     </tr>
     </thead>
+
     {% block data_plan %}
-        {% for product in list_product %}
+
+        {% for product in filter.qs %}
+
             {% include 'workshop_data/plan/includes/plan_table_body_template.html' %}
         {% endfor %}
 

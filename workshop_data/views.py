@@ -209,19 +209,12 @@ class ProductDataView(DetailView):
     def get_object(self, **kwargs):
         print(self.kwargs)
         id = Product.objects.get(name=self.kwargs.get('product')).id
-        print('55555', id)
         return Product.objects.get(id=id)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
         context['details'] = self.get_object().detail.all()
         return context
-
-    # def get_queryset(self):
-    #     id = self.get_object().id
-    #     print('44444', id)
-    #     q = super().get_queryset()
-    #     return q.filter(id=id)
 
 
 ########################## Detail ##################################
@@ -255,10 +248,10 @@ def product_create_complite(request):
 def detaile_create_complite(request):
     return render(request, 'workshop_data/detail/detail_create_complite.html')
 
-def product_add_detail(request):
+def product_add_detail_complite(request):
     return render(request, 'workshop_data/product/product_add_detail_complite.html')
 
-def product_add_in_plan(request):
+def product_add_in_plan_complite(request):
     return render(request, 'workshop_data/plan/product_add_in_plan.html')
 
 
@@ -321,24 +314,9 @@ class WorkshopPlanView(ListView):
     context_object_name = 'plan'
 
     def get_context_data(self, **kwargs):
-        from django.http import QueryDict
-
-        context = super().get_context_data(**kwargs)
-        list_product = WorkshopPlan.objects.filter(month=current_month()).order_by('product')
-        q = QueryDict('', mutable=True)
-        for product in list_product:
-            if q.__contains__(product):
-                print('1', product)
-                q[product] = product.detail
-                print('2', q)
-            else:
-                print('3')
-                q.update({product.product : product.detail})
-        print('4', q)
-        print('5', list_product)
-
-        context['dict_product'] = q
+        context = super().get_context_data()
         context['list_product'] = WorkshopPlan.objects.filter(month=current_month()).order_by('product')
+        context['filter'] = WorkshopPlanFilter(self.request.GET, queryset=self.get_queryset().order_by('product'))
         return context
 
 
@@ -348,5 +326,10 @@ class WorkshopPlanCreateView(CreateView):
     form_class = WorkshopPlanCreateForm
     template_name = 'workshop_data/plan/plan_create.html'
     success_url = reverse_lazy('product_add_plan_complite')
+
+    def form_valid(self, form):
+        print(self.object)
+        self.object = form.save()
+        return super().form_valid(form)
 
 

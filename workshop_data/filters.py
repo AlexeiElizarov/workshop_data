@@ -4,18 +4,31 @@ from .models import *
 from dal import autocomplete
 
 class ProductFilter(FilterSet):
-    name = django_filters.ModelChoiceFilter(queryset=Product.objects.all(),
-                                            widget=autocomplete.Select2(url='data_autocomplete_product')
-                                            )
+    name = django_filters.ModelChoiceFilter(
+        queryset=Product.objects.all(),
+        widget=autocomplete.Select2(url='data_autocomplete_product')
+        )
     class Meta:
         model = Product
         fields = ['name']
 
 
 class DetailFilter(FilterSet):
-    name = django_filters.ModelChoiceFilter(queryset=Detail.objects.all(),
-                                            widget=autocomplete.Select2(url='data_autocomplete_detail')
-                                            )
+    name = django_filters.ModelChoiceFilter(
+        queryset=Detail.objects.all(),
+        widget=autocomplete.Select2(url='data_autocomplete_detail')
+        )
     class Meta:
         model = Detail
         fields = ['name']
+
+
+class WorkshopPlanFilter(FilterSet):
+    '''Фильтр поиска Изделия по Плану'''
+    product = django_filters.ModelChoiceFilter(
+        queryset=Product.objects.all(),
+        widget=autocomplete.Select2(url='data_autocomplete_product')
+        )
+    class Meta:
+        model = WorkshopPlan
+        fields = ['product']
