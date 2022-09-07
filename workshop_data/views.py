@@ -328,7 +328,6 @@ class WorkshopPlanCreateView(CreateView):
     success_url = reverse_lazy('product_add_plan_complite')
 
     def form_valid(self, form):
-        print(self.object)
         self.object = form.save()
         return super().form_valid(form)
 

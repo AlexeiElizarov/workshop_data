@@ -1,6 +1,7 @@
 from dal import autocomplete
 from django import forms
 from .models import *
+import calendar
 
 # import djhacker
 # djhacker.formfield(
@@ -80,4 +81,18 @@ class WorkshopPlanCreateForm(forms.ModelForm):
             'product': autocomplete.ModelSelect2(url='data_autocomplete_product'),
             'detail': autocomplete.ModelSelect2(url='data_autocomplete_detail'),
         }
+
+    def clean_month(self):
+        month = self.cleaned_data['month']
+        return month
+
+    def clean(self):
+        super(WorkshopPlanCreateForm, self).clean()
+        product = self.cleaned_data.get('product')
+        month = self.cleaned_data.get('month')
+        detail = self.cleaned_data.get('detail')
+        print(Month.choices[month][1])
+        if WorkshopPlan.objects.filter(detail=detail, month=month).exists():
+            raise forms.ValidationError(f"Деталь {product} {detail} уже есть в Плане на {Month.choices[month][1]}")
+        return self.cleaned_data
 

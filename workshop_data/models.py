@@ -29,6 +29,8 @@ class Month(models.IntegerChoices):
     NOT_SPECIFIED = 13, ('не укзан')
 
 
+
+
 class WorkshopPlan(models.Model):
     '''Класс описывает План цеха'''
     product = models.ForeignKey("Product", on_delete=models.CASCADE, verbose_name='_Изделие_')
@@ -44,6 +46,7 @@ class WorkshopPlan(models.Model):
 
     def get_product(self):
         return f'{self.product} {self.detail}'
+
 
 # class ProductInPlan(models.Model):
 #     '''Класс описывает Изделие входящее в план'''
