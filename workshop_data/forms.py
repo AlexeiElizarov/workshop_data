@@ -79,9 +79,18 @@ class AddStageInDeatailForm(forms.ModelForm):
 # автозаполнение поля по переданному из CreateView pk
     def __init__(self, *args, **kwargs):
         id = kwargs.pop('pk')
+        detail = Detail.objects.get(pk=id)
         super(AddStageInDeatailForm, self).__init__(*args, **kwargs)
         self.fields['detail'].initial = Detail.objects.get(pk=id)
+        self.fields['order'].initial = \
+            StageManufacturingDetail.objects.filter(detail=detail).order_by('-order')[0].order + 1
 
+
+class EditStageInDetail(forms.ModelForm):
+    '''Отображает форму редактирования Этапа в Детали'''
+    class Meta:
+        model = StageManufacturingDetail
+        fields = ('__all__')
 
 
 

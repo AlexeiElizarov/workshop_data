@@ -1,0 +1,14 @@
+<tbody>
+    <tr>
+        <th scope="row">{{ forloop.counter }}</th>
+            <td><a href="">{{ stage.order }}</a></td>
+            <td><a href="">{{ stage.name }}</a></td>
+            <td><a href="">{{ stage.operations }}</a></td>
+            <td><a href="">{{ stage.normalized_time }}</a></td>
+            <td><a href="">{{ stage.price }}</a></td>
+        <td>
+            {% include 'workshop_data/detail/stage/includes/button_dropdown_menu.html' %}
+        </td>
+
+    </tr>
+</tbody>

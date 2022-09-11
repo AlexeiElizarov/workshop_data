@@ -205,7 +205,6 @@ class ProductDataView(DetailView):
     template_name = 'workshop_data/product/product_detail_view.html'
     context_object_name = 'product'
 
-
     def get_object(self, **kwargs):
         id = Product.objects.get(name=self.kwargs.get('product')).id
         return Product.objects.get(id=id)
@@ -242,7 +241,7 @@ class AddStageInDeatailVeiw(CreateView):
     '''Добавление Этапа к Детали'''
     model = StageManufacturingDetail
     form_class = AddStageInDeatailForm
-    template_name = 'workshop_data/detail/add_stage_in_detail.html'
+    template_name = 'workshop_data/detail/stage/add_stage_in_detail.html'
     success_url = reverse_lazy('add_stage_in_detail_complite')
 
 # чтобы передать pk в форму
@@ -252,7 +251,28 @@ class AddStageInDeatailVeiw(CreateView):
         return kwargs
 
 
+class StageInDetailView(ListView):
+    '''Просмотр всех Этапов производства Детали'''
+    model = StageManufacturingDetail
+    template_name = 'workshop_data/detail/stage/stage_in_detail_all.html'
+    context_object_name = 'stages'
 
+
+class EditStageInDetailView(UpdateView):
+    '''Отображает страницу редактирования Этапа в Детоли'''
+    model = StageManufacturingDetail
+    form_class = EditStageInDetail
+    template_name = 'workshop_data/product/product_add_detail.html'
+    success_url = reverse_lazy('product_add_detail_complite')
+
+    def get_object(self, **kwargs):
+        obj = StageManufacturingDetail.objects.get(id=self.kwargs['pk'])
+        return obj
+
+    # def get_form_kwargs(self):
+    #     kwargs = super(EditStageInDetailView, self).get_form_kwargs()
+    #     kwargs.update({'pk': self.kwargs.get('pk')})
+    #     return kwargs
 
 #######################################################################################################
 
@@ -270,7 +290,7 @@ def product_add_in_plan_complite(request):
     return render(request, 'workshop_data/plan/product_add_in_plan.html')
 
 def add_stage_in_detail_complite(request):
-    return render(request, 'workshop_data/detail/add_stage_in_detail_complite.html')
+    return render(request, 'workshop_data/detail/stage/add_stage_in_detail_complite.html')
 
 
 ####################################         MASTER          ###########################################
