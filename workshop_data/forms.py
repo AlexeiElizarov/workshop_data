@@ -70,6 +70,21 @@ class DetailCreateForm(forms.ModelForm):
         }
 
 
+class AddStageInDeatailForm(forms.ModelForm):
+    '''Отображает форму добавления нового Этапа в Детали'''
+    class Meta:
+        model = StageManufacturingDetail
+        fields = ('detail', 'order', 'name', 'operations', 'normalized_time', 'price')
+
+# автозаполнение поля по переданному из CreateView pk
+    def __init__(self, *args, **kwargs):
+        id = kwargs.pop('pk')
+        super(AddStageInDeatailForm, self).__init__(*args, **kwargs)
+        self.fields['detail'].initial = Detail.objects.get(pk=id)
+
+
+
+
 class WorkshopPlanCreateForm(forms.ModelForm):
     '''Отображает форму создания нового Плана'''
     class Meta:
@@ -91,7 +106,6 @@ class WorkshopPlanCreateForm(forms.ModelForm):
         product = self.cleaned_data.get('product')
         month = self.cleaned_data.get('month')
         detail = self.cleaned_data.get('detail')
-        print(Month.choices[month][1])
         if WorkshopPlan.objects.filter(detail=detail, month=month).exists():
             raise forms.ValidationError(f"Деталь {product} {detail} уже есть в Плане на {Month.choices[month][1]}")
         return self.cleaned_data

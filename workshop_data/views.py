@@ -207,7 +207,6 @@ class ProductDataView(DetailView):
 
 
     def get_object(self, **kwargs):
-        print(self.kwargs)
         id = Product.objects.get(name=self.kwargs.get('product')).id
         return Product.objects.get(id=id)
 
@@ -235,8 +234,24 @@ class DetailCreateView(CreateView):
     '''Отображает страницу создания новоой Детали'''
     model = Detail
     form_class = DetailCreateForm
-    template_name = 'workshop_data/worker/detail_create.html'
+    template_name = 'workshop_data/detail/detail_create.html'
     success_url = reverse_lazy('create_new_detail_complite')
+
+
+class AddStageInDeatailVeiw(CreateView):
+    '''Добавление Этапа к Детали'''
+    model = StageManufacturingDetail
+    form_class = AddStageInDeatailForm
+    template_name = 'workshop_data/detail/add_stage_in_detail.html'
+    success_url = reverse_lazy('add_stage_in_detail_complite')
+
+# чтобы передать pk в форму
+    def get_form_kwargs(self):
+        kwargs = super(AddStageInDeatailVeiw, self).get_form_kwargs()
+        kwargs.update({'pk': self.kwargs.get('pk')})
+        return kwargs
+
+
 
 
 #######################################################################################################
@@ -253,6 +268,9 @@ def product_add_detail_complite(request):
 
 def product_add_in_plan_complite(request):
     return render(request, 'workshop_data/plan/product_add_in_plan.html')
+
+def add_stage_in_detail_complite(request):
+    return render(request, 'workshop_data/detail/add_stage_in_detail_complite.html')
 
 
 ####################################         MASTER          ###########################################

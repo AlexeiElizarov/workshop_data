@@ -1,0 +1,15 @@
+{% extends 'main.html' %}
+
+{% block title %}
+    Добавить Этап
+{% endblock title %}
+
+{% block content %}
+    Добавить новый Этап
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        {{ form.media }}
+        <input type="submit" value="Добавить" class="btn btn-primary">
+    </form>
+{% endblock content %}

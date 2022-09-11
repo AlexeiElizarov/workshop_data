@@ -84,6 +84,7 @@
                                         {% if not request.user.profile %}
                                             <li><a class="dropdown-item" href="{% url 'create_new_product' %}">Изделие</a></li>
                                             <li><a class="dropdown-item" href="{% url 'create_new_detail' %}">Деталь</a></li>
+
                                         {% endif %}
                                     </ul>
                                 </li>

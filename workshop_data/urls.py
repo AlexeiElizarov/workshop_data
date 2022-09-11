@@ -9,10 +9,12 @@ urlpatterns = [
     path('data_autocomplete_worker/', WorkerAutocomplete.as_view(create_field='name'), name='data_autocomplete_worker'),
     path('data_autocomplete_categorydetail/', CategoryDetailAutocomplete.as_view(), name='data_autocomplete_category_detail'),
 
-    path('detail/all/', DetailAllView.as_view(), name='detail_list_all'),
-    path('new-detail/', DetailCreateView.as_view(), name='create_new_detail'),
+    path('<pk>/add-stage-in-detail/', AddStageInDeatailVeiw.as_view(), name='add_stage_in_detail'),
+    path('add-stage-in-detail-complite/', add_stage_in_detail_complite, name='add_stage_in_detail_complite'),
     path('new-detail-complite/', detaile_create_complite, name='create_new_detail_complite'),
     path('add-detail-complite/', product_add_detail_complite, name='product_add_detail_complite'),
+    path('new-detail/', DetailCreateView.as_view(), name='create_new_detail'),
+    path('detail/all/', DetailAllView.as_view(), name='detail_list_all'),
 
     path('<product>/add-detail/', ProductAddDetailView.as_view(), name='product_add_detail'),
     path('<product>/detail/', ProductDataView.as_view(), name='product_detail_data'),
