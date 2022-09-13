@@ -98,8 +98,8 @@ class WorkshopPlanCreateForm(forms.ModelForm):
     '''Отображает форму создания нового Плана'''
     class Meta:
         model = WorkshopPlan
-        # fields = ('product', 'detail', 'month', 'year')
         fields = ('__all__')
+
 
         widgets = {
             'product': autocomplete.ModelSelect2(url='data_autocomplete_product'),
@@ -119,3 +119,31 @@ class WorkshopPlanCreateForm(forms.ModelForm):
             raise forms.ValidationError(f"Деталь {product} {detail} уже есть в Плане на {Month.choices[month][1]}")
         return self.cleaned_data
 
+
+class CreateBatchDetailInPlanForm(forms.ModelForm):
+    '''Отображает форму создания новой Партии Деталей'''
+    class Meta:
+        model = BatchDetailInPlan
+        # fields = ('__all__')
+        fields = ('detail', 'stage', 'quantity_in_batch', 'sos', 'comment')
+
+    def __init__(self, *args, **kwargs):
+        print('this')
+        self.detail = kwargs.pop('detail', None)
+        print('111', self.detail)
+        detail_id = Detail.objects.get(name=f'{self.detail}').id
+        print(detail_id)
+        detail_in_plan = WorkshopPlan.objects.get(detail_id=detail_id)
+        print(detail_in_plan)
+        super(CreateBatchDetailInPlanForm, self).__init__(*args, **kwargs)
+        self.fields['detail'].label = 'Деталь'
+        self.fields['detail'].initial = detail_in_plan
+        # вот так показывает "LSM", "TRN"...
+        self.fields['stage'].queryset = StageManufacturingDetail.objects.filter(detail_id=detail_id)
+
+        # self.fields['stage'] = forms.ChoiceField(
+        #         choices=StageManufacturingDetail.objects.filter(detail_id=detail_id))
+
+        # self.fields['stage'] = forms.ModelChoiceField(
+        #     queryset=StageManufacturingDetail.objects.filter(detail_id=detail_id))
+        self.fields['stage'].label = 'Выберите вид работы' #FIXME

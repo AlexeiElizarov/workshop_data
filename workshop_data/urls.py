@@ -39,6 +39,8 @@ urlpatterns = [
     path('master/orders-<surname>-<name>/', WorkerOrdersListForMaster.as_view(), name='orders-worker-for-master'),
     path('master/orders-<surname>-<name>/month_<month>/', WorkerOrdersListForMaster.as_view(), name='orders-worker-month-for-master'),
 
+    path('master/create-new-batch/<detail>/', CreateBatchDetailInPlan.as_view(), name='create_new_batch'),
+
     path('plan/product-add-in-plan-complite/', product_add_in_plan_complite, name='product_add_plan_complite'),
     path('plan/product-add-in-plan/', WorkshopPlanCreateView.as_view(), name='product_add_plan'),
     path('plan/<year>-<month>/', WorkshopPlanView.as_view(), name='plan'),

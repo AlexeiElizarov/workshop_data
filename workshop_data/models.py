@@ -29,6 +29,14 @@ class Month(models.IntegerChoices):
     NOT_SPECIFIED = 13, ('не укзан')
 
 
+class StageName(models.TextChoices):
+    EMPTY_VALUE = '', ('Выберите вид работы')
+    LOCKSMITH = 'LSM', ('Слесарый')
+    TURNER = 'TRN', ('Токарный')
+    MILLER = 'MLR', ('Фрезеровальный')
+    GRINDER = 'GRN', ('Шлифовальный')
+
+
 
 
 class WorkshopPlan(models.Model):
@@ -37,35 +45,19 @@ class WorkshopPlan(models.Model):
 
     product = models.ForeignKey("Product", on_delete=models.CASCADE, verbose_name='_Изделие_')
     detail = models.ForeignKey("Detail", on_delete=models.CASCADE)
-    batch = models.ForeignKey("BatchDetailInPlan", on_delete=models.CASCADE, verbose_name='_Партия_', null=True)
-    quantity = models.SmallIntegerField(default=0, verbose_name='Колличество')
+    # batch = models.ForeignKey("BatchDetailInPlan", on_delete=models.CASCADE, verbose_name='_Партия_', null=True)
+    quantity = models.PositiveSmallIntegerField(default=0, verbose_name='Колличество')
+    in_work = models.PositiveSmallIntegerField(default=0, verbose_name='Колличество в работе')
     month = models.PositiveSmallIntegerField(choices=Month.choices, default=Month.NOT_SPECIFIED, verbose_name='_Месяц_')
     sos = models.BooleanField(default=False)
     year = models.PositiveIntegerField(
         default=current_year(), validators=[MinValueValidator(2022), max_value_current_year])
 
     def __str__(self):
-        return f'{self.product}'
+        return f'{self.product} {self.detail}'
 
     def get_product(self):
         return f'{self.product} {self.detail}'
-
-
-class BatchDetailInPlan(models.Model):
-    '''Класс описывает партию Деталей'''
-    stage = models.ForeignKey("StageManufacturingDetailInWork", on_delete=models.CASCADE, verbose_name="Этап изготовления")
-    quantity_in_batch = models.SmallIntegerField(default=0, verbose_name="Колличество в партии")
-    sos = models.BooleanField(default=False)
-    comment = models.ForeignKey("Comment", on_delete=models.CASCADE, verbose_name='Комментарий')
-
-
-class StageManufacturingDetailInWork(models.Model):
-    '''Описывает этап изготовления Детали(в Плане)'''
-    worker = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Рабочий')
-    stage_in_batch = models.OneToOneField("StageManufacturingDetail", on_delete=models.CASCADE)
-    start_of_work = models.DateTimeField()
-    time_of_work = models.SmallIntegerField()
-    comment_in_batch = models.ForeignKey("Comment", on_delete=models.CASCADE)
 
 
 class Comment(models.Model):
@@ -142,12 +134,6 @@ class Detail(models.Model):
         'CategoryDetail',
         on_delete=models.CASCADE,
         verbose_name='Категория')
-    # stage = models.ForeignKey(
-    #     "StageManufacturingDetail",
-    #     on_delete=models.CASCADE,
-    #     verbose_name="Этап изготовления",
-    #     null=True
-    # )
 
     def __str__(self):
         return f'{self.name}'
@@ -156,18 +142,45 @@ class Detail(models.Model):
 class StageManufacturingDetail(models.Model):
     '''Описывает этапы изготовления Детали(технология)'''
 
-    class StageName(models.TextChoices):
-        LOCKSMITH = 'LSM', ('Слесарый')
-        TURNER = 'TRN', ('Токарный')
-        MILLER = 'MLR', ('Фрезеровальный')
-        GRINDER = 'GRN', ('Шлифовальный')
+    # class StageName(models.TextChoices):
+    #     EMPTY_VALUE = '', ('Выберите вид работы')
+    #     LOCKSMITH = 'LSM', ('Слесарый')
+    #     TURNER = 'TRN', ('Токарный')
+    #     MILLER = 'MLR', ('Фрезеровальный')
+    #     GRINDER = 'GRN', ('Шлифовальный')
 
-    detail = models.ForeignKey('Detail', on_delete=models.CASCADE)
-    order = models.PositiveSmallIntegerField()
-    name = models.CharField(max_length=3, choices=StageName.choices)
-    operations = models.CharField(max_length=300, blank=False)
-    normalized_time = models.FloatField(default=0, blank=False, verbose_name='Нормированное время')
-    price = models.FloatField(default=0, blank=False, verbose_name='Расценка')
+    detail = models.ForeignKey('Detail', on_delete=models.CASCADE, verbose_name="Деталь")
+    order = models.PositiveSmallIntegerField(verbose_name="Порядок")
+    name = models.CharField(max_length=3,
+                            choices=StageName.choices,
+                            verbose_name="Вид работы")
+    operations = models.CharField(max_length=300, blank=False, verbose_name="Операции")
+    normalized_time = models.FloatField(default=0, blank=False, verbose_name="Нормированное время")
+    price = models.FloatField(default=0, blank=False, verbose_name="Расценка")
+
+    def __str__(self):
+        return f'{self.name}'
+
+
+class BatchDetailInPlan(models.Model):
+    '''Класс описывает партию Деталей'''
+    detail = models.ForeignKey("WorkshopPlan", on_delete=models.CASCADE, null=True)
+    # stage = models.ForeignKey("StageManufacturingDetailInWork",
+    #                           on_delete=models.CASCADE)
+    quantity_in_batch = models.SmallIntegerField(default=0, verbose_name="Колличество в партии")
+    sos = models.BooleanField(default=False)
+    comment = models.ForeignKey("Comment", on_delete=models.CASCADE, verbose_name='Комментарий')
+
+
+class StageManufacturingDetailInWork(models.Model):
+    '''Описывает этап изготовления Детали(в Плане)'''
+    batch = models.ForeignKey("BatchDetailInPlan", on_delete=models.CASCADE)
+    worker = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Рабочий')
+    stage_in_batch = models.OneToOneField("StageManufacturingDetail", on_delete=models.CASCADE)
+    start_of_work = models.DateTimeField()
+    time_of_work = models.SmallIntegerField()
+    comment_in_batch = models.ForeignKey("Comment", on_delete=models.CASCADE)
+
 
 
 

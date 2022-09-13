@@ -3,7 +3,12 @@
         Инструменты
     </button>
     <ul class="dropdown-menu">
-        <li><a class="dropdown-item" href="">В работу</a></li>
+        <li>
+            <a class="dropdown-item"
+               href="{% url 'create_new_batch' detail=product.detail %}">
+                В работу
+            </a>
+        </li>
         <li><a class="dropdown-item" href="">Удалить</a></li>
 <!--        <li><a class="dropdown-item" >Something else here</a></li>-->
     </ul>

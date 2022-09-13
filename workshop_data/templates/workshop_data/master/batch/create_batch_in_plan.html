@@ -1,16 +1,14 @@
 {% extends 'main.html' %}
 
 {% block title %}
-    Добавить Этап
+    Новая Партия
 {% endblock title %}
 
 {% block content %}
-    <h3>Добавить новый Этап</h3>
-<hr>
+    <h4>Новая партия</h4>
     <form method="POST">
         {% csrf_token %}
         {{ form.as_p }}
-        {{ form.media }}
-        <input type="submit" value="Добавить" class="btn btn-primary">
+        <input type="submit" value="Отправить" class="btn btn-primary">
     </form>
 {% endblock content %}

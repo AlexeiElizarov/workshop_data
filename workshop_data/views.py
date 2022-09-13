@@ -269,10 +269,6 @@ class EditStageInDetailView(UpdateView):
         obj = StageManufacturingDetail.objects.get(id=self.kwargs['pk'])
         return obj
 
-    # def get_form_kwargs(self):
-    #     kwargs = super(EditStageInDetailView, self).get_form_kwargs()
-    #     kwargs.update({'pk': self.kwargs.get('pk')})
-    #     return kwargs
 
 #######################################################################################################
 
@@ -339,6 +335,23 @@ class WorkerOrdersListForMaster(ListView):
             context['month'] = context['orders'][0]
         return context
 
+
+class CreateBatchDetailInPlan(CreateView):
+    '''Запуск в производсто новой партии Деталей'''
+    model = BatchDetailInPlan
+    form_class = CreateBatchDetailInPlanForm
+    template_name = 'workshop_data/master/batch/create_batch_in_plan.html'
+    success_url = reverse_lazy('product_add_plan_complite')
+
+    def get_form_kwargs(self):
+        print('1', self.kwargs)
+        kwargs = super(CreateBatchDetailInPlan, self).get_form_kwargs()
+        print('2', self.kwargs)
+        print('3', kwargs)
+        # kwargs['detail'] = self.kwargs.get('detail')
+        kwargs.update({'detail': self.kwargs.get('detail')})
+        print('4', kwargs)
+        return kwargs
 
 
 #######################    WorkshopPlan   ######################
