@@ -1,0 +1,19 @@
+<table class="table table-primary">
+    <thead>
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col">Изделие</th>
+        <th scope="col">Деталь</th>
+        <th scope="col">Колличество в партии</th>
+        <th scope="col">SOS</th>
+        <th scope="col">Комментарий</th>
+        <th scope="col"></th>
+    </tr>
+    </thead>
+
+    {% block batch_in_plan %}
+        {% for batch in batchs_in_plan %}
+            {% include 'workshop_data/master/batch/includes/table_body_batch_template.html' %}
+        {% endfor %}
+    {% endblock batch_in_plan %}
+</table>

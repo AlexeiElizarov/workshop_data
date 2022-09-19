@@ -1,0 +1,33 @@
+<tbody>
+
+    {% ifchanged batch.detail.product %}
+    <tr class="table-light">
+        <td></td>
+        <td>    <h5>{{ batch.detail.product }}</h5></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+    </tr>
+    {% endifchanged %}
+    <tr class="{% if batch.sos == True %}table-danger
+               {% else %}{% endif %}">
+        <th scope="row">{{ forloop.counter }}</th>
+
+        <td></td>
+        <td><a href="">{{ batch.detail.detail }}</a></td>
+        <td><a href="">{{ batch.quantity_in_batch }}</a></td>
+        <td><a href="">{{ batch.sos }}</a></td>
+        <td><a href="">{{ batch.comment.body }}</a></td>
+
+        <td>
+            {% include 'workshop_data/master/batch/includes/button_dropdown_menu_batch.html' %}
+        </td>
+
+    </tr>
+
+
+
+
+</tbody>

@@ -5,7 +5,7 @@
 {% endblock title %}
 
 {% block content %}
-    <h4>Новая партия</h4>
+    <h4>Новая партия {{ product_detail }}</h4>
     <form method="POST">
         {% csrf_token %}
         {{ form.as_p }}

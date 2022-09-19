@@ -1,0 +1,16 @@
+{% extends 'main.html' %}
+{% load test_tag %}
+
+{% block title %}
+    Изделия
+{% endblock title %}
+
+{% block content %}
+    <form method="GET">
+        {{ filter.form }}
+        {{ filter.form.media }}
+        <input type="submit" value="Найти">
+    </form>
+    <hr>
+    {% include 'workshop_data/master/batch/includes/table_header_batch_template.html' %}
+{% endblock content %}

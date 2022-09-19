@@ -122,15 +122,23 @@ class WorkshopPlanCreateForm(forms.ModelForm):
 
 class CreateBatchDetailInPlanForm(forms.ModelForm):
     '''Отображает форму создания новой Партии Деталей'''
+    comment = forms.CharField(widget=forms.Textarea)
     class Meta:
         model = BatchDetailInPlan
         # fields = ('__all__')
-        fields = ('detail', 'stage', 'quantity_in_batch', 'sos', 'comment')
+        fields = ['detail', 'quantity_in_batch', 'sos', 'comment']
+        # widgets = {
+        #     'comment': forms.Textarea
+        # }
 
     def __init__(self, *args, **kwargs):
-        print('this')
-        self.detail = kwargs.pop('detail', None)
+        print(kwargs)
+        # self.request = kwargs.pop('request', None)
+        print('this __init__')
+        self.detail = kwargs.pop('detail')
+        self.product = kwargs.pop('product')
         print('111', self.detail)
+        print('222', self.product)
         detail_id = Detail.objects.get(name=f'{self.detail}').id
         print(detail_id)
         detail_in_plan = WorkshopPlan.objects.get(detail_id=detail_id)
@@ -139,11 +147,16 @@ class CreateBatchDetailInPlanForm(forms.ModelForm):
         self.fields['detail'].label = 'Деталь'
         self.fields['detail'].initial = detail_in_plan
         # вот так показывает "LSM", "TRN"...
-        self.fields['stage'].queryset = StageManufacturingDetail.objects.filter(detail_id=detail_id)
+        # self.fields['stage'].queryset = StageManufacturingDetail.objects.filter(detail_id=detail_id)
 
         # self.fields['stage'] = forms.ChoiceField(
         #         choices=StageManufacturingDetail.objects.filter(detail_id=detail_id))
 
         # self.fields['stage'] = forms.ModelChoiceField(
         #     queryset=StageManufacturingDetail.objects.filter(detail_id=detail_id))
-        self.fields['stage'].label = 'Выберите вид работы' #FIXME
+        # self.fields['stage'].label = 'Выберите вид работы' #FIXME
+
+    def clean(self):
+        comment = self.cleaned_data.pop('comment')
+        new_comment = Comment.objects.create(body=comment)
+        self.cleaned_data.update({'comment': new_comment})

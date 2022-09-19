@@ -1,7 +1,7 @@
 from typing import Any
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpRequest
+from django.http import HttpRequest, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from dal import autocomplete
 from django.urls import reverse, reverse_lazy
@@ -288,6 +288,9 @@ def product_add_in_plan_complite(request):
 def add_stage_in_detail_complite(request):
     return render(request, 'workshop_data/detail/stage/add_stage_in_detail_complite.html')
 
+def new_batch_complite(request):
+    return render(request, 'workshop_data/master/batch/new_batch_create_complite.html')
+
 
 ####################################         MASTER          ###########################################
 
@@ -343,15 +346,68 @@ class CreateBatchDetailInPlan(CreateView):
     template_name = 'workshop_data/master/batch/create_batch_in_plan.html'
     success_url = reverse_lazy('product_add_plan_complite')
 
+    def get_object(self, queryset=None):
+        product_id = Product.objects.get(name=self.kwargs['product'])
+        detail_id = Detail.objects.get(name=self.kwargs['detail'])
+        obj = WorkshopPlan.objects.filter(product=product_id, detail=detail_id)
+        return obj
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['product_detail'] = self.get_object()[0]
+        return context
+
     def get_form_kwargs(self):
-        print('1', self.kwargs)
         kwargs = super(CreateBatchDetailInPlan, self).get_form_kwargs()
-        print('2', self.kwargs)
-        print('3', kwargs)
-        # kwargs['detail'] = self.kwargs.get('detail')
         kwargs.update({'detail': self.kwargs.get('detail')})
-        print('4', kwargs)
+        kwargs.update({'product': self.kwargs.get('product')})
         return kwargs
+
+    def get_quantity_detail_in_work(self):
+        detail = BatchDetailInPlan.objects.filter()
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.save()
+        self.object.detail.in_work += self.object.quantity_in_batch
+        self.object.detail.save()
+        return HttpResponseRedirect(reverse_lazy('product_add_plan_complite'))
+
+
+class AllBatchDetailInPlanView(ListView):
+    '''Отображает все партии Деталей'''
+    model = BatchDetailInPlan
+    template_name = 'workshop_data/master/batch/all_batch_detail_in_plan.html'
+    context_object_name = 'batchs_in_plan'
+    ordering = ['detail']
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        return context
+
+
+class AllBatchDetailProductInPlan(DetailView):
+    '''Отображает все Партии определённой Детали определённого Изделия'''
+    model = BatchDetailInPlan
+    template_name = 'workshop_data/master/batch/all_batch_detail_in_plan.html' #FIXME
+    context_object_name = 'batchs_in_plan'#FIXME
+
+    def get_object(self, **kwargs): #FIXME
+        print('**************')
+        print(self.kwargs)
+        print(kwargs)
+        product_id = Product.objects.get(name=self.kwargs['product'])
+        detail_id = Detail.objects.get(name=self.kwargs['detail'])
+        obj = WorkshopPlan.objects.get(product=product_id,detail=detail_id)
+        print(obj.id)
+        print('**************')
+        return obj.id
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context['batchs_in_plan'] = BatchDetailInPlan.objects.filter(detail=self.get_object())
+        return context
+
 
 
 #######################    WorkshopPlan   ######################
