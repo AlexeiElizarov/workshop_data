@@ -43,8 +43,8 @@ class WorkshopPlan(models.Model):
     #FIXME
     '''Класс описывает Детали входящие в План цеха'''
 
-    product = models.OneToOneField("Product", on_delete=models.PROTECT, verbose_name='_Изделие_')
-    detail = models.OneToOneField("Detail", on_delete=models.PROTECT)
+    product = models.ForeignKey("Product", on_delete=models.PROTECT, verbose_name='_Изделие_')
+    detail = models.ForeignKey("Detail", on_delete=models.PROTECT)
     # batch = models.ForeignKey("BatchDetailInPlan", on_delete=models.SET_NULL, verbose_name='_Партия_', null=True)
     quantity = models.PositiveSmallIntegerField(default=0, verbose_name='Колличество')
     in_work = models.PositiveSmallIntegerField(default=0, verbose_name='Колличество в работе')
@@ -54,7 +54,7 @@ class WorkshopPlan(models.Model):
         default=current_year(), validators=[MinValueValidator(2022), max_value_current_year])
 
     def __str__(self):
-        return f'{self.product} {self.detail}'
+        return f'{self.product}_{self.detail}'
 
     def get_product(self):
         return f'{self.product} {self.detail}'

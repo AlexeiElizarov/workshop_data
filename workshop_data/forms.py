@@ -132,17 +132,13 @@ class CreateBatchDetailInPlanForm(forms.ModelForm):
         # }
 
     def __init__(self, *args, **kwargs):
-        print(kwargs)
-        # self.request = kwargs.pop('request', None)
-        print('this __init__')
-        self.detail = kwargs.pop('detail')
-        self.product = kwargs.pop('product')
-        print('111', self.detail)
-        print('222', self.product)
-        detail_id = Detail.objects.get(name=f'{self.detail}').id
-        print(detail_id)
+        # self.detail = kwargs.pop('detail')
+        # self.product = kwargs.pop('product')
+        name = kwargs.pop('object')
+        product = name.split('_')[0]
+        detail = name.split('_')[1]
+        detail_id = Detail.objects.get(name=f'{detail}').id
         detail_in_plan = WorkshopPlan.objects.get(detail_id=detail_id)
-        print(detail_in_plan)
         super(CreateBatchDetailInPlanForm, self).__init__(*args, **kwargs)
         self.fields['detail'].label = 'Деталь'
         self.fields['detail'].initial = detail_in_plan

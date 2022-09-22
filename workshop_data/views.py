@@ -347,20 +347,26 @@ class CreateBatchDetailInPlan(CreateView):
     success_url = reverse_lazy('product_add_plan_complite')
 
     def get_object(self, queryset=None):
-        product_id = Product.objects.get(name=self.kwargs['product'])
-        detail_id = Detail.objects.get(name=self.kwargs['detail'])
-        obj = WorkshopPlan.objects.filter(product=product_id, detail=detail_id)
+        # product_id = Product.objects.get(name=self.kwargs['product'])
+        # detail_id = Detail.objects.get(name=self.kwargs['detail'])
+        # obj = WorkshopPlan.objects.filter(product=product_id, detail=detail_id)
+        print(self.kwargs)
+        name = self.kwargs.pop('product')
+        product = name.split('_')[0]
+        detail = name.split('_')[1]
+        obj = WorkshopPlan.objects.get(product__name=product, detail__name=detail)
         return obj
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['product_detail'] = self.get_object()[0]
+        context['product_detail'] = self.get_object()
         return context
 
     def get_form_kwargs(self):
         kwargs = super(CreateBatchDetailInPlan, self).get_form_kwargs()
-        kwargs.update({'detail': self.kwargs.get('detail')})
-        kwargs.update({'product': self.kwargs.get('product')})
+        # kwargs.update({'detail': self.kwargs.get('detail')})
+        # kwargs.update({'product': self.kwargs.get('product')})
+        kwargs.update({'object': self.kwargs.get('product')})
         return kwargs
 
     def get_quantity_detail_in_work(self):
@@ -389,18 +395,14 @@ class AllBatchDetailInPlanView(ListView):
 class AllBatchDetailProductInPlan(DetailView):
     '''Отображает все Партии определённой Детали определённого Изделия'''
     model = BatchDetailInPlan
-    template_name = 'workshop_data/master/batch/all_batch_detail_in_plan.html' #FIXME
-    context_object_name = 'batchs_in_plan'#FIXME
+    template_name = 'workshop_data/master/batch/all_batch_detail_in_plan.html'
+    context_object_name = 'batchs_in_plan'
 
-    def get_object(self, **kwargs): #FIXME
-        print('**************')
-        print(self.kwargs)
-        print(kwargs)
-        product_id = Product.objects.get(name=self.kwargs['product'])
-        detail_id = Detail.objects.get(name=self.kwargs['detail'])
-        obj = WorkshopPlan.objects.get(product=product_id,detail=detail_id)
-        print(obj.id)
-        print('**************')
+    def get_object(self, **kwargs): #FIXME можно ли как то по-другому найти obj?
+        name = self.kwargs.get('object')
+        product = name.split('_')[0]
+        detail = name.split('_')[1]
+        obj = WorkshopPlan.objects.get(product__name=product, detail__name=detail)
         return obj.id
 
     def get_context_data(self, **kwargs):

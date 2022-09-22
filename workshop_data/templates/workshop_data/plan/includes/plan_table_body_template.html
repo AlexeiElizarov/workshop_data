@@ -16,7 +16,7 @@
         <td></td>
         <td><a href="">{{ product.detail }}</a></td>
         <td><a href="">{{ product.quantity }}</a></td>
-        <td><a href="{% url 'batchs_in_plan' product=product.product detail=product.detail %}">{{ product.in_work }}</a></td>
+        <td><a href="{% url 'batchs_in_plan' product %}">{{ product.in_work }}</a></td>
         <td><a href="">{{ product.sos }}</a></td>
         <td>
             {% include 'workshop_data/plan/includes/button_dropdown_menu_plan.html' %}
