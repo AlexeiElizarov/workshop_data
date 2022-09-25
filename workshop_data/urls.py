@@ -43,6 +43,9 @@ urlpatterns = [
     path('master/batchs-in-plan/<object>/', AllBatchDetailProductInPlan.as_view(), name='batchs_in_plan'),
     path('master/create-new-batch/<product>/', CreateBatchDetailInPlan.as_view(), name='create_new_batch'),
     path('master/create-new-batch/complite/', new_batch_complite, name='new_batch_complite'),
+    path('master/start-new-stage-in-work/batch-<batch>/', StageManufacturingDetailInWorkView.as_view(), name='start_new_stage_in_work'),
+    path('master/start-new-stage-in-work/complite/', start_new_stage_in_work_complite, name='start_new_stage_in_work_complete'),
+
 
     path('plan/product-add-in-plan-complite/', product_add_in_plan_complite, name='product_add_plan_complite'),
     path('plan/product-add-in-plan/', WorkshopPlanCreateView.as_view(), name='product_add_plan'),

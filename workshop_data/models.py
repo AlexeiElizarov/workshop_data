@@ -142,7 +142,7 @@ class Detail(models.Model):
 
 class StageManufacturingDetail(models.Model):
     '''Описывает этапы изготовления Детали(технология)'''
-    detail = models.OneToOneField('Detail', on_delete=models.PROTECT, verbose_name="Деталь")
+    detail = models.ForeignKey('Detail', on_delete=models.PROTECT, verbose_name="Деталь")
     order = models.PositiveSmallIntegerField(verbose_name="Порядок")
     name = models.CharField(max_length=3,
                             choices=StageName.choices,
@@ -152,7 +152,7 @@ class StageManufacturingDetail(models.Model):
     price = models.FloatField(default=0, blank=False, verbose_name="Расценка")
 
     def __str__(self):
-        return f'{self.name}'
+        return f'{self.operations} {self.name}'
 
 
 class BatchDetailInPlan(models.Model):
@@ -173,12 +173,30 @@ class BatchDetailInPlan(models.Model):
 
 class StageManufacturingDetailInWork(models.Model):
     '''Описывает этап изготовления Детали(в Плане)'''
-    batch = models.ForeignKey("BatchDetailInPlan", on_delete=models.SET_NULL, null=True) #FIXME
-    worker = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, verbose_name='Рабочий')
-    stage_in_batch = models.OneToOneField("StageManufacturingDetail", on_delete=models.SET_NULL, null=True)
-    start_of_work = models.DateTimeField()
-    time_of_work = models.SmallIntegerField()
-    comment_in_batch = models.ForeignKey("Comment", on_delete=models.SET_NULL, null=True,)
+    batch = models.ForeignKey(
+        "BatchDetailInPlan",
+        on_delete=models.SET_NULL,
+        null=True,
+        verbose_name='Партия')
+    worker = models.ForeignKey\
+        (User,
+         on_delete=models.SET_NULL,
+         null=True,
+         verbose_name='Рабочий')
+    stage_in_batch = models.ForeignKey(
+        "StageManufacturingDetail",
+        on_delete=models.SET_NULL,
+        null=True,
+        verbose_name='Этап')
+    start_of_work = models.DateTimeField(auto_now_add=True)
+    in_work = models.BooleanField(default=True, verbose_name='В работе')
+    time_of_work = models.SmallIntegerField(default=0, blank=True, verbose_name='Время')
+    comment_in_batch = models.ForeignKey(
+        "Comment",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name='Комментарий') #FIXME
 
 
 class CategoryDetail(models.Model):

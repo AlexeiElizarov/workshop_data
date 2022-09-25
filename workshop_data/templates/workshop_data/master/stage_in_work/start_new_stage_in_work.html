@@ -1,0 +1,14 @@
+{% extends 'main.html' %}
+
+{% block title %}
+    Старт Этапа
+{% endblock title %}
+
+{% block content %}
+    <h4>Старт Этапа</h4>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Отправить" class="btn btn-primary">
+    </form>
+{% endblock content %}

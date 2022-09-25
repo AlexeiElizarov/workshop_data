@@ -82,8 +82,9 @@ class AddStageInDeatailForm(forms.ModelForm):
         detail = Detail.objects.get(pk=id)
         super(AddStageInDeatailForm, self).__init__(*args, **kwargs)
         self.fields['detail'].initial = Detail.objects.get(pk=id)
-        self.fields['order'].initial = \
-            StageManufacturingDetail.objects.filter(detail=detail).order_by('-order')[0].order + 1
+        if StageManufacturingDetail.objects.filter(detail=detail):
+            self.fields['order'].initial = \
+                StageManufacturingDetail.objects.filter(detail=detail).order_by('-order')[0].order + 1
 
 
 class EditStageInDetail(forms.ModelForm):
@@ -125,17 +126,10 @@ class CreateBatchDetailInPlanForm(forms.ModelForm):
     comment = forms.CharField(widget=forms.Textarea)
     class Meta:
         model = BatchDetailInPlan
-        # fields = ('__all__')
         fields = ['detail', 'quantity_in_batch', 'sos', 'comment']
-        # widgets = {
-        #     'comment': forms.Textarea
-        # }
 
     def __init__(self, *args, **kwargs):
-        # self.detail = kwargs.pop('detail')
-        # self.product = kwargs.pop('product')
         name = kwargs.pop('object')
-        product = name.split('_')[0]
         detail = name.split('_')[1]
         detail_id = Detail.objects.get(name=f'{detail}').id
         detail_in_plan = WorkshopPlan.objects.get(detail_id=detail_id)
@@ -156,3 +150,22 @@ class CreateBatchDetailInPlanForm(forms.ModelForm):
         comment = self.cleaned_data.pop('comment')
         new_comment = Comment.objects.create(body=comment)
         self.cleaned_data.update({'comment': new_comment})
+
+
+class CreateNewStageManufacturingInWorkForm(forms.ModelForm):
+    '''Форма задания(глагол) нового Этапа работы конкретной Партии Деталей'''
+    comment_in_batch = forms.CharField(widget=forms.Textarea)
+    class Meta:
+        model = StageManufacturingDetailInWork
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        batch_id = kwargs.pop('batch')
+        super(CreateNewStageManufacturingInWorkForm, self).__init__(*args, **kwargs)
+        self.fields['batch'].initial = batch_id
+
+    def clean(self):
+        comment = self.cleaned_data.pop('comment_in_batch')
+        new_comment = Comment.objects.create(body=comment)
+        self.cleaned_data.update({'comment_in_batch': new_comment})
+

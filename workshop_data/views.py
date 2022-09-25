@@ -291,6 +291,9 @@ def add_stage_in_detail_complite(request):
 def new_batch_complite(request):
     return render(request, 'workshop_data/master/batch/new_batch_create_complite.html')
 
+def start_new_stage_in_work_complite(request):
+    return render(request, 'workshop_data/master/stage_in_work/start_new_stage_in_work_complete.html')
+
 
 ####################################         MASTER          ###########################################
 
@@ -347,10 +350,6 @@ class CreateBatchDetailInPlan(CreateView):
     success_url = reverse_lazy('product_add_plan_complite')
 
     def get_object(self, queryset=None):
-        # product_id = Product.objects.get(name=self.kwargs['product'])
-        # detail_id = Detail.objects.get(name=self.kwargs['detail'])
-        # obj = WorkshopPlan.objects.filter(product=product_id, detail=detail_id)
-        print(self.kwargs)
         name = self.kwargs.pop('product')
         product = name.split('_')[0]
         detail = name.split('_')[1]
@@ -364,8 +363,6 @@ class CreateBatchDetailInPlan(CreateView):
 
     def get_form_kwargs(self):
         kwargs = super(CreateBatchDetailInPlan, self).get_form_kwargs()
-        # kwargs.update({'detail': self.kwargs.get('detail')})
-        # kwargs.update({'product': self.kwargs.get('product')})
         kwargs.update({'object': self.kwargs.get('product')})
         return kwargs
 
@@ -378,6 +375,37 @@ class CreateBatchDetailInPlan(CreateView):
         self.object.detail.in_work += self.object.quantity_in_batch
         self.object.detail.save()
         return HttpResponseRedirect(reverse_lazy('product_add_plan_complite'))
+
+
+class StageManufacturingDetailInWorkView(CreateView):
+    '''Запуска в производство определенного Этапа изготовления Партии Детали'''
+    model = StageManufacturingDetailInWork
+    form_class = CreateNewStageManufacturingInWorkForm
+    template_name = 'workshop_data/master/stage_in_work/start_new_stage_in_work.html'
+    success_url = reverse_lazy('start_new_stage_in_work_complete')
+
+    # def get_object(self, queryset=None):
+    #     print('*****get_object*******')
+    #     print(self.kwargs)
+    #     batch_id = self.kwargs.pop('batch')
+    #     obj = BatchDetailInPlan.objects.get(id=batch_id)
+    #     return obj
+    #
+    # def get_context_data(self, **kwargs):
+    #     print('*****get_context_data*******')
+    #     context = super().get_context_data(**kwargs)
+    #     context['batch_id'] = self.get_object()
+    #     return context
+
+    def get_form_kwargs(self):
+        kwargs = super(StageManufacturingDetailInWorkView, self).get_form_kwargs()
+        kwargs.update({'batch': self.kwargs.get('batch')})
+        return kwargs
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.save()
+        return HttpResponseRedirect(reverse_lazy('start_new_stage_in_work_complete'))
 
 
 class AllBatchDetailInPlanView(ListView):
