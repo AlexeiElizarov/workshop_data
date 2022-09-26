@@ -9,15 +9,16 @@
         <td></td>
         <td></td>
         <td></td>
+        <td></td>
     </tr>
     {% endifchanged %}
     <tr class="{% if batch.sos == True %}table-danger
                {% else %}{% endif %}">
         <th scope="row">{{ forloop.counter }}</th>
-
         <td></td>
+        <td>{{ batch.id }}</td>
         <td><a href="">{{ batch.detail.detail }}</a></td>
-        <td><a href="">{{ batch.quantity_in_batch }}</a></td>
+        <td><a href="{% url 'all_stage_this_batch' id=batch.id %}">{{ batch.quantity_in_batch }}</a></td>
         <td><a href="">{{ batch.sos }}</a></td>
         <td><a href="">{{ batch.comment.body }}</a></td>
 

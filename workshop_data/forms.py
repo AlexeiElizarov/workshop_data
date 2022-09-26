@@ -165,7 +165,16 @@ class CreateNewStageManufacturingInWorkForm(forms.ModelForm):
         self.fields['batch'].initial = batch_id
 
     def clean(self):
+        print(self.cleaned_data)
+        batch = self.cleaned_data.get('batch')
+        stage_in_batch = self.cleaned_data.get('stage_in_batch')
+        print(type(batch))
+        print(type(stage_in_batch))
         comment = self.cleaned_data.pop('comment_in_batch')
         new_comment = Comment.objects.create(body=comment)
         self.cleaned_data.update({'comment_in_batch': new_comment})
+        if StageManufacturingDetailInWork.objects.filter(batch_id=batch.id, stage_in_batch_id=stage_in_batch.id).exists():
+            raise forms.ValidationError(f"Этап {stage_in_batch} в Партии {batch} уже есть!")
+
+
 

@@ -1,0 +1,21 @@
+<table class="table table-primary">
+    <thead>
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col">Партия</th>
+        <th scope="col">Работник</th>
+        <th scope="col">Этап</th>
+        <th scope="col">Начало работы</th>
+        <th scope="col">В работе</th>
+        <th scope="col">Время работы</th>
+        <th scope="col">Комментарий</th>
+        <th scope="col"></th>
+    </tr>
+    </thead>
+
+    {% block stage_batch_in_work %}
+        {% for stage in stages %}
+            {% include 'workshop_data/master/stage_in_work/includes/table_body_all_stage_batch_in_workr.html' %}
+        {% endfor %}
+    {% endblock stage_batch_in_work %}
+</table>

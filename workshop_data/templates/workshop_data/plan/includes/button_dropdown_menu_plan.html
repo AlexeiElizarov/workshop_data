@@ -5,11 +5,16 @@
     <ul class="dropdown-menu">
         <li>
             <a class="dropdown-item"
-               href="{% url 'create_new_batch' product %}">
+               href="{% url 'create_new_batch' object %}">
                 Новая партия
             </a>
         </li>
-        <li><a class="dropdown-item" href="">Удалить</a></li>
+        <li>
+            <a class="dropdown-item"
+               href="{% url 'delete_object_from_workshopplan' year=current_year month=current_month object=object %}">
+                Удалить
+            </a>
+        </li>
 <!--        <li><a class="dropdown-item" >Something else here</a></li>-->
     </ul>
 </div>

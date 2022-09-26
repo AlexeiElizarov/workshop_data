@@ -15,7 +15,6 @@ from django.db.models import Q
 from .filters import *
 
 
-
 def sum_parametrs(list_objects):
     '''Считает сумму зарплаты списка нарядов '''
     lst = []
@@ -27,6 +26,7 @@ def sum_parametrs(list_objects):
 
 class WorkerAutocomplete(autocomplete.Select2QuerySetView):
     '''Реализует поле автоподсказки Рабочего по вводимыи символам'''
+
     def get_queryset(self):
         if not self.request.user.is_authenticated:
             return User.objects.none()
@@ -38,6 +38,7 @@ class WorkerAutocomplete(autocomplete.Select2QuerySetView):
 
 class ProductAutocomplete(autocomplete.Select2QuerySetView):
     '''Реализует поле автоподсказки Изделий по вводимыи символам'''
+
     def get_queryset(self):
         if not self.request.user.is_authenticated:
             return Product.objects.none()
@@ -49,6 +50,7 @@ class ProductAutocomplete(autocomplete.Select2QuerySetView):
 
 class DetailAutocomplete(autocomplete.Select2QuerySetView):
     '''Реализует поле автоподсказки Деталей по вводимыи символам'''
+
     def get_queryset(self):
         if not self.request.user.is_authenticated:
             return Detail.objects.none()
@@ -60,6 +62,7 @@ class DetailAutocomplete(autocomplete.Select2QuerySetView):
 
 class CategoryDetailAutocomplete(autocomplete.Select2QuerySetView):
     '''Реализует поле автоподсказки Категории Деталей по вводимыи символам'''
+
     def get_queryset(self):
         if not self.request.user.is_authenticated:
             return CategoryDetail.objects.none()
@@ -113,13 +116,13 @@ class OrderUserParametrListView(LoginRequiredMixin, ListView):
             context['salary'] = sum_parametrs(context['orders'])
             context['month'] = context['orders'][0]
         elif 'product' in self.kwargs:
-            context['orders'] = Order.objects.filter(surname_id=user_id).\
+            context['orders'] = Order.objects.filter(surname_id=user_id). \
                 filter(product_id=Product.objects.get(name=self.kwargs['product']))
         elif 'detail' in self.kwargs:
-            context['orders'] = Order.objects.filter(surname_id=user_id).\
+            context['orders'] = Order.objects.filter(surname_id=user_id). \
                 filter(detail_id=Detail.objects.get(name=self.kwargs['detail']))
         elif 'category' in self.kwargs:
-            context['orders'] = Order.objects.filter(surname_id=user_id).\
+            context['orders'] = Order.objects.filter(surname_id=user_id). \
                 filter(detail__category__name=self.kwargs['category'])
         else:
             context['orders'] = Order.objects.filter(surname_id=user_id)
@@ -130,6 +133,7 @@ class OrderUserEditView(LoginRequiredMixin, UpdateView):
     '''Редактирование наряда'''
     template_name = 'workshop_data/worker/order_user_create_view.html'
     form_class = OrderForm
+
     # success_url = reverse_lazy('orders_user_list_all') # FIXME    + git
 
     def get_success_url(self, **kwargs):
@@ -244,7 +248,7 @@ class AddStageInDeatailVeiw(CreateView):
     template_name = 'workshop_data/detail/stage/add_stage_in_detail.html'
     success_url = reverse_lazy('add_stage_in_detail_complite')
 
-# чтобы передать pk в форму
+    # чтобы передать pk в форму
     def get_form_kwargs(self):
         kwargs = super(AddStageInDeatailVeiw, self).get_form_kwargs()
         kwargs.update({'pk': self.kwargs.get('pk')})
@@ -276,20 +280,26 @@ class EditStageInDetailView(UpdateView):
 def product_create_complite(request):
     return render(request, 'workshop_data/worker/product_create_complite.html')
 
+
 def detaile_create_complite(request):
     return render(request, 'workshop_data/detail/detail_create_complite.html')
+
 
 def product_add_detail_complite(request):
     return render(request, 'workshop_data/product/product_add_detail_complite.html')
 
+
 def product_add_in_plan_complite(request):
     return render(request, 'workshop_data/plan/product_add_in_plan.html')
+
 
 def add_stage_in_detail_complite(request):
     return render(request, 'workshop_data/detail/stage/add_stage_in_detail_complite.html')
 
+
 def new_batch_complite(request):
     return render(request, 'workshop_data/master/batch/new_batch_create_complite.html')
+
 
 def start_new_stage_in_work_complite(request):
     return render(request, 'workshop_data/master/stage_in_work/start_new_stage_in_work_complete.html')
@@ -318,9 +328,10 @@ class WorkerListView(LoginRequiredMixin, ListView):
 
 
 class WorkerOrdersListForMaster(ListView):
+    '''Показывает все наряды всех работников'''
     model = Order
     login_url = '/login/'
-    template_name = 'workshop_data/worker/orders_user_parametr_list.html' # шаблон из OrderUserParametrListView
+    template_name = 'workshop_data/worker/orders_user_parametr_list.html'  # шаблон из OrderUserParametrListView
     context_object_name = 'orders'
 
     def get_context_data(self, *args, **kwargs):
@@ -377,6 +388,26 @@ class CreateBatchDetailInPlan(CreateView):
         return HttpResponseRedirect(reverse_lazy('product_add_plan_complite'))
 
 
+class StageManufacturingDetailInWorkInPlanView(DetailView):
+    '''Все Этапы производства определенной Партии'''
+    model = StageManufacturingDetailInWork
+    template_name = 'workshop_data/master/stage_in_work/all_stage_batch_in_work.html'
+
+    def get_object(self, **kwargs):
+        id = self.kwargs.get('id')
+        return id
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context['stages'] = StageManufacturingDetailInWork.objects.filter(batch_id=self.kwargs.get('id'))
+        context['batch_id'] = self.kwargs.get('id')
+        return context
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.save()
+
+
 class StageManufacturingDetailInWorkView(CreateView):
     '''Запуска в производство определенного Этапа изготовления Партии Детали'''
     model = StageManufacturingDetailInWork
@@ -420,28 +451,48 @@ class AllBatchDetailInPlanView(ListView):
         return context
 
 
+class DeleteBatchDetailInPlanView(DeleteView):
+    '''Удаляет Партию'''
+    model = BatchDetailInPlan
+    template_name = 'workshop_data/master/batch/batch_delete.html'
+    success_url = reverse_lazy('all_batch_in_plan')
+
+    # def get_success_url(self, **kwargs):
+    #     return reverse("orders_user_list_all", kwargs={'username': self.kwargs['username']})
+
+    def get_object(self, queryset=None):
+        id = self.kwargs.get('id')
+        return BatchDetailInPlan.objects.get(pk=id)
+
+    def form_valid(self, form):
+        print('****delete****')
+        workshopplan_object = WorkshopPlan.objects.get(batchdetailinplan=self.kwargs.get('id'))
+        batch = BatchDetailInPlan.objects.get(id=self.kwargs.get('id'))
+        workshopplan_object.in_work -= batch.quantity_in_batch
+        workshopplan_object.save()
+        return super(DeleteBatchDetailInPlanView, self).form_valid(self)
+
+
 class AllBatchDetailProductInPlan(DetailView):
     '''Отображает все Партии определённой Детали определённого Изделия'''
     model = BatchDetailInPlan
     template_name = 'workshop_data/master/batch/all_batch_detail_in_plan.html'
     context_object_name = 'batchs_in_plan'
 
-    def get_object(self, **kwargs): #FIXME можно ли как то по-другому найти obj?
+    def get_object(self, **kwargs):  # FIXME можно ли как то по-другому найти obj?
         name = self.kwargs.get('object')
         product = name.split('_')[0]
         detail = name.split('_')[1]
         obj = WorkshopPlan.objects.get(product__name=product, detail__name=detail)
-        return obj.id
+        return obj
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
-        context['batchs_in_plan'] = BatchDetailInPlan.objects.filter(detail=self.get_object())
+        context['batchs_in_plan'] = BatchDetailInPlan.objects.filter(detail=self.get_object().id)
         return context
 
 
-
 #######################    WorkshopPlan   ######################
-
 
 
 class WorkshopPlanView(ListView):
@@ -469,3 +520,18 @@ class WorkshopPlanCreateView(CreateView):
         return super().form_valid(form)
 
 
+class WorkshopPlanDeleteView(DeleteView):
+    '''Удаление Детали из Плана'''
+    model = WorkshopPlan
+    template_name = 'workshop_data/plan/delete_object_from_workshopplan.html'
+    success_url = reverse_lazy('plan', kwargs={'month': datetime.datetime.now().strftime('%b'),
+                                               'year': datetime.datetime.now().strftime('%Y')})
+
+    def get_object(self, queryset=None):
+        dt = datetime.datetime.now()
+        print(datetime.datetime.now().strftime('%b'))
+        object = self.kwargs.pop('object')
+        product = object.split('_')[0]
+        detail = object.split('_')[1]
+        obj = WorkshopPlan.objects.get(product__name=product, detail__name=detail)
+        return obj

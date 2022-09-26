@@ -1,8 +1,8 @@
 <tbody>
-    {% ifchanged product.product %}
+    {% ifchanged object.product %}
     <tr class="table-light">
         <td></td>
-        <td>    <h5>{{ product.product }}</h5></td>
+        <td>    <h5>{{ object.product }}</h5></td>
         <td></td>
         <td></td>
         <td></td>
@@ -10,14 +10,14 @@
         <td></td>
     </tr>
     {% endifchanged %}
-    <tr class="{% if product.sos == True %}table-danger
+    <tr class="{% if object.sos == True %}table-danger
                {% else %}{% endif %}">
         <th scope="row">{{ forloop.counter }}</th>
         <td></td>
-        <td><a href="">{{ product.detail }}</a></td>
-        <td><a href="">{{ product.quantity }}</a></td>
-        <td><a href="{% url 'batchs_in_plan' product %}">{{ product.in_work }}</a></td>
-        <td><a href="">{{ product.sos }}</a></td>
+        <td><a href="">{{ object.detail }}</a></td>
+        <td><a href="">{{ object.quantity }}</a></td>
+        <td><a href="{% url 'batchs_in_plan' object %}">{{ object.in_work }}</a></td>
+        <td><a href="">{{ object.sos }}</a></td>
         <td>
             {% include 'workshop_data/plan/includes/button_dropdown_menu_plan.html' %}
         </td>
