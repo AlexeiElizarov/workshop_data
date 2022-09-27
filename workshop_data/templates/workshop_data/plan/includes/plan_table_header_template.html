@@ -12,11 +12,9 @@
     </thead>
 
     {% block data_plan %}
-
         {% for object in filter.qs %}
-
             {% include 'workshop_data/plan/includes/plan_table_body_template.html' %}
         {% endfor %}
-
     {% endblock data_plan %}
+
 </table>

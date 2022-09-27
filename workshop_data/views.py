@@ -255,11 +255,19 @@ class AddStageInDeatailVeiw(CreateView):
         return kwargs
 
 
-class StageInDetailView(ListView):
+class StageInDetailView(DetailView):
     '''Просмотр всех Этапов производства Детали'''
     model = StageManufacturingDetail
     template_name = 'workshop_data/detail/stage/stage_in_detail_all.html'
     context_object_name = 'stages'
+
+    def get_object(self, queryset=None):
+        return StageManufacturingDetail.objects.filter(detail_id=self.kwargs.get('pk'))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['stages'] = self.get_object()
+        return context
 
 
 class EditStageInDetailView(UpdateView):
@@ -415,13 +423,12 @@ class StageManufacturingDetailInWorkView(CreateView):
     template_name = 'workshop_data/master/stage_in_work/start_new_stage_in_work.html'
     success_url = reverse_lazy('start_new_stage_in_work_complete')
 
-    # def get_object(self, queryset=None):
-    #     print('*****get_object*******')
-    #     print(self.kwargs)
-    #     batch_id = self.kwargs.pop('batch')
-    #     obj = BatchDetailInPlan.objects.get(id=batch_id)
-    #     return obj
-    #
+    def get_object(self, queryset=None):
+        # print('*****get_object*******')
+        batch_id = self.kwargs.get('batch')
+        obj = BatchDetailInPlan.objects.get(id=batch_id)
+        return obj
+
     # def get_context_data(self, **kwargs):
     #     print('*****get_context_data*******')
     #     context = super().get_context_data(**kwargs)
@@ -429,8 +436,13 @@ class StageManufacturingDetailInWorkView(CreateView):
     #     return context
 
     def get_form_kwargs(self):
+        print(StageManufacturingDetail.objects.filter(detail_id=self.get_object().detail.detail_id))
         kwargs = super(StageManufacturingDetailInWorkView, self).get_form_kwargs()
         kwargs.update({'batch': self.kwargs.get('batch')})
+        kwargs.update(
+            {'stages': StageManufacturingDetail.objects.filter(
+                detail_id=self.get_object().detail.detail_id)}
+        )
         return kwargs
 
     def form_valid(self, form):
