@@ -121,6 +121,13 @@ class WorkshopPlanCreateForm(forms.ModelForm):
         return self.cleaned_data
 
 
+class EditWorkshopPlanForm(forms.ModelForm):
+    '''Отображает форму редактирования Детали в Плане'''
+    class Meta:
+        model = WorkshopPlan
+        fields = '__all__'
+
+
 class CreateBatchDetailInPlanForm(forms.ModelForm):
     '''Отображает форму создания новой Партии Деталей'''
     comment = forms.CharField(widget=forms.Textarea)
@@ -157,7 +164,7 @@ class CreateNewStageManufacturingInWorkForm(forms.ModelForm):
     comment_in_batch = forms.CharField(widget=forms.Textarea)
     class Meta:
         model = StageManufacturingDetailInWork
-        fields = '__all__'
+        fields = ('batch', 'stage_in_batch', 'worker', 'in_work', 'time_of_work', 'comment_in_batch')
 
     def __init__(self, *args, **kwargs):
         batch_id = kwargs.pop('batch')
@@ -168,11 +175,8 @@ class CreateNewStageManufacturingInWorkForm(forms.ModelForm):
                 queryset=stages)
 
     def clean(self):
-        print(self.cleaned_data)
         batch = self.cleaned_data.get('batch')
         stage_in_batch = self.cleaned_data.get('stage_in_batch')
-        print(type(batch))
-        print(type(stage_in_batch))
         comment = self.cleaned_data.pop('comment_in_batch')
         new_comment = Comment.objects.create(body=comment)
         self.cleaned_data.update({'comment_in_batch': new_comment})

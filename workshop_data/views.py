@@ -1,3 +1,4 @@
+import datetime
 from typing import Any
 
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -108,7 +109,6 @@ class OrderUserParametrListView(LoginRequiredMixin, ListView):
     template_name = 'workshop_data/worker/orders_user_parametr_list.html'
 
     def get_context_data(self, *args, **kwargs):
-        print(self.request.user)
         user_id = User.objects.get(username=self.request.user.username).id
         context = super().get_context_data(**kwargs)
         if 'month' in self.kwargs:
@@ -331,7 +331,6 @@ class WorkerListView(LoginRequiredMixin, ListView):
             context['workers'] = User.objects.filter(position='TRN')
         else:
             context['workers'] = User.objects.filter(~Q(position='MSR'))
-        print(self.kwargs)
         return context
 
 
@@ -344,14 +343,11 @@ class WorkerOrdersListForMaster(ListView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
-        print(self.kwargs)
         if 'surname' in self.kwargs and 'month' not in self.kwargs:
-            print('****surname')
             context['orders'] = Order.objects.filter(
                 surname_id=User.objects.filter(
                     surname=self.kwargs['surname'], name=self.kwargs['name'])[0].id)
         elif 'month' in self.kwargs:
-            print('****month')
             context['orders'] = Order.objects.filter(
                 surname_id=User.objects.filter(
                     surname=self.kwargs['surname'], name=self.kwargs['name'])[0].id).filter(
@@ -424,7 +420,6 @@ class StageManufacturingDetailInWorkView(CreateView):
     success_url = reverse_lazy('start_new_stage_in_work_complete')
 
     def get_object(self, queryset=None):
-        # print('*****get_object*******')
         batch_id = self.kwargs.get('batch')
         obj = BatchDetailInPlan.objects.get(id=batch_id)
         return obj
@@ -436,7 +431,6 @@ class StageManufacturingDetailInWorkView(CreateView):
     #     return context
 
     def get_form_kwargs(self):
-        print(StageManufacturingDetail.objects.filter(detail_id=self.get_object().detail.detail_id))
         kwargs = super(StageManufacturingDetailInWorkView, self).get_form_kwargs()
         kwargs.update({'batch': self.kwargs.get('batch')})
         kwargs.update(
@@ -447,6 +441,19 @@ class StageManufacturingDetailInWorkView(CreateView):
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
+        order_object = Order(
+            date=datetime.datetime.now(),
+            month=self.object.batch.detail.month,
+            surname=self.object.worker,
+            employee_number=self.object.worker.employee_number,
+            product=self.object.batch.detail.product,
+            detail=self.object.batch.detail.detail,
+            operations=self.object.stage_in_batch,
+            quantity=self.object.batch.quantity_in_batch,
+            normalized_time=self.object.stage_in_batch.normalized_time,
+            price=self.object.stage_in_batch.price
+        )
+        order_object.save()
         self.object.save()
         return HttpResponseRedirect(reverse_lazy('start_new_stage_in_work_complete'))
 
@@ -477,7 +484,6 @@ class DeleteBatchDetailInPlanView(DeleteView):
         return BatchDetailInPlan.objects.get(pk=id)
 
     def form_valid(self, form):
-        print('****delete****')
         workshopplan_object = WorkshopPlan.objects.get(batchdetailinplan=self.kwargs.get('id'))
         batch = BatchDetailInPlan.objects.get(id=self.kwargs.get('id'))
         workshopplan_object.in_work -= batch.quantity_in_batch
@@ -501,6 +507,8 @@ class AllBatchDetailProductInPlan(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
         context['batchs_in_plan'] = BatchDetailInPlan.objects.filter(detail=self.get_object().id)
+        context['object'] = self.get_object()
+        # context['stages_in_batch'] = StageManufacturingDetailInWork.objects.
         return context
 
 
@@ -521,7 +529,7 @@ class WorkshopPlanView(ListView):
 
 
 class WorkshopPlanCreateView(CreateView):
-    '''Отображает страницу создания нового Плана'''
+    '''Отображает страницу создания новой Детали в Плане'''
     model = WorkshopPlan
     form_class = WorkshopPlanCreateForm
     template_name = 'workshop_data/plan/plan_create.html'
@@ -541,9 +549,24 @@ class WorkshopPlanDeleteView(DeleteView):
 
     def get_object(self, queryset=None):
         dt = datetime.datetime.now()
-        print(datetime.datetime.now().strftime('%b'))
         object = self.kwargs.pop('object')
         product = object.split('_')[0]
         detail = object.split('_')[1]
         obj = WorkshopPlan.objects.get(product__name=product, detail__name=detail)
         return obj
+
+
+class WorkshopPlanUpdateView(UpdateView):
+    '''Изменение Детали в Плане'''
+    model = WorkshopPlan
+    form_class = EditWorkshopPlanForm
+    template_name = 'workshop_data/plan/plan_edit_detail.html'
+    success_url = reverse_lazy('product_add_detail_complite') #FIXME
+
+    def get_object(self, **kwargs):
+        object = self.kwargs.get('object')
+        product = object.split('_')[0]
+        detail = object.split('_')[1]
+        obj = WorkshopPlan.objects.get(product__name=product, detail__name=detail)
+        return obj
+

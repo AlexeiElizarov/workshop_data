@@ -15,7 +15,10 @@
         <th scope="row">{{ forloop.counter }}</th>
         <td></td>
         <td><a href="">{{ object.detail }}</a></td>
-        <td><a href="">{{ object.quantity }}</a></td>
+        <td>
+            <a href="">{{ object.get_quantity }}</a> -
+            <a href="">{{ object.quantity_state_order }}/{{ object.quantity_commercial_order }}</a>
+        </td>
         <td><a href="{% url 'batchs_in_plan' object %}">{{ object.in_work }}</a></td>
         <td><a href="">{{ object.sos }}</a></td>
         <td>

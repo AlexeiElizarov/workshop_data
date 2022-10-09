@@ -45,8 +45,10 @@ class WorkshopPlan(models.Model):
 
     product = models.ForeignKey("Product", on_delete=models.PROTECT, verbose_name='_Изделие_')
     detail = models.ForeignKey("Detail", on_delete=models.PROTECT)
-    # batch = models.ForeignKey("BatchDetailInPlan", on_delete=models.SET_NULL, verbose_name='_Партия_', null=True)
-    quantity = models.PositiveSmallIntegerField(default=0, verbose_name='Колличество')
+    # quantity = models.PositiveSmallIntegerField(default=0, verbose_name='Колличество')
+    quantity_state_order = models.PositiveSmallIntegerField(default=0, verbose_name='Госзаказ')
+    quantity_commercial_order = models.PositiveSmallIntegerField(default=0, verbose_name='Коммерция')
+
     in_work = models.PositiveSmallIntegerField(default=0, verbose_name='Колличество в работе')
     month = models.PositiveSmallIntegerField(choices=Month.choices, default=Month.NOT_SPECIFIED, verbose_name='_Месяц_')
     sos = models.BooleanField(default=False)
@@ -59,11 +61,14 @@ class WorkshopPlan(models.Model):
     def get_product(self):
         return f'{self.product} {self.detail}'
 
+    def get_quantity(self):
+        quantity = self.quantity_state_order + self.quantity_commercial_order
+        return quantity
+
 
 class Comment(models.Model):
     '''Класс описывает Комментарий'''
     body = models.TextField()
-
 
 
 class Order(models.Model):
@@ -77,7 +82,7 @@ class Order(models.Model):
     product = models.ForeignKey('Product', on_delete=models.PROTECT, verbose_name='Изделие')
     detail = models.ForeignKey('Detail', on_delete=models.PROTECT, verbose_name='Деталь')
     operations = models.TextField(verbose_name='Операции')
-    quantity = models.PositiveSmallIntegerField(default=0, blank=False, verbose_name='Колличесво')
+    quantity = models.PositiveSmallIntegerField(default=0, blank=False, verbose_name='Количество')
     normalized_time = models.FloatField(default=0, blank=False, verbose_name='Нормированное время')
     price = models.FloatField(default=0, blank=False, verbose_name='Расценка')
 
@@ -158,8 +163,6 @@ class StageManufacturingDetail(models.Model):
 class BatchDetailInPlan(models.Model):
     '''Класс описывает партию Деталей'''
     detail = models.ForeignKey("WorkshopPlan", on_delete=models.SET_NULL, null=True)
-    # stage = models.ForeignKey("StageManufacturingDetailInWork",
-    #                           on_delete=models.CASCADE)
     quantity_in_batch = models.SmallIntegerField(default=0, verbose_name="Колличество в партии")
     sos = models.BooleanField(default=False)
     comment = models.ForeignKey("Comment",
@@ -177,7 +180,8 @@ class StageManufacturingDetailInWork(models.Model):
         "BatchDetailInPlan",
         on_delete=models.SET_NULL,
         null=True,
-        verbose_name='Партия')
+        verbose_name='Партия',
+        related_name='stages')
     worker = models.ForeignKey\
         (User,
          on_delete=models.SET_NULL,

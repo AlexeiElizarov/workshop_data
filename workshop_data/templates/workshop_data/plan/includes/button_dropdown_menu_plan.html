@@ -5,6 +5,12 @@
     <ul class="dropdown-menu">
         <li>
             <a class="dropdown-item"
+               href="{% url 'update_object_from_workshopplan' current_year current_month object %}">
+                Редактировать
+            </a>
+        </li>
+        <li>
+            <a class="dropdown-item"
                href="{% url 'create_new_batch' object %}">
                 Новая партия
             </a>
