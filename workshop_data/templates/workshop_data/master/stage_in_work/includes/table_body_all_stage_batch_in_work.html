@@ -1,0 +1,17 @@
+<tbody>
+    <tr class="{% if batch.sos == True %}table-danger
+               {% else %}{% endif %}">
+        <th scope="row">{{ forloop.counter }}</th>
+
+        <td><a href="">{{ batch_id }}</a></td>
+        <td><a href="">{{ stage_in_work.worker }}</a></td>
+        <td><a href="">{{ stage_in_work.stage_in_batch }}</a></td>
+        <td><a href="">{{ stage_in_work.start_of_work }}</a></td>
+        <td><a href="">{{ stage_in_work.in_work }}</a></td>
+        <td><a href="">{{ stage_in_work.time_of_work }}</a></td>
+        <td><a href="">{{ stage_in_work.comment_in_batch.body }}</a></td>
+        <td>
+
+        </td>
+    </tr>
+</tbody>

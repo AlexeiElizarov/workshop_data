@@ -147,7 +147,8 @@ class Detail(models.Model):
 
 class StageManufacturingDetail(models.Model):
     '''Описывает этапы изготовления Детали(технология)'''
-    detail = models.ForeignKey('Detail', on_delete=models.PROTECT, verbose_name="Деталь")
+    detail = models.ForeignKey('Detail', on_delete=models.PROTECT,
+                               verbose_name="Деталь", related_name='stages')
     order = models.PositiveSmallIntegerField(verbose_name="Порядок")
     name = models.CharField(max_length=3,
                             choices=StageName.choices,
@@ -162,7 +163,8 @@ class StageManufacturingDetail(models.Model):
 
 class BatchDetailInPlan(models.Model):
     '''Класс описывает партию Деталей'''
-    detail = models.ForeignKey("WorkshopPlan", on_delete=models.SET_NULL, null=True)
+    workshopplan_detail = models.ForeignKey("WorkshopPlan", on_delete=models.SET_NULL,
+                                            null=True, related_name='batchs')
     quantity_in_batch = models.SmallIntegerField(default=0, verbose_name="Колличество в партии")
     ready = models.BooleanField(default=False)
     sos = models.BooleanField(default=False)
@@ -208,11 +210,5 @@ class CategoryDetail(models.Model):
     '''Класс описывает Категорию Детали'''
     name = models.CharField(max_length=50, unique=True, blank=False)
 
-
-
     def __str__(self):
         return f'{self.name}'
-
-
-
-

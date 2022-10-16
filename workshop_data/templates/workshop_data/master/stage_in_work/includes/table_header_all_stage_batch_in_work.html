@@ -13,8 +13,21 @@
     </tr>
     </thead>
     {% block stage_batch_in_work %}
-        {% for stage in stages %}
-            {% include 'workshop_data/master/stage_in_work/includes/table_body_all_stage_batch_in_workr.html' %}
+        {% for stage_in_work in stages_in_work %}
+            {% include 'workshop_data/master/stage_in_work/includes/table_body_all_stage_batch_in_work.html' %}
         {% endfor %}
     {% endblock stage_batch_in_work %}
+
+    <td><h4>Оставшеся Этапы</h4></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+{% for stage in stages %}
+    {% include 'workshop_data/master/stage_in_work/includes/table_body_all_stage.html' %}
+{% endfor %}
 </table>

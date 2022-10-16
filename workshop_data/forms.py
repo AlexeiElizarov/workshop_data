@@ -133,7 +133,7 @@ class CreateBatchDetailInPlanForm(forms.ModelForm):
     comment = forms.CharField(widget=forms.Textarea)
     class Meta:
         model = BatchDetailInPlan
-        fields = ['detail', 'quantity_in_batch', 'sos', 'comment']
+        fields = ['workshopplan_detail', 'quantity_in_batch', 'sos', 'comment']
 
     def __init__(self, *args, **kwargs):
         name = kwargs.pop('object')

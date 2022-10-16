@@ -87,7 +87,7 @@ class AllBatchDetailProductInPlan(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
-        context['batchs_in_plan'] = BatchDetailInPlan.objects.filter(detail=self.get_object().id)
+        context['batchs_in_plan'] = BatchDetailInPlan.objects.filter(workshopplan_detail=self.get_object().id)
         context['object'] = self.get_object()
         # context['stages_in_batch'] = StageManufacturingDetailInWork.objects.
         return context

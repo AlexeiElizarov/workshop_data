@@ -18,8 +18,15 @@ class StageManufacturingDetailInWorkInPlanView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
-        context['stages'] = StageManufacturingDetailInWork.objects.filter(batch_id=self.kwargs.get('id'))
+        stages_in_work = StageManufacturingDetailInWork.objects.filter(batch_id=self.kwargs.get('id'))
+        context['stages_in_work'] = stages_in_work
         context['batch_id'] = self.kwargs.get('id')
+        stages = StageManufacturingDetailInWork.objects.\
+            filter(batch_id=self.get_object())[0].batch.workshopplan_detail.detail.stages.all()
+        not_work_stages = []
+        for i in range(len(stages_in_work), len(stages)):
+            not_work_stages.append(stages[i])
+        context['stages'] = not_work_stages
         return context
 
     def form_valid(self, form):
@@ -44,7 +51,7 @@ class StageManufacturingDetailInWorkView(CreateView):
         kwargs.update({'batch': self.kwargs.get('batch')})
         kwargs.update(
             {'stages': StageManufacturingDetail.objects.filter(
-                detail_id=self.get_object().detail.detail_id)}
+                detail_id=self.get_object().workshopplan_detail.detail_id)}
         )
         return kwargs
 
@@ -52,11 +59,11 @@ class StageManufacturingDetailInWorkView(CreateView):
         self.object = form.save(commit=False)
         order_object = Order(
             date=datetime.datetime.now(),
-            month=self.object.batch.detail.month,
+            month=self.object.batch.workshopplan_detail.month,
             surname=self.object.worker,
             employee_number=self.object.worker.employee_number,
-            product=self.object.batch.detail.product,
-            detail=self.object.batch.detail.detail,
+            product=self.object.batch.workshopplan_detail.product,
+            detail=self.object.batch.workshopplan_detail.detail,
             operations=self.object.stage_in_batch,
             quantity=self.object.batch.quantity_in_batch,
             normalized_time=self.object.stage_in_batch.normalized_time,
