@@ -15,7 +15,7 @@
     </tr>
     {% endifchanged %}
     <tr class="{% if batch.sos == True %}table-danger
-               {% else %}{% endif %}">
+               {% elif batch.ready == True %}table-success{% endif %}">
         <th scope="row">{{ forloop.counter }}</th>
         <td></td>
         <td>{{ batch.id }}</td>

@@ -1,8 +1,21 @@
 from django.urls import path
-from django.contrib.auth.views import LoginView, LogoutView
-from .views import *
+from .services import *
+from .views.order_views import OrderUserCreateView
+from .views.services_view import *
+from .views.stage_views import *
+from .views.complite_view import *
+from .views.detail_view import DetailCreateView, DetailAllView
+from .views.product_view import ProductDataView, ProductAddDetailView, ProductAllView, ProductCreateView
+from .views.order_views import OrderUserParametrListView, OrderUserEditView, OrderDeleteView
+from .views.master_views import WorkerListView, WorkerOrdersListForMaster
+from .views.batch_views import \
+    CreateBatchDetailInPlan, \
+    AllBatchDetailInPlanView, \
+    DeleteBatchDetailInPlanView, \
+    AllBatchDetailProductInPlan
+from .views.workshopplan_views import WorkshopPlanCreateView, WorkshopPlanView, \
+    WorkshopPlanDeleteView, WorkshopPlanUpdateView
 
-from .views import *
 urlpatterns = [
     path('data_autocomplete_product/', ProductAutocomplete.as_view(), name='data_autocomplete_product'),
     path('data_autocomplete_detail/', DetailAutocomplete.as_view(), name='data_autocomplete_detail'),
@@ -54,4 +67,8 @@ urlpatterns = [
     path('plan/<year>-<month>/', WorkshopPlanView.as_view(), name='plan'),
     path('plan/<year>-<month>/delete-<object>/', WorkshopPlanDeleteView.as_view(), name='delete_object_from_workshopplan'),
     path('plan/<year>-<month>/update-<object>/', WorkshopPlanUpdateView.as_view(), name='update_object_from_workshopplan'),
+
+    path('plan/<year>-<month>/batch-<id>/ready/', batch_ready, name='batch_ready_in_plan'),
+    path('plan/<year>-<month>/batch-<id>/ready_cancel/', batch_cancel_ready, name='batch_cancel_ready_in_plan'),
+    path('plan/<year>-<month>/batch-<id>/ready_complite/', batch_ready_comlite, name='batch_ready_comlite'),
 ]

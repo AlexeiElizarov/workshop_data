@@ -35,7 +35,7 @@
                         {% if request.user.is_authenticated %}
                             {% now "Y" as current_year %}
                             {% now "M" as current_month %}
-                            {% if request.user.position == 'MSR' %}
+                            {% if request.user.position in 'MSR' or  request.user.position == 'EPB'%}
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle" href="" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         План

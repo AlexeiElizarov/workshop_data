@@ -3,13 +3,33 @@
         Инструменты
     </button>
     <ul class="dropdown-menu">
-        <li>
-            <a class="dropdown-item"
-               href="{% url 'start_new_stage_in_work' batch.id %}">
-                В работу
-            </a>
-        </li>
-        <li><a class="dropdown-item" href="{% url 'delete_batch' id=batch.id%}">Удалить</a></li>
+        {% if request.user.position == 'EPB' %}
+            {% if batch.ready == False %}
+                <li>
+                    <a class="dropdown-item"
+                       href="{% url 'batch_ready_in_plan' current_year current_month batch.id %}">
+                        Сдача детали
+                    </a>
+                </li>
+            {% else %}
+                <li>
+                    <a class="dropdown-item"
+                       href="{% url 'batch_cancel_ready_in_plan' current_year current_month batch.id %}">
+                        Отмена сдачи
+                    </a>
+                </li>
+            {% endif %}
+
+        {% endif %}
+        {% if request.user.position == 'MSR' %}
+            <li>
+                <a class="dropdown-item"
+                   href="{% url 'start_new_stage_in_work' batch.id %}">
+                    В работу
+                </a>
+            </li>
+            <li><a class="dropdown-item" href="{% url 'delete_batch' id=batch.id%}">Удалить</a></li>
+        {% endif %}
 <!--        <li><a class="dropdown-item" >Something else here</a></li>-->
     </ul>
 </div>

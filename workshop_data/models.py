@@ -164,6 +164,7 @@ class BatchDetailInPlan(models.Model):
     '''Класс описывает партию Деталей'''
     detail = models.ForeignKey("WorkshopPlan", on_delete=models.SET_NULL, null=True)
     quantity_in_batch = models.SmallIntegerField(default=0, verbose_name="Колличество в партии")
+    ready = models.BooleanField(default=False)
     sos = models.BooleanField(default=False)
     comment = models.ForeignKey("Comment",
                                 on_delete=models.SET_NULL,

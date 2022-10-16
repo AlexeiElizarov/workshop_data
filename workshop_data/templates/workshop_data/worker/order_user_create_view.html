@@ -11,11 +11,7 @@
         {% csrf_token %}
         {{ form.as_p }}
         {{ form.media }}
-<!--        <div class="order_operations_choices">-->
-<!--        {% for checkbox in form.operations %}-->
-<!--            {{ checkbox.tag }} {{ checkbox.choice_label }}-->
-<!--        {% endfor %}-->
-<!--        </div>-->
+
         <input type="submit" value="Отправить" class="btn btn-primary">
     </form>
 {% endblock content %}

@@ -1,20 +1,18 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-
-
 class User(AbstractUser):
 
     class Gender(models.TextChoices):
-        MAN = 'MN', ('Мужчина')
-        WOMAN = 'WN', ('Женщина')
+        MAN = 'MN', 'Мужчина'
+        WOMAN = 'WN', 'Женщина'
 
     class Position(models.TextChoices):
-        LOCKSMITH = 'LSM', ('Слесарь')
-        TURNER = 'TRN', ('Токарь')
-        MILLER = 'MLR', ('Фрезеровщик')
-        MASTER = 'MSR', ('Мастер')
-
+        LOCKSMITH = 'LSM', 'Слесарь'
+        TURNER = 'TRN', 'Токарь'
+        MILLER = 'MLR', 'Фрезеровщик'
+        MASTER = 'MSR', 'Мастер'
+        ENGINEER_PDB = 'EPB', 'Инженер ПДБ'
 
     id = models.AutoField(auto_created=True, primary_key=True, verbose_name='ID')
     username = models.CharField(max_length=200, blank=False, unique=True)

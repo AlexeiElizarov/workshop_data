@@ -29,8 +29,8 @@ class OrderForm(forms.ModelForm):
             'product': autocomplete.ModelSelect2(url='data_autocomplete_product'),
             'detail': autocomplete.ModelSelect2(url='data_autocomplete_detail'),
             'surname': autocomplete.ModelSelect2(url='data_autocomplete_worker'),
-            'operations': forms.CheckboxSelectMultiple(
-                choices=NUMBERS_OPERATIONS,)
+            # 'operations': forms.ModelChoiceField(
+            #     choices=NUMBERS_OPERATIONS,)
                 # attrs={'class': 'order_operations_choices'})
         }
         # help_texts = {
