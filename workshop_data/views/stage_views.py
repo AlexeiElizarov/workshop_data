@@ -5,6 +5,9 @@ from django.urls import reverse_lazy
 from django.views.generic import DetailView, CreateView, UpdateView
 from ..models import StageManufacturingDetailInWork, StageManufacturingDetail, BatchDetailInPlan, Order
 from ..forms import CreateNewStageManufacturingInWorkForm, EditStageInDetail, AddStageInDeatailForm
+from sign.models import User
+
+from ..services import *
 
 
 class StageManufacturingDetailInWorkInPlanView(DetailView):
@@ -54,6 +57,26 @@ class StageManufacturingDetailInWorkView(CreateView):
                 detail_id=self.get_object().workshopplan_detail.detail_id)}
         )
         return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        print('************')
+        print(kwargs)
+        user = User.objects.get(id=1)
+        wp_obj = self.get_object().workshopplan_detail
+        print(wp_obj)
+        print(self.kwargs)
+        print('*********')
+        # context['quantity_detail'] = \
+        #     get_quantity_detail_by_orders(wp_obj.product, wp_obj.detail)
+        context['workers'] = get_list_all_workers()
+        context['workers_lsm'] = get_list_locksmith()
+        context['workers_trn'] = get_list_turner()
+        context['workers_mlr'] = get_list_miller()
+        context['workers_quantity'] = \
+            get_dict_worker_quantity_detail(wp_obj.product, wp_obj.detail, get_list_all_workers())
+        return context
+
 
     def form_valid(self, form):
         self.object = form.save(commit=False)

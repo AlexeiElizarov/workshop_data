@@ -1,6 +1,7 @@
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
-from .models import BatchDetailInPlan
+from .models import BatchDetailInPlan, Order
+from sign.models import User
 
 
 # def replacing_True_False_flag(request):
@@ -23,4 +24,41 @@ def batch_cancel_ready(request, year, month, id):
     batch.ready = False
     batch.save()
     return HttpResponseRedirect(reverse_lazy('batchs_in_plan', kwargs={'object': batch.detail}))
+
+def get_quantity_detail_by_orders(product, detail, user):
+    '''Получает все наряды определенного работника по определенной детали'''
+    orders = Order.objects.filter(surname=user.id).filter(product_id=product.id).filter(detail_id=detail.id)
+    return orders
+
+def get_list_all_workers():
+    '''Получает список всех работников'''
+    return User.objects.filter(position__in=['LSM', 'TRN', 'MLR'])
+
+def get_list_locksmith():
+    '''Получает список всех слесарей'''
+    return User.objects.filter(position='LSM')
+
+def get_list_turner():
+    '''Получает список всех токарей'''
+    return User.objects.filter(position='TRN')
+
+def get_list_miller():
+    '''Получает список всех фрезеровщиков'''
+    return User.objects.filter(position='MLR')
+
+def get_dict_worker_quantity_detail(product, detial, workers) -> dict:
+    '''Получает колличество определенных деталей у всех работников из списка'''
+    dict_workers_quantity = {}
+    for worker in workers:
+        quantity = 0
+        print('1', dict_workers_quantity)
+        for order in get_quantity_detail_by_orders(product, detial, worker):
+            if worker.surname not in dict_workers_quantity:
+                print('2', dict_workers_quantity)
+                dict_workers_quantity[worker.surname] = order.quantity
+            else:
+                print('3', dict_workers_quantity)
+                dict_workers_quantity[worker.surname] += order.quantity
+    return dict_workers_quantity
+
 

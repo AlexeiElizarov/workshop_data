@@ -5,10 +5,18 @@
 {% endblock title %}
 
 {% block content %}
+    <h5>workshop_data/master/stage_in_work/start_new_stage_in_work.html</h5>
+    <hr>
     <h4>Старт Этапа</h4>
     <form method="POST">
         {% csrf_token %}
         {{ form.as_p }}
         <input type="submit" value="Отправить" class="btn btn-primary">
     </form>
+    {% for detail in quantity_detail %}
+        {{ detail.surname }}
+    {% endfor %}
+<hr>
+    {{ workers }}
+    {{ workers_quantity }}
 {% endblock content %}

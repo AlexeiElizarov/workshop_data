@@ -141,8 +141,8 @@ class CreateBatchDetailInPlanForm(forms.ModelForm):
         detail_id = Detail.objects.get(name=f'{detail}').id
         detail_in_plan = WorkshopPlan.objects.get(detail_id=detail_id)
         super(CreateBatchDetailInPlanForm, self).__init__(*args, **kwargs)
-        self.fields['detail'].label = 'Деталь'
-        self.fields['detail'].initial = detail_in_plan
+        self.fields['workshopplan_detail'].label = 'Деталь'
+        self.fields['workshopplan_detail'].initial = detail_in_plan
         # вот так показывает "LSM", "TRN"...
         # self.fields['stage'].queryset = StageManufacturingDetail.objects.filter(detail_id=detail_id)
 

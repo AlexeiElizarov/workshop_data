@@ -3,6 +3,9 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView, DeleteView, DetailView
 from ..models import BatchDetailInPlan, WorkshopPlan
 from ..forms import CreateBatchDetailInPlanForm
+from ..services import get_quantity_detail_by_orders
+from sign.models import User
+
 
 class CreateBatchDetailInPlan(CreateView):
     '''Запуск в производсто новой партии Деталей'''
@@ -12,7 +15,7 @@ class CreateBatchDetailInPlan(CreateView):
     success_url = reverse_lazy('product_add_plan_complite')
 
     def get_object(self, queryset=None):
-        name = self.kwargs.pop('product')
+        name = self.kwargs.get('product')
         product = name.split('_')[0]
         detail = name.split('_')[1]
         obj = WorkshopPlan.objects.get(product__name=product, detail__name=detail)
@@ -44,7 +47,7 @@ class AllBatchDetailInPlanView(ListView):
     model = BatchDetailInPlan
     template_name = 'workshop_data/master/batch/all_batch_detail_in_plan.html'
     context_object_name = 'batchs_in_plan'
-    ordering = ['detail']
+    ordering = ['workshopplan_detail']
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
