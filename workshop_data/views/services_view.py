@@ -57,3 +57,15 @@ class CategoryDetailAutocomplete(autocomplete.Select2QuerySetView):
         if self.q:
             qs = qs.filter(name__istartswith=self.q)
         return qs
+
+
+class BatchlAutocomplete(autocomplete.Select2QuerySetView):
+    '''Реализует поле автоподсказки ID Партии'''
+
+    def get_queryset(self):
+        if not self.request.user.is_authenticated:
+            return BatchDetailInPlan.objects.none()
+        qs = BatchDetailInPlan.objects.all()
+        if self.q:
+            qs = qs.filter(id__istartswith=self.q)
+        return qs

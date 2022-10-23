@@ -19,7 +19,7 @@
             <a href="">{{ object.get_quantity }}</a> -
             <a href="">{{ object.quantity_state_order }}/{{ object.quantity_commercial_order }}</a>
         </td>
-        <td><a href="{% url 'batchs_in_plan' object %}">{{ object.in_work }}</a></td>
+        <td><a href="{% url 'batchs_in_plan' object %}">{{ object.get_quantity_for_all_batch }}</a></td>
         <td><a href="">{{ object.sos }}</a></td>
         <td>
             {% include 'workshop_data/plan/includes/button_dropdown_menu_plan.html' %}

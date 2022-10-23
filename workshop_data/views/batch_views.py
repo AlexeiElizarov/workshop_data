@@ -1,6 +1,8 @@
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView, DeleteView, DetailView
+
+from ..filters import BatchFilter
 from ..models import BatchDetailInPlan, WorkshopPlan
 from ..forms import CreateBatchDetailInPlanForm
 from ..services import get_quantity_detail_by_orders
@@ -37,7 +39,7 @@ class CreateBatchDetailInPlan(CreateView):
     def form_valid(self, form):
         self.object = form.save(commit=False)
         self.object.save()
-        self.object.workshopplan_detail.in_work += self.object.quantity_in_batch
+        # self.object.workshopplan_detail.in_work += self.object.quantity_in_batch
         self.object.workshopplan_detail.save()
         return HttpResponseRedirect(reverse_lazy('product_add_plan_complite'))
 
@@ -51,6 +53,7 @@ class AllBatchDetailInPlanView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
+        context['filter'] = BatchFilter(self.request.GET, queryset=self.get_queryset())
         return context
 
 
@@ -68,9 +71,9 @@ class DeleteBatchDetailInPlanView(DeleteView):
         return BatchDetailInPlan.objects.get(pk=id)
 
     def form_valid(self, form):
-        workshopplan_object = WorkshopPlan.objects.get(batchdetailinplan=self.kwargs.get('id'))
-        batch = BatchDetailInPlan.objects.get(id=self.kwargs.get('id'))
-        workshopplan_object.in_work -= batch.quantity_in_batch
+        workshopplan_object = WorkshopPlan.objects.get(batchs=self.kwargs.get('id'))
+        batch = self.get_object()
+        # workshopplan_object.in_work -= batch.quantity_in_batch
         workshopplan_object.save()
         return super(DeleteBatchDetailInPlanView, self).form_valid(self)
 
@@ -92,5 +95,4 @@ class AllBatchDetailProductInPlan(DetailView):
         context = super().get_context_data()
         context['batchs_in_plan'] = BatchDetailInPlan.objects.filter(workshopplan_detail=self.get_object().id)
         context['object'] = self.get_object()
-        # context['stages_in_batch'] = StageManufacturingDetailInWork.objects.
         return context

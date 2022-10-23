@@ -65,6 +65,12 @@ class WorkshopPlan(models.Model):
         quantity = self.quantity_state_order + self.quantity_commercial_order
         return quantity
 
+    def get_quantity_for_all_batch(self):
+        '''Возвращает количество деталей во всех партиях self'''
+        obj = BatchDetailInPlan.objects.filter(workshopplan_detail_id=self.id)
+        count = sum([batch.quantity_in_batch for batch in obj])
+        return count
+
 
 class Comment(models.Model):
     '''Класс описывает Комментарий'''
@@ -165,7 +171,7 @@ class BatchDetailInPlan(models.Model):
     '''Класс описывает партию Деталей'''
     workshopplan_detail = models.ForeignKey("WorkshopPlan", on_delete=models.SET_NULL,
                                             null=True, related_name='batchs')
-    quantity_in_batch = models.SmallIntegerField(default=0, verbose_name="Колличество в партии")
+    quantity_in_batch = models.SmallIntegerField(default=0, verbose_name="Количество в партии")
     ready = models.BooleanField(default=False)
     sos = models.BooleanField(default=False)
     comment = models.ForeignKey("Comment",

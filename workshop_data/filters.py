@@ -32,3 +32,14 @@ class WorkshopPlanFilter(FilterSet):
     class Meta:
         model = WorkshopPlan
         fields = ['product']
+
+
+class BatchFilter(FilterSet):
+    '''Фильтр поиска Партии'''
+    id = django_filters.ModelChoiceFilter(
+        queryset=BatchDetailInPlan.objects.all(),
+        widget=autocomplete.Select2(url='data_autocomplete_batch')
+    )
+    class Meta:
+        model = BatchDetailInPlan
+        fields = ['id']
