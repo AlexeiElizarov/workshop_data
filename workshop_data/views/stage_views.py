@@ -60,21 +60,16 @@ class StageManufacturingDetailInWorkView(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
-        print('************')
-        print(kwargs)
-        user = User.objects.get(id=1)
         wp_obj = self.get_object().workshopplan_detail
-        print(wp_obj)
-        print(self.kwargs)
-        print('*********')
-        # context['quantity_detail'] = \
-        #     get_quantity_detail_by_orders(wp_obj.product, wp_obj.detail)
-        context['workers'] = get_list_all_workers()
-        context['workers_lsm'] = get_list_locksmith()
-        context['workers_trn'] = get_list_turner()
-        context['workers_mlr'] = get_list_miller()
-        context['workers_quantity'] = \
-            get_dict_worker_quantity_detail(wp_obj.product, wp_obj.detail, get_list_all_workers())
+        context['workers_quantity_lsm'] = \
+            get_dict_worker_quantity_detail(wp_obj.product, wp_obj.detail, get_list_locksmith())
+        context['workers_quantity_trn'] = \
+            get_dict_worker_quantity_detail(wp_obj.product, wp_obj.detail, get_list_turner())
+        context['workers_quantity_mlr'] = \
+            get_dict_worker_quantity_detail(wp_obj.product, wp_obj.detail, get_list_miller())
+        # context['workers_quantity'] = \
+        #     get_dict_worker_quantity_detail(wp_obj.product, wp_obj.detail, get_list_all_workers())
+        context['xxxxx'] = get_quantity_detail(wp_obj.product, wp_obj.detail, get_list_locksmith()[0])
         return context
 
 

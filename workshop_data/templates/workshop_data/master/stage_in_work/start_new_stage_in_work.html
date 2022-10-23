@@ -1,22 +1,76 @@
 {% extends 'main.html' %}
-
+{% load static %}
 {% block title %}
     Старт Этапа
 {% endblock title %}
 
 {% block content %}
+    <link rel="stylesheet" href="{% static 'css/master_css/stage_in_work_css/stage_in_work.css' %}" type="text/css">
     <h5>workshop_data/master/stage_in_work/start_new_stage_in_work.html</h5>
     <hr>
-    <h4>Старт Этапа</h4>
-    <form method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Отправить" class="btn btn-primary">
-    </form>
-    {% for detail in quantity_detail %}
-        {{ detail.surname }}
-    {% endfor %}
-<hr>
-    {{ workers }}
-    {{ workers_quantity }}
+    <div class="wrapper">
+        <div class="stage-data-block">
+            <h4>Старт Этапа</h4>
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <input type="submit" value="Отправить" class="btn btn-primary">
+            </form>
+        </div>
+
+        <div class="workers-data-block">
+            <div class="worker-list">
+                <table class="table table-primary">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Слесари</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for worker, quantity in workers_quantity_lsm.items|dictsort:1 %}
+                            {% include 'workshop_data/master/list_workers_details/table_body_list_workers_details.html' %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="worker-list">
+                <table class="table table-primary">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Токари</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="table-light">
+                            {% for worker, quantity in workers_quantity_trn.items|dictsort:1  %}
+                                {% include 'workshop_data/master/list_workers_details/table_body_list_workers_details.html' %}
+                            {% endfor %}
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="worker-list">
+                <table class="table table-primary">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Фрезеровщики</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="table-light">
+                            {% for worker, quantity in workers_quantity_mlr.items|dictsort:1  %}
+                                {% include 'workshop_data/master/list_workers_details/table_body_list_workers_details.html' %}
+                            {% endfor %}
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <hr>
 {% endblock content %}

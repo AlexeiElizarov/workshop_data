@@ -1,7 +1,9 @@
+from django.db.models import Sum
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from .models import BatchDetailInPlan, Order
 from sign.models import User
+from collections import OrderedDict
 
 
 # def replacing_True_False_flag(request):
@@ -47,18 +49,20 @@ def get_list_miller():
     return User.objects.filter(position='MLR')
 
 def get_dict_worker_quantity_detail(product, detial, workers) -> dict:
-    '''Получает колличество определенных деталей у всех работников из списка'''
+    '''
+    Получает колличество определенных деталей у всех работников из списка.
+    Возвращает словарь {worker: quantity}
+    '''
     dict_workers_quantity = {}
     for worker in workers:
         quantity = 0
-        print('1', dict_workers_quantity)
+        dict_workers_quantity[worker.surname] = quantity
         for order in get_quantity_detail_by_orders(product, detial, worker):
-            if worker.surname not in dict_workers_quantity:
-                print('2', dict_workers_quantity)
-                dict_workers_quantity[worker.surname] = order.quantity
-            else:
-                print('3', dict_workers_quantity)
-                dict_workers_quantity[worker.surname] += order.quantity
+            dict_workers_quantity[worker.surname] += order.quantity
     return dict_workers_quantity
+
+def get_quantity_detail(worker, product, detail):
+    '''Получает колличество деталей по определеным нарядам'''
+    return get_quantity_detail_by_orders(worker, product, detail).aggregate(Sum('quantity'))['quantity__sum']
 
 
