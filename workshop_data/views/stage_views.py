@@ -16,16 +16,14 @@ class StageManufacturingDetailInWorkInPlanView(DetailView):
     template_name = 'workshop_data/master/stage_in_work/all_stage_batch_in_work.html'
 
     def get_object(self, **kwargs):
-        id = self.kwargs.get('id')
-        return id
+        return BatchDetailInPlan.objects.get(id=self.kwargs.get('id'))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
         stages_in_work = StageManufacturingDetailInWork.objects.filter(batch_id=self.kwargs.get('id'))
         context['stages_in_work'] = stages_in_work
         context['batch_id'] = self.kwargs.get('id')
-        stages = StageManufacturingDetailInWork.objects.\
-            filter(batch_id=self.get_object())[0].batch.workshopplan_detail.detail.stages.all()
+        stages = self.get_object().workshopplan_detail.detail.stages.all()
         not_work_stages = []
         for i in range(len(stages_in_work), len(stages)):
             not_work_stages.append(stages[i])
@@ -67,11 +65,7 @@ class StageManufacturingDetailInWorkView(CreateView):
             get_dict_worker_quantity_detail(wp_obj.product, wp_obj.detail, get_list_turner())
         context['workers_quantity_mlr'] = \
             get_dict_worker_quantity_detail(wp_obj.product, wp_obj.detail, get_list_miller())
-        # context['workers_quantity'] = \
-        #     get_dict_worker_quantity_detail(wp_obj.product, wp_obj.detail, get_list_all_workers())
-        context['xxxxx'] = get_quantity_detail(wp_obj.product, wp_obj.detail, get_list_locksmith()[0])
         return context
-
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
@@ -92,15 +86,38 @@ class StageManufacturingDetailInWorkView(CreateView):
         return HttpResponseRedirect(reverse_lazy('start_new_stage_in_work_complete'))
 
 
+# class EditStageManufacturingDetailInWorkView(UpdateView):
+#     '''Отображает страницу редактирования запуска Этапа'''
+#     model = StageManufacturingDetailInWork
+#     form_class = CreateNewStageManufacturingInWorkForm
+#     template_name = 'workshop_data/master/stage_in_work/start_new_stage_in_work.html'
+#     success_url = reverse_lazy('start_new_stage_in_work_complete')
+#
+#     def get_object(self, queryset=None):
+#         batch_id = self.kwargs.get('batch')
+#         obj = BatchDetailInPlan.objects.get(id=batch_id)
+#         return obj
+#
+#     def get_form_kwargs(self):
+#         kwargs = super(EditStageManufacturingDetailInWorkView, self).get_form_kwargs()
+#         kwargs.update({'batch': self.kwargs.get('batch')})
+#         kwargs.update(
+#             {'stages': StageManufacturingDetail.objects.filter(
+#                 detail_id=self.get_object().workshopplan_detail.detail_id)}
+#         )
+#         kwargs.update({'last_stage_in_work': self.get_object().stages.all().last()})
+#         return kwargs
+
+
 class EditStageInDetailView(UpdateView):
-    '''Отображает страницу редактирования Этапа в Детоли'''
+    '''Отображает страницу редактирования Этапа в Детали'''
     model = StageManufacturingDetail
     form_class = EditStageInDetail
     template_name = 'workshop_data/product/product_add_detail.html'
     success_url = reverse_lazy('product_add_detail_complite')
 
     def get_object(self, **kwargs):
-        obj = StageManufacturingDetail.objects.get(id=self.kwargs['pk'])
+        obj = StageManufacturingDetailInWork.objects.get(id=self.kwargs['pk'])
         return obj
 
 

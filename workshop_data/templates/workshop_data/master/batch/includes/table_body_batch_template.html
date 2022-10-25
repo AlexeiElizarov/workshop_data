@@ -23,9 +23,24 @@
         <td><a href="{% url 'all_stage_this_batch' id=batch.id %}">{{ batch.quantity_in_batch }}</a></td>
         <td><a href="">{{ batch.sos }}</a></td>
         <td><a href="">{{ batch.comment.body }}</a></td>
+<<<<<<< HEAD
+        <td>
+            <a href="{% url 'all_stage_this_batch' id=batch.id %}">
+                {{ batch.stages.all.last.stage_in_batch }}
+            </a>
+        </td>
+        <td>
+            <a href="">
+                {{ batch.stages.all.last.worker }}
+            </a>
+        </td>
+        <td></td>
+        <td></td>
+=======
         <td><a href="{% url 'all_stage_this_batch' id=batch.id %}">{{ batch.stages.all.last.stage_in_batch }}</a></td>
         <td><a href=""></a>{{ batch.stages.all.last.worker }}</td>
 
+>>>>>>> parent of 41fc722 (столбец 'в работе' таблицы 'план' корректно считает колличесвто при добавлении, удалении партии)
         <td>
             {% include 'workshop_data/master/batch/includes/button_dropdown_menu_batch.html' %}
         </td>

@@ -53,12 +53,13 @@ urlpatterns = [
     path('master/orders-<surname>-<name>/month_<month>/', WorkerOrdersListForMaster.as_view(), name='orders-worker-month-for-master'),
 
     path('master/all-batch-in-plan/', AllBatchDetailInPlanView.as_view(), name='all_batch_in_plan'),
-    path('master/batchs-in-plan/<object>/', AllBatchDetailProductInPlan.as_view(), name='batchs_in_plan'),
     path('master/create-new-batch/<product>/', CreateBatchDetailInPlan.as_view(), name='create_new_batch'),
     path('master/create-new-batch/complite/', new_batch_complite, name='new_batch_complite'),
+    # path('master/start-new-stage-in-work/batch-<batch>/edit/', EditStageManufacturingDetailInWorkView.as_view(), name='edit_start_new_stage_in_work'),
     path('master/start-new-stage-in-work/batch-<batch>/', StageManufacturingDetailInWorkView.as_view(), name='start_new_stage_in_work'),
     path('master/start-new-stage-in-work/complite/', start_new_stage_in_work_complite, name='start_new_stage_in_work_complete'),
     path('master/all-stage-in-work/batch-<id>', StageManufacturingDetailInWorkInPlanView.as_view(), name='all_stage_this_batch'),
+    path('master/batchs-in-plan/<object>/', AllBatchDetailProductInPlan.as_view(), name='batchs_in_plan'),
     path('master/delete-batch/<id>', DeleteBatchDetailInPlanView.as_view(), name='delete_batch'),
 
 

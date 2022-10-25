@@ -169,10 +169,13 @@ class CreateNewStageManufacturingInWorkForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         batch_id = kwargs.pop('batch')
         stages = kwargs.pop('stages')
-        super(CreateNewStageManufacturingInWorkForm, self).__init__(*args, **kwargs)
+        super(CreateNewStageManufacturingInWorkForm, self).__init__(*args)
         self.fields['batch'].initial = batch_id
         self.fields['stage_in_batch'] = forms.ModelChoiceField(
-                queryset=stages)
+            queryset=stages)
+        # if 'last_stage_in_work' in kwargs:
+        #     last_stage_in_work = kwargs.pop('last_stage_in_work')
+        #     self.fields['stage_in_batch'].initial = last_stage_in_work.stage_in_batch
 
     def clean(self):
         batch = self.cleaned_data.get('batch')
