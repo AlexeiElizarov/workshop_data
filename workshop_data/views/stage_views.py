@@ -86,27 +86,22 @@ class StageManufacturingDetailInWorkView(CreateView):
         return HttpResponseRedirect(reverse_lazy('start_new_stage_in_work_complete'))
 
 
-# class EditStageManufacturingDetailInWorkView(UpdateView):
-#     '''Отображает страницу редактирования запуска Этапа'''
-#     model = StageManufacturingDetailInWork
-#     form_class = CreateNewStageManufacturingInWorkForm
-#     template_name = 'workshop_data/master/stage_in_work/start_new_stage_in_work.html'
-#     success_url = reverse_lazy('start_new_stage_in_work_complete')
-#
-#     def get_object(self, queryset=None):
-#         batch_id = self.kwargs.get('batch')
-#         obj = BatchDetailInPlan.objects.get(id=batch_id)
-#         return obj
-#
-#     def get_form_kwargs(self):
-#         kwargs = super(EditStageManufacturingDetailInWorkView, self).get_form_kwargs()
-#         kwargs.update({'batch': self.kwargs.get('batch')})
-#         kwargs.update(
-#             {'stages': StageManufacturingDetail.objects.filter(
-#                 detail_id=self.get_object().workshopplan_detail.detail_id)}
-#         )
-#         kwargs.update({'last_stage_in_work': self.get_object().stages.all().last()})
-#         return kwargs
+class EditStageManufacturingDetailInWorkView(UpdateView, StageManufacturingDetailInWorkView):
+    '''Отображает страницу редактирования запуска Этапа'''
+    model = StageManufacturingDetailInWork
+    form_class = CreateNewStageManufacturingInWorkForm
+    template_name = 'workshop_data/master/stage_in_work/start_new_stage_in_work.html'
+    success_url = reverse_lazy('start_new_stage_in_work_complete')
+
+    def get_form_kwargs(self):
+        kwargs = super(EditStageManufacturingDetailInWorkView, self).get_form_kwargs()
+        kwargs.update({'batch': self.kwargs.get('batch')})
+        kwargs.update(
+            {'stages': StageManufacturingDetail.objects.filter(
+                detail_id=self.get_object().workshopplan_detail.detail_id)}
+        )
+        kwargs.update({'last_stage_in_work': self.get_object().stages.all().last()})
+        return kwargs
 
 
 class EditStageInDetailView(UpdateView):

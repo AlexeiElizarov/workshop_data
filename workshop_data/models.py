@@ -65,6 +65,12 @@ class WorkshopPlan(models.Model):
         quantity = self.quantity_state_order + self.quantity_commercial_order
         return quantity
 
+    def get_quantity_for_all_batch(self):
+        '''Возвращает количество деталей во всех партиях self'''
+        obj = BatchDetailInPlan.objects.filter(workshopplan_detail_id=self.id)
+        count = sum([batch.quantity_in_batch for batch in obj])
+        return count
+
 
 class Comment(models.Model):
     '''Класс описывает Комментарий'''

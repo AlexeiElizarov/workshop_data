@@ -21,6 +21,7 @@ urlpatterns = [
     path('data_autocomplete_detail/', DetailAutocomplete.as_view(), name='data_autocomplete_detail'),
     path('data_autocomplete_worker/', WorkerAutocomplete.as_view(create_field='name'), name='data_autocomplete_worker'),
     path('data_autocomplete_categorydetail/', CategoryDetailAutocomplete.as_view(), name='data_autocomplete_category_detail'),
+    path('data_autocomplete_batch/', BatchlAutocomplete.as_view(), name='data_autocomplete_batch'),
 
     path('<pk>/edit-stage-in-detail', EditStageInDetailView.as_view(), name='edit_stage_in_detail'),
     path('<pk>/all-stage-in-detail', StageInDetailView.as_view(), name='all_stage_in_detail'),
@@ -55,7 +56,7 @@ urlpatterns = [
     path('master/all-batch-in-plan/', AllBatchDetailInPlanView.as_view(), name='all_batch_in_plan'),
     path('master/create-new-batch/<product>/', CreateBatchDetailInPlan.as_view(), name='create_new_batch'),
     path('master/create-new-batch/complite/', new_batch_complite, name='new_batch_complite'),
-    # path('master/start-new-stage-in-work/batch-<batch>/edit/', EditStageManufacturingDetailInWorkView.as_view(), name='edit_start_new_stage_in_work'),
+    path('master/start-new-stage-in-work/batch-<batch>/edit/', EditStageManufacturingDetailInWorkView.as_view(), name='edit_start_new_stage_in_work'),
     path('master/start-new-stage-in-work/batch-<batch>/', StageManufacturingDetailInWorkView.as_view(), name='start_new_stage_in_work'),
     path('master/start-new-stage-in-work/complite/', start_new_stage_in_work_complite, name='start_new_stage_in_work_complete'),
     path('master/all-stage-in-work/batch-<id>', StageManufacturingDetailInWorkInPlanView.as_view(), name='all_stage_this_batch'),
