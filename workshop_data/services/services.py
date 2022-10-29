@@ -1,10 +1,22 @@
+import datetime
+
+from django.core.validators import MaxValueValidator
 from django.db.models import Sum
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
-from .models import BatchDetailInPlan, Order
 from sign.models import User
-from collections import OrderedDict
+from workshop_data.models.batch_detail_in_plan import BatchDetailInPlan
+from workshop_data.models.order import Order
 
+
+def current_year():
+    return datetime.date.today().year
+
+def current_month():
+    return datetime.date.today().month
+
+def max_value_current_year(value):
+    return MaxValueValidator(current_year())(value)
 
 # def replacing_True_False_flag(request):
 #     print(request.GET)

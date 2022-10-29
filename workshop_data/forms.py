@@ -1,7 +1,14 @@
 from dal import autocomplete
 from django import forms
-from .models import *
-import calendar
+from workshop_data.models.order import Order
+from workshop_data.models.product import Product
+from workshop_data.models.detail import Detail
+from workshop_data.models.stage_manufacturing_detail import StageManufacturingDetail
+from workshop_data.models.workshop_plan import WorkshopPlan
+from workshop_data.models.batch_detail_in_plan import BatchDetailInPlan
+from workshop_data.models.stage_manufacturing_detail_in_work import StageManufacturingDetailInWork
+from workshop_data.models.comment import Comment
+
 
 # import djhacker
 # djhacker.formfield(
@@ -87,7 +94,7 @@ class AddStageInDeatailForm(forms.ModelForm):
                 StageManufacturingDetail.objects.filter(detail=detail).order_by('-order')[0].order + 1
 
 
-class EditStageInDetail(forms.ModelForm):
+class EditStageInDetailForm(forms.ModelForm):
     '''Отображает форму редактирования Этапа в Детали'''
     class Meta:
         model = StageManufacturingDetail
@@ -100,8 +107,6 @@ class WorkshopPlanCreateForm(forms.ModelForm):
     class Meta:
         model = WorkshopPlan
         fields = ('__all__')
-
-
         widgets = {
             'product': autocomplete.ModelSelect2(url='data_autocomplete_product'),
             'detail': autocomplete.ModelSelect2(url='data_autocomplete_detail'),
@@ -130,7 +135,11 @@ class EditWorkshopPlanForm(forms.ModelForm):
 
 class CreateBatchDetailInPlanForm(forms.ModelForm):
     '''Отображает форму создания новой Партии Деталей'''
-    comment = forms.CharField(widget=forms.Textarea)
+    comment = forms.CharField(widget=forms.Textarea(attrs={"class": "form-control"}))
+    workshopplan_detail = forms.ModelChoiceField(
+        widget=forms.Select(attrs={"class": "form-control"}),
+        queryset=WorkshopPlan.objects.all()
+    )
     class Meta:
         model = BatchDetailInPlan
         fields = ['workshopplan_detail', 'quantity_in_batch', 'sos', 'comment']
@@ -185,8 +194,9 @@ class CreateNewStageManufacturingInWorkForm(forms.ModelForm):
         comment = self.cleaned_data.pop('comment_in_batch')
         new_comment = Comment.objects.create(body=comment)
         self.cleaned_data.update({'comment_in_batch': new_comment})
-        if StageManufacturingDetailInWork.objects.filter(batch_id=batch.id, stage_in_batch_id=stage_in_batch.id).exists():
-            raise forms.ValidationError(f"Этап {stage_in_batch} в Партии {batch} уже есть!")
+
+        # if StageManufacturingDetailInWork.objects.filter(batch_id=batch.id, stage_in_batch_id=stage_in_batch.id).exists():
+        #     raise forms.ValidationError(f"Этап {stage_in_batch} в Партии {batch} уже есть!")
 
 
 

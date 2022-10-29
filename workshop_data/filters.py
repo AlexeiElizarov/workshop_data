@@ -1,6 +1,9 @@
 import django_filters
 from django_filters import FilterSet
-from .models import *
+from workshop_data.models.product import Product
+from workshop_data.models.detail import Detail
+from workshop_data.models.workshop_plan import WorkshopPlan
+from workshop_data.models.batch_detail_in_plan import BatchDetailInPlan
 from dal import autocomplete
 
 class ProductFilter(FilterSet):

@@ -1,10 +1,9 @@
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView, DeleteView, DetailView
-from ..models import BatchDetailInPlan, WorkshopPlan
-from ..forms import CreateBatchDetailInPlanForm
-from ..services import get_quantity_detail_by_orders
-from sign.models import User
+from workshop_data.models import BatchDetailInPlan
+from workshop_data.models import WorkshopPlan
+from workshop_data.forms import CreateBatchDetailInPlanForm
 
 
 class CreateBatchDetailInPlan(CreateView):

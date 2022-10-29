@@ -17,6 +17,7 @@ import environ
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 
 # BASE_DIR = Path(__file__).resolve().parent.parent
+
 BASE_DIR = environ.Path(__file__) - 2
 
 env = environ.Env()
@@ -26,11 +27,13 @@ if READ_DOT_ENV_FILE:
     env_file = str(BASE_DIR.path('.env'))
     env.read_env(env_file)
 
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env.str('SECRET_KEY')
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -54,7 +57,6 @@ INSTALLED_APPS = [
     'workshop_data',
     'dal',
     'dal_select2',
-
 ]
 
 MIDDLEWARE = [
@@ -150,3 +152,5 @@ LOGIN_URL = 'sign/login/'
 LOGIN_REDIRECT_URL = '/'
 
 AUTH_USER_MODEL = 'sign.User'
+
+

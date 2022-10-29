@@ -2,7 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.views.generic import ListView
 from sign.models import User
-from ..models import Order
+from workshop_data.models.order import Order
 
 
 class WorkerListView(LoginRequiredMixin, ListView):

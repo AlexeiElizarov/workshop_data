@@ -1,20 +1,47 @@
 from django.urls import path
-from .services import *
-from .views.order_views import OrderUserCreateView
-from .views.services_view import *
-from .views.stage_views import *
-from .views.complite_view import *
-from .views.detail_view import DetailCreateView, DetailAllView
-from .views.product_view import ProductDataView, ProductAddDetailView, ProductAllView, ProductCreateView
-from .views.order_views import OrderUserParametrListView, OrderUserEditView, OrderDeleteView
-from .views.master_views import WorkerListView, WorkerOrdersListForMaster
-from .views.batch_views import \
-    CreateBatchDetailInPlan, \
-    AllBatchDetailInPlanView, \
-    DeleteBatchDetailInPlanView, \
-    AllBatchDetailProductInPlan
-from .views.workshopplan_views import WorkshopPlanCreateView, WorkshopPlanView, \
-    WorkshopPlanDeleteView, WorkshopPlanUpdateView
+
+from workshop_data.views.services_view import (
+    ProductAutocomplete,
+    DetailAutocomplete,
+    WorkerAutocomplete,
+    CategoryDetailAutocomplete,
+    BatchlAutocomplete)
+from workshop_data.views.stage_views import (
+    StageManufacturingDetailInWorkInPlanView,
+    StageManufacturingDetailInWorkView,
+    EditStageManufacturingDetailInWorkView,
+    EditStageInDetailView,
+    StageInDetailView,
+    AddStageInDeatailVeiw)
+from workshop_data.views.complite_view import *
+from workshop_data.views.detail_view import (
+    DetailAllView,
+    DetailCreateView)
+from workshop_data.views.product_view import (
+    ProductAllView,
+    ProductCreateView,
+    ProductAddDetailView,
+    ProductDataView)
+from workshop_data.views.order_views import (
+    OrderUserCreateView,
+    OrderUserParametrListView,
+    OrderUserEditView,
+    OrderDeleteView )
+from workshop_data.views.master_views import (
+    WorkerOrdersListForMaster,
+    WorkerListView)
+from workshop_data.views.batch_views import (
+    CreateBatchDetailInPlan,
+    AllBatchDetailInPlanView,
+    DeleteBatchDetailInPlanView,
+    AllBatchDetailProductInPlan)
+from workshop_data.views.workshopplan_views import (
+    WorkshopPlanUpdateView,
+    WorkshopPlanDeleteView,
+    WorkshopPlanCreateView,
+    WorkshopPlanView)
+from workshop_data.services.services import batch_ready, batch_cancel_ready
+
 
 urlpatterns = [
     path('data_autocomplete_product/', ProductAutocomplete.as_view(), name='data_autocomplete_product'),

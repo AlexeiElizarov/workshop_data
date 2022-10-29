@@ -5,9 +5,11 @@ from django.http import HttpRequest
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.generic import CreateView, DeleteView, UpdateView, ListView
-from ..models import Order
-from ..forms import OrderForm
-from .services_view import *
+from workshop_data.models.order import Order
+from workshop_data.models.product import Product
+from workshop_data.models.detail import Detail
+from workshop_data.forms import OrderForm
+from sign.models import User
 
 
 
@@ -51,7 +53,6 @@ class OrderUserParametrListView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         if 'month' in self.kwargs:
             context['orders'] = Order.objects.filter(surname_id=user_id).filter(month=self.kwargs['month'])
-            context['salary'] = sum_parametrs(context['orders'])
             context['month'] = context['orders'][0]
         elif 'product' in self.kwargs:
             context['orders'] = Order.objects.filter(surname_id=user_id). \

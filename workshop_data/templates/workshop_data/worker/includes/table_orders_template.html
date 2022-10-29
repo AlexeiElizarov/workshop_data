@@ -20,7 +20,7 @@
 
             <td>{{ order.workshop }}</td>
             <td>{{ order.surname }}</td>
-
+            <td>{{ order.batch }}</td>
             <td>
                 <a href="{% url 'orders_user_product_list' username=user.username product=order.product %}">
                     {{ order.product }}

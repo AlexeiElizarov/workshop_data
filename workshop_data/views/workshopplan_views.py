@@ -2,11 +2,10 @@ import datetime
 
 from django.urls import reverse_lazy
 from django.views.generic import UpdateView, CreateView, DeleteView, ListView
-
-from ..models import WorkshopPlan
-from ..forms import WorkshopPlanCreateForm, EditWorkshopPlanForm
+from workshop_data.models.workshop_plan import WorkshopPlan
+from workshop_data.forms import WorkshopPlanCreateForm, EditWorkshopPlanForm
 from ..filters import WorkshopPlanFilter
-from ..models import current_month
+from workshop_data.services.services import current_month
 
 
 class WorkshopPlanView(ListView):

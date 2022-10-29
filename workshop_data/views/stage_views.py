@@ -3,11 +3,19 @@ import datetime
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, CreateView, UpdateView
-from ..models import StageManufacturingDetailInWork, StageManufacturingDetail, BatchDetailInPlan, Order
-from ..forms import CreateNewStageManufacturingInWorkForm, EditStageInDetail, AddStageInDeatailForm
-from sign.models import User
-
-from ..services import *
+from workshop_data.models.stage_manufacturing_detail import StageManufacturingDetail
+from workshop_data.models.stage_manufacturing_detail_in_work import StageManufacturingDetailInWork
+from workshop_data.models.batch_detail_in_plan import BatchDetailInPlan
+from workshop_data.forms import (
+    CreateNewStageManufacturingInWorkForm,
+    EditStageInDetailForm,
+    AddStageInDeatailForm)
+from workshop_data.models.order import Order
+from workshop_data.services import (
+    get_list_locksmith,
+    get_list_turner,
+    get_list_miller,
+    get_dict_worker_quantity_detail)
 
 
 class StageManufacturingDetailInWorkInPlanView(DetailView):
@@ -69,11 +77,13 @@ class StageManufacturingDetailInWorkView(CreateView):
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
+        print(self.object)
         order_object = Order(
             date=datetime.datetime.now(),
             month=self.object.batch.workshopplan_detail.month,
             surname=self.object.worker,
             employee_number=self.object.worker.employee_number,
+            batch=self.get_object(),
             product=self.object.batch.workshopplan_detail.product,
             detail=self.object.batch.workshopplan_detail.detail,
             operations=self.object.stage_in_batch,
@@ -81,17 +91,33 @@ class StageManufacturingDetailInWorkView(CreateView):
             normalized_time=self.object.stage_in_batch.normalized_time,
             price=self.object.stage_in_batch.price
         )
-        order_object.save()
-        self.object.save()
+        # order_object.save()
+        # self.object.save()
         return HttpResponseRedirect(reverse_lazy('start_new_stage_in_work_complete'))
 
 
-class EditStageManufacturingDetailInWorkView(UpdateView, StageManufacturingDetailInWorkView):
+class EditStageManufacturingDetailInWorkView(UpdateView):
     '''Отображает страницу редактирования запуска Этапа'''
     model = StageManufacturingDetailInWork
     form_class = CreateNewStageManufacturingInWorkForm
     template_name = 'workshop_data/master/stage_in_work/start_new_stage_in_work.html'
     success_url = reverse_lazy('start_new_stage_in_work_complete')
+
+    def get_object(self, queryset=None):
+        batch_id = self.kwargs.get('batch')
+        obj = BatchDetailInPlan.objects.get(id=batch_id)
+        return obj
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        wp_obj = self.get_object().workshopplan_detail
+        context['workers_quantity_lsm'] = \
+            get_dict_worker_quantity_detail(wp_obj.product, wp_obj.detail, get_list_locksmith())
+        context['workers_quantity_trn'] = \
+            get_dict_worker_quantity_detail(wp_obj.product, wp_obj.detail, get_list_turner())
+        context['workers_quantity_mlr'] = \
+            get_dict_worker_quantity_detail(wp_obj.product, wp_obj.detail, get_list_miller())
+        return context
 
     def get_form_kwargs(self):
         kwargs = super(EditStageManufacturingDetailInWorkView, self).get_form_kwargs()
@@ -103,11 +129,37 @@ class EditStageManufacturingDetailInWorkView(UpdateView, StageManufacturingDetai
         kwargs.update({'last_stage_in_work': self.get_object().stages.all().last()})
         return kwargs
 
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        wrong_order = Order.objects.get(
+            batch=self.get_object(),
+            operations=form.cleaned_data['stage_in_batch']
+        )
+        wrong_order.delete()
+        wrong_stage_manufacturing_detail_in_work = StageManufacturingDetailInWork.objects.get(batch=self.object)
+        wrong_stage_manufacturing_detail_in_work.delete()
+        order_object = Order(
+            date=datetime.datetime.now(),
+            month=self.object.workshopplan_detail.month,
+            surname=form.cleaned_data['worker'],
+            employee_number=form.cleaned_data['worker'].employee_number,
+            batch=self.object,
+            product=self.object.workshopplan_detail.product,
+            detail=self.object.workshopplan_detail.detail,
+            operations=form.cleaned_data['stage_in_batch'],
+            quantity=self.object.quantity_in_batch,
+            normalized_time=form.cleaned_data['stage_in_batch'].normalized_time,
+            price=form.cleaned_data['stage_in_batch'].price
+        )
+        order_object.save()
+        self.object.save()
+        return HttpResponseRedirect(reverse_lazy('start_new_stage_in_work_complete'))
+
 
 class EditStageInDetailView(UpdateView):
     '''Отображает страницу редактирования Этапа в Детали'''
     model = StageManufacturingDetail
-    form_class = EditStageInDetail
+    form_class = EditStageInDetailForm
     template_name = 'workshop_data/product/product_add_detail.html'
     success_url = reverse_lazy('product_add_detail_complite')
 
