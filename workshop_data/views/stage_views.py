@@ -1,5 +1,4 @@
 import datetime
-
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, CreateView, UpdateView
@@ -62,6 +61,7 @@ class StageManufacturingDetailInWorkView(CreateView):
             {'stages': StageManufacturingDetail.objects.filter(
                 detail_id=self.get_object().workshopplan_detail.detail_id)}
         )
+        kwargs.update({'user': self.request.user})
         return kwargs
 
     def get_context_data(self, **kwargs):
@@ -77,7 +77,6 @@ class StageManufacturingDetailInWorkView(CreateView):
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
-        print(self.object)
         order_object = Order(
             date=datetime.datetime.now(),
             month=self.object.batch.workshopplan_detail.month,
@@ -89,10 +88,12 @@ class StageManufacturingDetailInWorkView(CreateView):
             operations=self.object.stage_in_batch,
             quantity=self.object.batch.quantity_in_batch,
             normalized_time=self.object.stage_in_batch.normalized_time,
-            price=self.object.stage_in_batch.price
+            price=self.object.stage_in_batch.price,
+            author=self.request.user
         )
-        # order_object.save()
-        # self.object.save()
+        order_object.save()
+        self.object.author = self.request.user
+        self.object.save()
         return HttpResponseRedirect(reverse_lazy('start_new_stage_in_work_complete'))
 
 
@@ -127,6 +128,7 @@ class EditStageManufacturingDetailInWorkView(UpdateView):
                 detail_id=self.get_object().workshopplan_detail.detail_id)}
         )
         kwargs.update({'last_stage_in_work': self.get_object().stages.all().last()})
+        kwargs.update({'user': self.request.user})
         return kwargs
 
     def form_valid(self, form):
@@ -136,7 +138,8 @@ class EditStageManufacturingDetailInWorkView(UpdateView):
             operations=form.cleaned_data['stage_in_batch']
         )
         wrong_order.delete()
-        wrong_stage_manufacturing_detail_in_work = StageManufacturingDetailInWork.objects.get(batch=self.object)
+        wrong_stage_manufacturing_detail_in_work = \
+            StageManufacturingDetailInWork.objects.get(batch=self.object)
         wrong_stage_manufacturing_detail_in_work.delete()
         order_object = Order(
             date=datetime.datetime.now(),
@@ -149,9 +152,11 @@ class EditStageManufacturingDetailInWorkView(UpdateView):
             operations=form.cleaned_data['stage_in_batch'],
             quantity=self.object.quantity_in_batch,
             normalized_time=form.cleaned_data['stage_in_batch'].normalized_time,
-            price=form.cleaned_data['stage_in_batch'].price
+            price=form.cleaned_data['stage_in_batch'].price,
+            author=self.request.user
         )
         order_object.save()
+        self.object.author = self.request.user
         self.object.save()
         return HttpResponseRedirect(reverse_lazy('start_new_stage_in_work_complete'))
 

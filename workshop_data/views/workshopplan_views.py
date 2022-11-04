@@ -29,7 +29,8 @@ class WorkshopPlanCreateView(CreateView):
     success_url = reverse_lazy('product_add_plan_complite')
 
     def form_valid(self, form):
-        self.object = form.save()
+        self.object = form.save(commit=False)
+        self.object.author = self.request.user
         return super().form_valid(form)
 
 

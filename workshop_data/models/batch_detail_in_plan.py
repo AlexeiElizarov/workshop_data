@@ -1,5 +1,5 @@
 from django.db import models
-
+from sign.models import User
 
 class BatchDetailInPlan(models.Model):
     '''Класс описывает партию Деталей'''
@@ -16,6 +16,7 @@ class BatchDetailInPlan(models.Model):
                                 null=True,
                                 verbose_name='Комментарий'
                                 )
+    author = models.ForeignKey(User, on_delete=models.PROTECT, related_name='uesr_batch')
 
     class Meta:
         verbose_name = "Партия"

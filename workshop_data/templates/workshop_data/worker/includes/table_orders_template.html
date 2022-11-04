@@ -1,3 +1,5 @@
+{% load test_tag %}
+{% load get_stage_in_work_in_order %}
 <tbody>
     {% for order in orders %}
         <tr>
@@ -39,6 +41,11 @@
                 </a>
             </td>
             <td>{{ order.operations }}</td>
+            <td>
+                <a href="{% url 'stage_work_done' username=user.username batch=order.batch operations=order.operations %}">
+                    {% get_stage_in_work_tag username=user.username batch=order.batch.id operations=order.operations %}
+                </a>
+            </td>
             <td>{{ order.quantity }}</td>
             <td>{{ order.price }}</td>
             {% if request.user.position != 'MSR' %}

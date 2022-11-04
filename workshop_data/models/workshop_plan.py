@@ -3,7 +3,7 @@ from django.db import models
 from workshop_data.models.month import Month
 from workshop_data.services import current_year, max_value_current_year
 from workshop_data.models.batch_detail_in_plan import BatchDetailInPlan
-
+from sign.models import User
 
 class WorkshopPlan(models.Model):
     #FIXME
@@ -17,6 +17,7 @@ class WorkshopPlan(models.Model):
     sos = models.BooleanField(default=False)
     year = models.PositiveIntegerField(
         default=current_year(), validators=[MinValueValidator(2022), max_value_current_year])
+    author = models.ForeignKey(User, on_delete=models.PROTECT, related_name='user_workshopplan')
 
     def __str__(self):
         return f'{self.product}_{self.detail}'

@@ -1,5 +1,4 @@
 {% extends 'main.html' %}
-{% load test_tag %}
 
 {% block title %}
 
@@ -20,6 +19,7 @@
             <th scope="col">Деталь</th>
             <th scope="col">Категория</th>
             <th scope="col">Операции</th>
+            <th scope="col">Выполнено</th>
             <th scope="col">Колличество</th>
             <th scope="col">Расценка</th>
             {% if request.user.position != 'MSR' %}
@@ -39,7 +39,4 @@
 <!--        <input type="submit" class="btn btn-primary" onclick="" name="mybtn">-->
 <!--        <input type="text" value="8" name="mytextbox" size="1"/>-->
 <!--    </form>-->
-
-
-
     {% endblock content %}

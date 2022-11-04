@@ -18,6 +18,7 @@ class CreateBatchDetailInPlanForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         name = kwargs.pop('object')
+        self.user = kwargs.pop('user')
         detail = name.split('_')[1]
         detail_id = Detail.objects.get(name=f'{detail}').id
         detail_in_plan = WorkshopPlan.objects.get(detail_id=detail_id)
@@ -36,5 +37,5 @@ class CreateBatchDetailInPlanForm(forms.ModelForm):
 
     def clean(self):
         comment = self.cleaned_data.pop('comment')
-        new_comment = Comment.objects.create(body=comment)
+        new_comment = Comment.objects.create(body=comment, author=self.user)
         self.cleaned_data.update({'comment': new_comment})

@@ -1,16 +1,15 @@
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
-from django import forms
-from .models import User
 
-
+User = get_user_model()
 
 class BaseRegisterForm(UserCreationForm):
     # email = forms.EmailField(label="Email")
     # first_name = forms.CharField(label="Имя")
     # last_name = forms.CharField(label="Фамилия")
 
-    class Meta:
+    class Meta(UserCreationForm.Meta):
         model = User
         fields = ("username",
                   "name",

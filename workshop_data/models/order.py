@@ -17,3 +17,4 @@ class Order(models.Model):
     quantity = models.PositiveSmallIntegerField(default=0, blank=False, verbose_name='Количество')
     normalized_time = models.FloatField(default=0, blank=False, verbose_name='Нормированное время')
     price = models.FloatField(default=0, blank=False, verbose_name='Расценка')
+    author = models.ForeignKey(User, on_delete=models.PROTECT, related_name='user_order')

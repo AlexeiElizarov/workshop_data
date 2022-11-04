@@ -1,5 +1,7 @@
 from dal import autocomplete
 from django import forms
+
+from workshop_data.models import Month
 from workshop_data.models.workshop_plan import WorkshopPlan
 
 
@@ -7,7 +9,8 @@ class WorkshopPlanCreateForm(forms.ModelForm):
     '''Отображает форму создания нового Плана'''
     class Meta:
         model = WorkshopPlan
-        fields = ('__all__')
+        fields = '__all__'
+        exclude= ('author',)
         widgets = {
             'product': autocomplete.ModelSelect2(url='data_autocomplete_product'),
             'detail': autocomplete.ModelSelect2(url='data_autocomplete_detail'),

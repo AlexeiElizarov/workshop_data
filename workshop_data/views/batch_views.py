@@ -28,6 +28,7 @@ class CreateBatchDetailInPlan(CreateView):
     def get_form_kwargs(self):
         kwargs = super(CreateBatchDetailInPlan, self).get_form_kwargs()
         kwargs.update({'object': self.kwargs.get('product')})
+        kwargs.update({'user': self.request.user})
         return kwargs
 
     def get_quantity_detail_in_work(self):
@@ -35,6 +36,7 @@ class CreateBatchDetailInPlan(CreateView):
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
+        self.object.author = self.request.user
         self.object.save()
         self.object.workshopplan_detail.save()
         return HttpResponseRedirect(reverse_lazy('product_add_plan_complite'))

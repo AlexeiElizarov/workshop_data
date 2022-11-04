@@ -10,6 +10,8 @@ from workshop_data.models.product import Product
 from workshop_data.models.detail import Detail
 from workshop_data.forms import OrderForm
 from sign.models import User
+from workshop_data.models.stage_manufacturing_detail_in_work import  StageManufacturingDetailInWork
+from workshop_data.services.services import get_stage_in_work
 
 
 
@@ -36,6 +38,7 @@ class OrderUserCreateView(LoginRequiredMixin, CreateView):
                 quantity=form.cleaned_data['quantity'],
                 normalized_time=form.cleaned_data['normalized_time'],
                 price=form.cleaned_data['price'],
+                author_id=self.request.user.id,
             )
             order.save()
         return redirect('orders_user_list_all', username=current_user.username)
@@ -46,25 +49,27 @@ class OrderUserParametrListView(LoginRequiredMixin, ListView):
     model = Order
     login_url = '/login/'
     context_object_name = 'orders'
-    template_name = 'workshop_data/worker/orders_user_parametr_list.html'
+    template_name = 'workshop_data/worker/order/orders_user_parametr_list.html'
 
     def get_context_data(self, *args, **kwargs):
-        user_id = User.objects.get(username=self.request.user.username).id
+        user = User.objects.get(username=self.request.user.username)
         context = super().get_context_data(**kwargs)
+        # stage_work = get_stage_in_work(self.request, user, )
         if 'month' in self.kwargs:
-            context['orders'] = Order.objects.filter(surname_id=user_id).filter(month=self.kwargs['month'])
+            context['orders'] = Order.objects.filter(surname_id=user.id).filter(month=self.kwargs['month'])
             context['month'] = context['orders'][0]
         elif 'product' in self.kwargs:
-            context['orders'] = Order.objects.filter(surname_id=user_id). \
+            context['orders'] = Order.objects.filter(surname_id=user.id). \
                 filter(product_id=Product.objects.get(name=self.kwargs['product']))
         elif 'detail' in self.kwargs:
-            context['orders'] = Order.objects.filter(surname_id=user_id). \
+            context['orders'] = Order.objects.filter(surname_id=user.id). \
                 filter(detail_id=Detail.objects.get(name=self.kwargs['detail']))
         elif 'category' in self.kwargs:
-            context['orders'] = Order.objects.filter(surname_id=user_id). \
+            context['orders'] = Order.objects.filter(surname_id=user.id). \
                 filter(detail__category__name=self.kwargs['category'])
         else:
-            context['orders'] = Order.objects.filter(surname_id=user_id)
+            context['orders'] = Order.objects.filter(surname_id=user.id)
+        # context['stage_work'] = get_stage_in_work(self.)
         return context
 
 

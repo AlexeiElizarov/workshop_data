@@ -1,4 +1,5 @@
 from django.urls import path
+from workshop_data.services.services import stage_in_work_ready
 
 from workshop_data.views.services_view import (
     ProductAutocomplete,
@@ -41,8 +42,6 @@ from workshop_data.views.workshopplan_views import (
     WorkshopPlanCreateView,
     WorkshopPlanView)
 from workshop_data.services.services import batch_ready, batch_cancel_ready
-
-
 urlpatterns = [
     path('data_autocomplete_product/', ProductAutocomplete.as_view(), name='data_autocomplete_product'),
     path('data_autocomplete_detail/', DetailAutocomplete.as_view(), name='data_autocomplete_detail'),
@@ -66,6 +65,7 @@ urlpatterns = [
     path('new-product-complite/', product_create_complite, name='create_new_product_complite'),
 
     path('<username>/create_new_order/', OrderUserCreateView.as_view(), name='order_user_create'),
+    path('<username>/all_orders/batch-<batch>/operations-<operations>', stage_in_work_ready, name='stage_work_done'),
     path('<username>/all_orders/', OrderUserParametrListView.as_view(), name='orders_user_list_all'),
     path('<username>/<id>/edit/', OrderUserEditView.as_view(), name='order_user_edit'),
     path('<username>/<id>/delete/', OrderDeleteView.as_view(), name='order_user_delete'),
@@ -100,4 +100,8 @@ urlpatterns = [
     path('plan/<year>-<month>/batch-<id>/ready/', batch_ready, name='batch_ready_in_plan'),
     path('plan/<year>-<month>/batch-<id>/ready_cancel/', batch_cancel_ready, name='batch_cancel_ready_in_plan'),
     path('plan/<year>-<month>/batch-<id>/ready_complite/', batch_ready_comlite, name='batch_ready_comlite'),
+
+
 ]
+
+
