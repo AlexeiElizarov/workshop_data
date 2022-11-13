@@ -27,7 +27,7 @@ class WorkerOrdersListForMaster(ListView):
     '''Показывает все наряды всех работников'''
     model = Order
     login_url = '/login/'
-    template_name = 'workshop_data/worker/orders_user_parametr_list.html'  # шаблон из OrderUserParametrListView
+    template_name = 'workshop_data/worker/order/orders_user_parametr_list.html'  # шаблон из OrderUserParametrListView
     context_object_name = 'orders'
 
     def get_context_data(self, *args, **kwargs):

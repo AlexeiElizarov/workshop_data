@@ -1,11 +1,12 @@
 {% extends 'main.html' %}
-
+{% load static %}
 {% block title %}
 
 {% endblock title %}
 
 
     {% block content %}
+    <link rel="stylesheet" href="{% static 'css/worker_css/orders_table.css' %}">
     <table class="table table-success table-striped">
         <thead>
         <tr>
@@ -20,6 +21,7 @@
             <th scope="col">Категория</th>
             <th scope="col">Операции</th>
             <th scope="col">Выполнено</th>
+            <th scope="col">Время работы</th>
             <th scope="col">Колличество</th>
             <th scope="col">Расценка</th>
             {% if request.user.position != 'MSR' %}

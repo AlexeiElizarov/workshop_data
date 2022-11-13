@@ -20,28 +20,26 @@ def current_month():
 def max_value_current_year(value):
     return MaxValueValidator(current_year())(value)
 
-# def replacing_True_False_flag(request):
-#     print(request.GET)
-#     print(request.GET.kwargs)
-#     return HttpResponseRedirect(reverse_lazy('start_new_stage_in_work_complete'))
-
 def get_current_user(request):
     return request.user
 
-def get_stage_in_work(username, batch, operations):
+def get_stage_in_work(user, batch_id, operations):
     '''Возвращает id StageManufacturungDetailInWork по username, batch, operations'''
-    user = User.objects.get(username=username)
-    batch = BatchDetailInPlan.objects.get(id=batch)
+    batch = BatchDetailInPlan.objects.get(id=batch_id)
     stage_in_batch_id = StageManufacturingDetail.objects.get(
         detail_id=batch.workshopplan_detail.detail, operations=operations.split()[0]
     )
     stage = StageManufacturingDetailInWork.objects.get(
-        worker=user.id, batch=batch, stage_in_batch_id=stage_in_batch_id
+        worker=user, batch=batch, stage_in_batch_id=stage_in_batch_id
     )
     return stage
 
+def get_time_of_work(user, batch_id, operations):
+    """Возвращает время работы(time_of_work) из StageManufacturungDetailInWork"""
+    return get_stage_in_work(user, batch_id, operations).time_of_work
+
 def stage_in_work_ready(request, username, batch, operations):
-    '''Реализует кнопку "Выполнено" в таблице Наряды(для Работника)'''
+    '''Реализует "Выполнено" в таблице Наряды(для Работника)'''
     stage = get_stage_in_work(username, batch, operations)
     stage.job_is_done = False if stage.job_is_done == True else True
     stage.save()

@@ -39,3 +39,4 @@ from workshop_data.views.detail_view import (
     DetailCreateView
 )
 from workshop_data.views.complite_view import *
+from workshop_data.views.test_views import *

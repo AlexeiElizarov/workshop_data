@@ -42,6 +42,8 @@ from workshop_data.views.workshopplan_views import (
     WorkshopPlanCreateView,
     WorkshopPlanView)
 from workshop_data.services.services import batch_ready, batch_cancel_ready
+from workshop_data.views.test_views import test_form, TestView
+
 urlpatterns = [
     path('data_autocomplete_product/', ProductAutocomplete.as_view(), name='data_autocomplete_product'),
     path('data_autocomplete_detail/', DetailAutocomplete.as_view(), name='data_autocomplete_detail'),
@@ -101,7 +103,8 @@ urlpatterns = [
     path('plan/<year>-<month>/batch-<id>/ready_cancel/', batch_cancel_ready, name='batch_cancel_ready_in_plan'),
     path('plan/<year>-<month>/batch-<id>/ready_complite/', batch_ready_comlite, name='batch_ready_comlite'),
 
-
+    path('test_ajax/', test_form, name='test_form'),
+    path('test_view/', TestView.as_view(), name='order_user_edit')
 ]
 
 

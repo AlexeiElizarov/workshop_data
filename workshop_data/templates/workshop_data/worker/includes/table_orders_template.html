@@ -1,5 +1,8 @@
 {% load test_tag %}
 {% load get_stage_in_work_in_order %}
+{% load static %}
+
+
 <tbody>
     {% for order in orders %}
         <tr>
@@ -43,8 +46,12 @@
             <td>{{ order.operations }}</td>
             <td>
                 <a href="{% url 'stage_work_done' username=user.username batch=order.batch operations=order.operations %}">
-                    {% get_stage_in_work_tag username=user.username batch=order.batch.id operations=order.operations %}
+                    {% get_stage_in_work_tag user=order.surname batch_id=order.batch.id operations=order.operations %}
                 </a>
+            </td>
+            <td>
+                {% get_time_of_work_tag user=order.surname batch_id=order.batch.id operations=order.operations %}
+                {% include 'workshop_data/worker/order/test.html' %}
             </td>
             <td>{{ order.quantity }}</td>
             <td>{{ order.price }}</td>
@@ -53,8 +60,29 @@
                     {% include 'workshop_data/worker/includes/button_dropdown_menu.html' %}
                 </td>
             {% endif %}
-
         </tr>
     {% endfor %}
-
 </tbody>>
+
+{% block javascript %}
+<script src="{% static 'css/bootstrap-5.2.2-dist/js/1/jquery.min.js' %}"></script>
+<script>
+    $(document).ready(function () {
+        $('#testForm').submit(function () {
+            $.ajax({
+                data: $(this).serialize(),
+                type: $(this).attr('method'),
+                url: "{% url 'test_form' %}",
+                success: function (response) {
+                    alert("sdfsfadsfasdfasd");
+                },
+                error: function (response) {
+                    alert(response.responseJSON.errors);
+                    console.log(response.responseJSON.errors)
+                }
+            });
+            return false;
+        });
+    })
+</script>
+{% endblock javascript %}
