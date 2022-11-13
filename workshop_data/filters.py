@@ -44,6 +44,7 @@ class WorkshopPlanFilter(FilterSet):
         fields = ['product', 'month']
 
 
+
 class BatchFilter(FilterSet):
     '''Фильтр поиска Партии'''
     id = django_filters.ModelChoiceFilter(

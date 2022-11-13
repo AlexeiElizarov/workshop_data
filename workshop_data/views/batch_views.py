@@ -1,9 +1,11 @@
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView, DeleteView, DetailView
-from workshop_data.models import BatchDetailInPlan
-from workshop_data.models import WorkshopPlan
-from workshop_data.forms import CreateBatchDetailInPlanForm
+from ..filters import BatchFilter
+from workshop_data.models.batch_detail_in_plan import BatchDetailInPlan
+from workshop_data.models.workshop_plan import WorkshopPlan
+from workshop_data.forms.batch_form import CreateBatchDetailInPlanForm
+
 
 
 class CreateBatchDetailInPlan(CreateView):
@@ -38,6 +40,7 @@ class CreateBatchDetailInPlan(CreateView):
         self.object = form.save(commit=False)
         self.object.author = self.request.user
         self.object.save()
+        # self.object.workshopplan_detail.in_work += self.object.quantity_in_batch
         self.object.workshopplan_detail.save()
         return HttpResponseRedirect(reverse_lazy('product_add_plan_complite'))
 
@@ -51,6 +54,7 @@ class AllBatchDetailInPlanView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
+        context['filter'] = BatchFilter(self.request.GET, queryset=self.get_queryset())
         return context
 
 
@@ -70,6 +74,7 @@ class DeleteBatchDetailInPlanView(DeleteView):
     def form_valid(self, form):
         workshopplan_object = WorkshopPlan.objects.get(batchs=self.kwargs.get('id'))
         batch = self.get_object()
+        # workshopplan_object.in_work -= batch.quantity_in_batch
         workshopplan_object.save()
         return super(DeleteBatchDetailInPlanView, self).form_valid(self)
 
