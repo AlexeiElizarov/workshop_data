@@ -1,0 +1,6 @@
+<form action="{% url 'order_user_edit_test' username=user.username id=order.id %}" id="testForm" method="POST">
+    {% csrf_token %}
+    <div>{{ form.time_of_work }}</div>
+    <input id="contact-submit" type="text" name="time" value="{{ form.time_of_work }}">
+    <input class="btn btn-warning btn-sm button-input" type="submit" value="Ввести">
+</form>

@@ -3,8 +3,10 @@ from typing import Any
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpRequest
 from django.shortcuts import redirect
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, DeleteView, UpdateView, ListView
+
+from workshop_data.forms.order_form import TimeOfWorkInStageForm
 from workshop_data.models.order import Order
 from workshop_data.models.product import Product
 from workshop_data.models.detail import Detail
@@ -103,3 +105,16 @@ class OrderDeleteView(DeleteView):
     def get_object(self, queryset=None):
         id = self.kwargs.get('id')
         return Order.objects.get(pk=id)
+
+
+class TimeOfWorkInStage(UpdateView):
+    """"""
+    template_name = 'workshop_data/worker/order/time_of_work_form.html'
+    form_class = TimeOfWorkInStageForm
+
+    def get_object(self, **kwargs):
+        id = self.kwargs.get('id')
+        return Order.objects.get(pk=id)
+
+    def get_success_url(self):
+        return reverse('orders_user_list_all', kwargs={'username': self.request.user})

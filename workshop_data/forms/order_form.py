@@ -1,6 +1,10 @@
 from dal import autocomplete
 from django import forms
+
+from workshop_data.models import StageManufacturingDetailInWork
 from workshop_data.models.order import Order
+from workshop_data.services import get_stage_in_work
+
 
 class OrderForm(forms.ModelForm):
     '''Отображает форму добавления нового Наряда'''
@@ -29,3 +33,17 @@ class OrderForm(forms.ModelForm):
         #     'employee_number': '',
         #     'product': "sdgdsfgsdfgdsfgfdsg"
         # }
+
+class TimeOfWorkInStageForm(forms.ModelForm):
+    """Форма поля для ввода времени затраченного на работу в Наряде"""
+    class Meta:
+        model = StageManufacturingDetailInWork
+        fields = ('time_of_work',)
+
+    def clean(self):
+        time_of_work = self.data['time'] # 'time' - <input  name="time" value="{{ form.time_of_work }}">
+        stage = get_stage_in_work(self.instance.surname,
+                              self.instance.batch.id,
+                              self.instance.operations)
+        stage.time_of_work = time_of_work
+        stage.save()

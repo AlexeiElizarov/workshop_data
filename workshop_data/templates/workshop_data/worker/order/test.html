@@ -1,6 +1,0 @@
-<form action="{% url 'order_user_edit' username=user.username id=order.id %}" id="testForm" method="POST">
-    {% csrf_token %}
-    {{ form.time_of_work }}
-<!--    <input id="contact-submit" type="submit" name="contact-submit" class="btn btn-success btn-sm" />-->
-    <input type="submit" value="Submit">
-</form>

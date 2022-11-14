@@ -12,12 +12,16 @@
         <td></td>
         <td></td>
         <td></td>
+        <td></td>
     </tr>
     {% endifchanged %}
     <tr class="{% if batch.sos == True %}table-danger
                {% elif batch.ready == True %}table-success{% endif %}">
         <th scope="row">{{ forloop.counter }}</th>
+        <td></td>
+        <td></td>
         <td>{{ batch.id }}</td>
+
         <td>{{ batch.workshopplan_detail }}</td>
         <td><a href="{% url 'all_stage_this_batch' id=batch.id %}">{{ batch.quantity_in_batch }}</a></td>
         <td><a href="">{{ batch.sos }}</a></td>
@@ -27,17 +31,12 @@
                 {{ batch.stages.all.last.stage_in_batch }}
             </a>
         </td>
-<<<<<<< HEAD
         <td>
             <a href="{% url 'edit_start_new_stage_in_work' batch %}">
                 {{ batch.stages.all.last.worker }}
             </a>
         </td>
-=======
         <td><a href=""></a>{{ batch.stages.all.last.worker }}</td>
-        <td></td>
-        <td></td>
->>>>>>> origin/master
         <td>
             {% include 'workshop_data/master/batch/includes/button_dropdown_menu_batch.html' %}
         </td>
