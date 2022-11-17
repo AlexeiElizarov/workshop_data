@@ -1,9 +1,11 @@
 from dal import autocomplete
 from django import forms
 
+from sign.models import User
 from workshop_data.models import StageManufacturingDetailInWork
 from workshop_data.models.order import Order
 from workshop_data.services import get_stage_in_work
+from workshop_data.forms.stage_in_work_form import InitialsModelChoiceField
 
 
 class OrderForm(forms.ModelForm):
@@ -33,6 +35,7 @@ class OrderForm(forms.ModelForm):
         #     'employee_number': '',
         #     'product': "sdgdsfgsdfgdsfgfdsg"
         # }
+
 
 class TimeOfWorkInStageForm(forms.ModelForm):
     """Форма поля для ввода времени затраченного на работу в Наряде"""

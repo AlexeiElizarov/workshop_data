@@ -1,7 +1,13 @@
 from django import forms
+
+from sign.forms import User
 from workshop_data.models.stage_manufacturing_detail_in_work import StageManufacturingDetailInWork
 from workshop_data.models.comment import Comment
-from workshop_data.services.services import get_current_user
+from workshop_data.services.services import get_list_all_workers, get_list_all_workers_initials
+
+class InitialsModelChoiceField(forms.ModelChoiceField):
+    def label_from_instance(self, obj):
+        return obj.get_full_name()
 
 
 class CreateNewStageManufacturingInWorkForm(forms.ModelForm):
@@ -23,8 +29,9 @@ class CreateNewStageManufacturingInWorkForm(forms.ModelForm):
         else:
             super(CreateNewStageManufacturingInWorkForm, self).__init__(*args, **kwargs)
             self.fields['stage_in_batch'] = forms.ModelChoiceField(
-                queryset=stages)
+                queryset=stages, label='Этап производста')
         self.fields['batch'].initial = batch_id
+        self.fields['worker'] = InitialsModelChoiceField(queryset=User.objects.all(), label='Рабочий')
 
     def clean(self):
         batch = self.cleaned_data.get('batch')

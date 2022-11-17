@@ -26,11 +26,12 @@ def get_current_user(request):
 def get_stage_in_work(user, batch_id, operations):
     '''Возвращает id StageManufacturungDetailInWork по username, batch, operations'''
     batch = BatchDetailInPlan.objects.get(id=batch_id)
+    worker = User.objects.get(username=user)
     stage_in_batch_id = StageManufacturingDetail.objects.get(
         detail_id=batch.workshopplan_detail.detail, operations=operations.split()[0]
     )
     stage = StageManufacturingDetailInWork.objects.get(
-        worker=user, batch=batch, stage_in_batch_id=stage_in_batch_id
+        worker=worker, batch=batch_id, stage_in_batch_id=stage_in_batch_id
     )
     return stage
 
@@ -67,8 +68,14 @@ def get_quantity_detail_by_orders(product, detail, user):
         filter(product_id=product.id).filter(detail_id=detail.id)
     return orders
 
+def get_list_all_workers_initials():
+    '''Получает список всех работников(ФИО)'''
+    lst = [worker.surname for worker in User.objects.all()]
+    print(lst)
+    return lst
+
 def get_list_all_workers():
-    '''Получает список всех работников'''
+    '''Получает список всех работников(username)'''
     return User.objects.filter(position__in=['LSM', 'TRN', 'MLR'])
 
 def get_list_locksmith():
@@ -99,5 +106,6 @@ def get_dict_worker_quantity_detail(product, detial, workers) -> dict:
 def get_quantity_detail(worker, product, detail):
     '''Получает колличество деталей по определеным нарядам'''
     return get_quantity_detail_by_orders(worker, product, detail).aggregate(Sum('quantity'))['quantity__sum']
+
 
 

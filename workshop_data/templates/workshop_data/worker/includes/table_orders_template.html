@@ -1,5 +1,6 @@
 {% load test_tag %}
 {% load get_stage_in_work_in_order %}
+{% load order_templatetags %}
 {% load static %}
 
 
@@ -45,7 +46,7 @@
             </td>
             <td>{{ order.operations }}</td>
             <td>
-                <a href="{% url 'stage_work_done' username=user.username batch=order.batch operations=order.operations %}">
+                <a href="{% url 'stage_work_done' username=order.surname batch=order.batch operations=order.operations %}">
                     {% get_stage_in_work_tag user=order.surname batch_id=order.batch.id operations=order.operations %}
                 </a>
             </td>
@@ -57,6 +58,7 @@
             </td>
             <td>{{ order.quantity }}</td>
             <td>{{ order.price }}</td>
+            <td>{% get_cost_per_hour_tag order.id %} руб.</td>
             {% if request.user.position != 'MSR' %}
                 <td>
                     {% include 'workshop_data/worker/includes/button_dropdown_menu.html' %}

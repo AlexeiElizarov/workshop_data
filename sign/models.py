@@ -26,5 +26,9 @@ class User(AbstractUser):
     gender = models.CharField(max_length=2, choices=Gender.choices, default=Gender.MAN)
 
     def __str__(self):
-        return f'{self.surname} {self.name} {self.patronymic}'
+        return f'{self.username}'
 
+    def get_full_name(self):
+        return f'{self.surname} {self.name[0]}.{self.patronymic[0]}.'
+
+# User.add_to_class("__str__", User.add_to_class)
