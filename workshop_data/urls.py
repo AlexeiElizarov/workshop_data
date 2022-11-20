@@ -1,5 +1,6 @@
 from django.urls import path
 from workshop_data.services.services import stage_in_work_ready
+from workshop_data.views.test_views import index
 
 from workshop_data.views.services_view import (
     ProductAutocomplete,
@@ -102,7 +103,8 @@ urlpatterns = [
     path('plan/<year>-<month>/batch-<id>/ready_cancel/', batch_cancel_ready, name='batch_cancel_ready_in_plan'),
     path('plan/<year>-<month>/batch-<id>/ready_complite/', batch_ready_comlite, name='batch_ready_comlite'),
 
-    path('test_view/<username>/<id>/', TimeOfWorkInStage.as_view(), name='order_user_edit_test')
+    path('test_view/<username>/<id>/', TimeOfWorkInStage.as_view(), name='order_user_edit_test'),
+    path('testform/', index, name='testform')
 ]
 
 

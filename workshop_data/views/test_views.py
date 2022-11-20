@@ -1,13 +1,25 @@
 from django import forms
+from django.http import HttpResponse
 from django.shortcuts import render
-from django.urls import reverse_lazy
-from django.views.generic import UpdateView
+from django.views import View
+from django.views.generic import DetailView
 
 from workshop_data.models.order import Order
-from workshop_data.models.stage_manufacturing_detail_in_work import StageManufacturingDetailInWork
-from django.http import JsonResponse
 
-from workshop_data.services import get_stage_in_work
+
+def index(request):
+    return render(request, 'workshop_data/test.html')
+
+class OrderBlankView(DetailView):
+    model = Order
+    context_object_name = 'order'
+    template_name = 'workshop_data/templates/workshop_data/test.html'
+
+
+
+
+
+
 
 
 
