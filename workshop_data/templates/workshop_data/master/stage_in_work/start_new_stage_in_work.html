@@ -14,8 +14,8 @@
             <form method="POST">
                 {% csrf_token %}
                 {{ form.as_p }}
-                <a class="btn btn-success btn" href="javascript:window.print()">Распечатать наряд</a>
-                <input type="submit" value="Отправить" class="btn btn-primary">
+                <input type="submit" name="view" value="Просмотр" class="btn btn-primary">
+                <input type="submit" name="save" value="Сохранить" class="btn btn-primary">
             </form>
         </div>
 

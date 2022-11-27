@@ -1,15 +1,16 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.views.generic import ListView
-from sign.models import User
+from sign.models import User, LIST_POSITION_WORKER
 from workshop_data.models.order import Order
+from workshop_data.services import get_average_price_orders, get_average_price_orders_per_month
 
 
 class WorkerListView(LoginRequiredMixin, ListView):
     '''Отображает страницу всех работников(или выборка по специальности)'''
     model = User
     login_url = '/login/'
-    template_name = 'workshop_data/master/workers_parametr_list.html'
+    template_name = 'workshop_data/master/workers/workers_parametr_list.html'
     context_object_name = 'workers'
 
     def get_context_data(self, *args, **kwargs):
@@ -23,8 +24,8 @@ class WorkerListView(LoginRequiredMixin, ListView):
         return context
 
 
-class WorkerOrdersListForMaster(ListView):
-    '''Показывает все наряды всех работников'''
+class WorkerOrdersListForMaster(LoginRequiredMixin, ListView):
+    '''Показывает наряды работников(все, по месяцам)'''
     model = Order
     login_url = '/login/'
     template_name = 'workshop_data/worker/order/orders_user_parametr_list.html'  # шаблон из OrderUserParametrListView
@@ -32,15 +33,27 @@ class WorkerOrdersListForMaster(ListView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
+        user = User.objects.filter(
+                    surname=self.kwargs['surname'], name=self.kwargs['name'])[0]
         if 'surname' in self.kwargs and 'month' not in self.kwargs:
             context['orders'] = Order.objects.filter(
-                surname_id=User.objects.filter(
-                    surname=self.kwargs['surname'], name=self.kwargs['name'])[0].id)
+                user_id=user.id)
         elif 'month' in self.kwargs:
+            month = self.kwargs['month']
             context['orders'] = Order.objects.filter(
-                surname_id=User.objects.filter(
-                    surname=self.kwargs['surname'], name=self.kwargs['name'])[0].id).filter(
-                month=self.kwargs['month']
-            )
-            context['month'] = context['orders'][0]
+                user_id=user.id).filter(month=self.kwargs['month'])
+            context['month'] = month
+            context['average_price_for_month'] = get_average_price_orders_per_month(user, month)
+        context['average_price'] = get_average_price_orders(user)
+        return context
+
+class WorkerAveragePriceListForMaster(LoginRequiredMixin, ListView):
+    """Отображает страницу работников и их средней расценки по нарядам"""
+    model = Order
+    login_url = '/login/'
+    template_name = 'workshop_data/master/workers/workers_average_price_order.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['workers'] = User.objects.filter(position__in=LIST_POSITION_WORKER)
         return context

@@ -1,0 +1,20 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block title %}
+
+{% endblock title %}
+
+{% block content %}
+    <link rel="stylesheet" href="{% static 'css/master_css/workers_average_price_cost.css' %}" type="text/css">
+    <div class="master-all-workers-data">
+        <div id="master-worker-price-cost-buttons">
+            <a class="btn  btn-outline-success btn-sm" type="button" href="{% url 'master_workers_average_price_list' %}">
+                По средней расценке
+            </a>
+        </div>
+        {% block workers %}
+
+        {% endblock workers %}
+    </div>
+{% endblock content %}

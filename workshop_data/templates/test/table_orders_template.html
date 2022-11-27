@@ -1,38 +1,10 @@
-{% extends 'main.html' %}
-{% load static %}
-% load test_tag %}
+{% load test_tag %}
 {% load get_stage_in_work_in_order %}
 {% load order_templatetags %}
 {% load static %}
 
-{% block title %}
-    Наряды за {{ month }}
-{% endblock title %}
 
-{% block content %}
-    <link rel="stylesheet" href="{% static 'css/worker_css/orders_table.css' %}">
-    <table class="table table-success table-striped">
-        <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">Дата</th>
-                <th scope="col">Месяц</th>
-                <th scope="col">Цех</th>
-                <th scope="col">Фамилия</th>
-                <th scope="col">Партия</th>
-                <th scope="col">Изделие</th>
-                <th scope="col">Деталь</th>
-                <th scope="col">Категория</th>
-                <th scope="col">Операции</th>
-                <th scope="col">Выполнено</th>
-                <th scope="col">Время работы</th>
-                <th scope="col">Колличество</th>
-                <th scope="col">Расценка</th>
-                <th scope="col">Заработок в час</th>
-                <th scope="col">Действия</th>
-            </tr>
-        </thead>
-        <tbody>
+<tbody>
     {% for order in orders %}
         <tr>
             <th scope="row">{{ forloop.counter }}</th>
@@ -99,7 +71,7 @@
                 <div class="time_of_work_form">
                     {% get_time_of_work_tag user=order.user batch_id=order.batch.id operations=order.operations %}
                     {% if request.user.position != 'MSR' %}
-                        {% include 'workshop_data/worker/includes/time_of_work_form.html' %}
+                        {% include 'workshop_data/worker/order/time_of_work_form.html' %}
                     {% endif %}
                 </div>
             </td>
@@ -124,23 +96,13 @@
             <td></td>
             <td></td>
             <td>
-                {% if average_price_per_month %}
-                    {{ average_price_per_month }}
+                {% if average_price_for_month %}
+                    {{ average_price_for_month }}
                 {% elif average_price %}
                     {{ average_price }}
                 {% endif %}
             </td>
-            <td>
-                {% if average_cost_per_hour_per_month >= 0 %}
-                    {{ average_cost_per_hour_per_month }}
-                {% elif average_cost_per_hour %}
-                    {{ average_cost_per_hour }}
-                {% endif %}
-            </td>
+            <td></td>
             <td></td>
         </tr>
-        </tbody>
-
-    </table>
-
-{% endblock content %}
+</tbody>>

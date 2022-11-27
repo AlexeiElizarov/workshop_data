@@ -54,3 +54,6 @@ class BatchFilter(FilterSet):
     class Meta:
         model = BatchDetailInPlan
         fields = ['id']
+
+
+

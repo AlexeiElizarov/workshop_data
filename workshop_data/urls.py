@@ -1,6 +1,6 @@
 from django.urls import path
 from workshop_data.services.services import stage_in_work_ready
-from workshop_data.views.test_views import index
+from workshop_data.views.test_views import index, OrderBlankView
 
 from workshop_data.views.services_view import (
     ProductAutocomplete,
@@ -31,7 +31,7 @@ from workshop_data.views.order_views import (
     OrderDeleteView, TimeOfWorkInStage)
 from workshop_data.views.master_views import (
     WorkerOrdersListForMaster,
-    WorkerListView)
+    WorkerListView, WorkerAveragePriceListForMaster)
 from workshop_data.views.batch_views import (
     CreateBatchDetailInPlan,
     AllBatchDetailInPlanView,
@@ -72,15 +72,17 @@ urlpatterns = [
     path('<username>/<id>/edit/', OrderUserEditView.as_view(), name='order_user_edit'),
     path('<username>/<id>/delete/', OrderDeleteView.as_view(), name='order_user_delete'),
     path('<username>/month_<str:month>/', OrderUserParametrListView.as_view(), name='orders_user_month_list'),
-    path('<username>/product_<str:product>/', OrderUserParametrListView.as_view(), name='orders_user_product_list'),
-    path('<username>/detail_<str:detail>/', OrderUserParametrListView.as_view(), name='orders_user_detail_list'),
-    path('<username>/category_<str:category>/', OrderUserParametrListView.as_view(), name='orders_user_detailcategory_list'),
 
     path('master/workers-all-list/', WorkerListView.as_view(), name='workers_list_all'),
     path('master/workers-LSM-list/', WorkerListView.as_view(), {'LSM': True},  name='workers_LSM_all'),
     path('master/workers-TRN-list/', WorkerListView.as_view(), {'TRN': True},  name='workers_TRN_all'),
-    path('master/orders-<surname>-<name>/', WorkerOrdersListForMaster.as_view(), name='orders-worker-for-master'),
-    path('master/orders-<surname>-<name>/month_<month>/', WorkerOrdersListForMaster.as_view(), name='orders-worker-month-for-master'),
+    path('master/orders-<surname>-<name>/', OrderUserParametrListView.as_view(), name='orders-worker-for-master'),
+    path('master/orders-<surname>-<name>/month_<month>/', OrderUserParametrListView.as_view(), name='orders-worker-month-for-master'),
+    path('master/orders-<surname>-<name>/product_<str:product>/', OrderUserParametrListView.as_view(), name='orders_user_product_list'),
+    path('master/orders-<surname>-<name>/detail_<str:detail>/', OrderUserParametrListView.as_view(), name='orders_user_detail_list'),
+    path('master/orders-<surname>-<name>/category_<str:category>/', OrderUserParametrListView.as_view(), name='orders_user_detailcategory_list'),
+    path('master/workers-average-price/', WorkerAveragePriceListForMaster.as_view(), name='master_workers_average_price_list'),
+
 
     path('master/all-batch-in-plan/', AllBatchDetailInPlanView.as_view(), name='all_batch_in_plan'),
     path('master/create-new-batch/<product>/', CreateBatchDetailInPlan.as_view(), name='create_new_batch'),
@@ -103,8 +105,10 @@ urlpatterns = [
     path('plan/<year>-<month>/batch-<id>/ready_cancel/', batch_cancel_ready, name='batch_cancel_ready_in_plan'),
     path('plan/<year>-<month>/batch-<id>/ready_complite/', batch_ready_comlite, name='batch_ready_comlite'),
 
-    path('test_view/<username>/<id>/', TimeOfWorkInStage.as_view(), name='order_user_edit_test'),
-    path('testform/', index, name='testform')
+    path('test_view/', OrderBlankView.as_view(), name='test_order_form'),
+    path('testform/', index, name='testform'),
+    path('test_view/<username>/<id>/', TimeOfWorkInStage.as_view(), name='order_user_edit_test')
+
 ]
 
 

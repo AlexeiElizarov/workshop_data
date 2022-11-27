@@ -64,15 +64,18 @@ def batch_cancel_ready(request, year, month, id):
 
 def get_quantity_detail_by_orders(product, detail, user):
     '''Получает все наряды определенного работника по определенной детали'''
-    orders = Order.objects.filter(surname=user.id).\
+    orders = Order.objects.filter(user=user.id).\
         filter(product_id=product.id).filter(detail_id=detail.id)
     return orders
 
 def get_list_all_workers_initials():
     '''Получает список всех работников(ФИО)'''
     lst = [worker.surname for worker in User.objects.all()]
-    print(lst)
     return lst
+
+def get_user(user_id):
+    """Получает пользователя по id"""
+    return User.objects.get(id=user_id)
 
 def get_list_all_workers():
     '''Получает список всех работников(username)'''

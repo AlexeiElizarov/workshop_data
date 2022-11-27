@@ -1,0 +1,100 @@
+{% extends 'workshop_data/master/workers/master_workers_main_template.html' %}
+{% load order_templatetags %}
+{% load static %}
+
+{% block title %}
+    ???????
+{% endblock title %}
+
+{% block workers %}
+    <script type="text/javascript" src="{% static 'js/jquery.tablesorter.min.js' %}"></script>
+    <script type="text/javascript">
+       $(document).ready(function() {
+           $("#table-average-price-cost-order").tablesorter();
+       });
+   </script>
+    <table class="table table-success table-striped" id="table-average-price-cost-order">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">ФИО</th>
+            <th>янв</th>
+            <th>фев</th>
+            <th>мар</th>
+            <th>апр</th>
+            <th>май</th>
+            <th>ин</th>
+            <th>ил</th>
+            <th>авг</th>
+            <th>сен</th>
+            <th>окт</th>
+            <th>ноя</th>
+            <th>дек</th>
+            <th scope="col">Средняя расценка нарядов</th>
+            <th>янв</th>
+            <th>фев</th>
+            <th>мар</th>
+            <th>апр</th>
+            <th>май</th>
+            <th>ин</th>
+            <th>ил</th>
+            <th>авг</th>
+            <th>сен</th>
+            <th>окт</th>
+            <th>ноя</th>
+            <th>дек</th>
+            <th scope="col">Средний заработок в час</th>
+
+        </tr>
+        </thead>
+
+        <tbody>
+            {% for worker in workers %}
+            <tr>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>{{ worker.get_full_name }}</td>
+
+                <td>{% get_average_price_orders_per_month_tag worker 1 %}</td>
+                <td>{% get_average_price_orders_per_month_tag worker 2 %}</td>
+                <td>{% get_average_price_orders_per_month_tag worker 3 %}</td>
+                <td>{% get_average_price_orders_per_month_tag worker 4 %}</td>
+                <td>{% get_average_price_orders_per_month_tag worker 5 %}</td>
+                <td>{% get_average_price_orders_per_month_tag worker 6 %}</td>
+                <td>{% get_average_price_orders_per_month_tag worker 7 %}</td>
+                <td>{% get_average_price_orders_per_month_tag worker 8 %}</td>
+                <td>{% get_average_price_orders_per_month_tag worker 9 %}</td>
+                <td>{% get_average_price_orders_per_month_tag worker 10 %}</td>
+                <td>{% get_average_price_orders_per_month_tag worker 11 %}</td>
+                <td>{% get_average_price_orders_per_month_tag worker 12 %}</td>
+
+                <td>{% get_average_price_orders_tag worker %}</td>
+
+                <td>{% get_average_cost_per_hour_per_month_tag worker.id 1 %}</td>
+                <td>{% get_average_cost_per_hour_per_month_tag worker.id 2 %}</td>
+                <td>{% get_average_cost_per_hour_per_month_tag worker.id 3 %}</td>
+                <td>{% get_average_cost_per_hour_per_month_tag worker.id 4 %}</td>
+                <td>{% get_average_cost_per_hour_per_month_tag worker.id 5 %}</td>
+                <td>{% get_average_cost_per_hour_per_month_tag worker.id 6 %}</td>
+                <td>{% get_average_cost_per_hour_per_month_tag worker.id 7 %}</td>
+                <td>{% get_average_cost_per_hour_per_month_tag worker.id 8 %}</td>
+                <td>{% get_average_cost_per_hour_per_month_tag worker.id 9 %}</td>
+                <td>{% get_average_cost_per_hour_per_month_tag worker.id 10 %}</td>
+                <td>{% get_average_cost_per_hour_per_month_tag worker.id 11 %}</td>
+                <td>{% get_average_cost_per_hour_per_month_tag worker.id 12 %}</td>
+
+                <td>{% get_average_cost_per_hour_tag worker.id %}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+
+<script type="text/javascript">
+  $(document).ready(
+    function(){
+      $("#jqtest").html("JQuery installed successfully!");
+    }
+  );
+</script>
+<p id="jqtest"></p>
+{% endblock workers %}

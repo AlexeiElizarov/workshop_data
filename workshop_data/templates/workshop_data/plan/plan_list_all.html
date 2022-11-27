@@ -1,9 +1,84 @@
-{% extends 'workshop_data/plan/plan_main_template.html' %}
+{% extends 'main.html' %}
+{% load static %}
 
 {% block title %}
     План цеха
 {% endblock title %}
 
-{% block data_plan %}
+{% block content %}
+        <link rel="stylesheet" href="{% static 'css/plan/plan.css' %}" type="text/css">
+    <h5>plan/plan_main_template.html</h5>
+    <hr>
+    <div class="filter-wrapper">
+        <form method="GET">
+            <div class="filter">
+                {{ filter.form.product }}
+                {{ filter.form.media }}
+            </div>
+            <div class="input-group mb-3">
+                <div class="input-group-text">
+                    {{ filter.form.month }}
+                    {{ filter.form.media }}
 
-{% endblock data_plan %}
+                </div>
+
+
+            </div>
+            <input type="submit" value="Найти">
+        </form>
+    </div>
+
+    <hr>
+    <h4>План цеха на {% now "F" %} </h4>
+
+    <table class="table table-primary">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Месяц</th>
+            <th scope="col">Изделие</th>
+            <th scope="col">Деталь</th>
+            <th scope="col">Всего - Гос/Ком</th>
+            <th scope="col">В работе</th>
+            <th scope="col">SOS</th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+
+            {% for object in filter.qs %}
+                <tbody>
+    {% ifchanged object.product %}
+    <tr class="table-light">
+        <td></td>
+        <td>    <h5>{{ object.product }}</h5></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+    </tr>
+    {% endifchanged %}
+    <tr class="{% if object.sos == True %}table-danger
+               {% else %}{% endif %}">
+        <th scope="row">{{ forloop.counter }}</th>
+        <td></td>
+        <td>{{ object.get_month_display }}</td>
+        <td><a href="">{{ object.detail }}</a></td>
+        <td>
+            <a href="">{{ object.get_quantity }}</a> -
+            <a href="">{{ object.quantity_state_order }}/{{ object.quantity_commercial_order }}</a>
+        </td>
+        <td><a href="{% url 'batchs_in_plan' object %}">{{ object.get_quantity_for_all_batch }}</a></td>
+        <td><a href="">{{ object.sos }}</a></td>
+        <td>
+            {% include 'workshop_data/plan/includes/button_dropdown_menu_plan.html' %}
+        </td>
+    </tr>
+</tbody>
+
+            {% endfor %}
+
+
+    </table>
+{% endblock content %}

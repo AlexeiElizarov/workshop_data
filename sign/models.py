@@ -1,6 +1,13 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+
+LIST_POSITION_WORKER = [
+    'LSM',
+    'MLR',
+    'TRN'
+]
+
 class User(AbstractUser):
 
     class Gender(models.TextChoices):

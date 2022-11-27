@@ -15,7 +15,7 @@ class OrderForm(forms.ModelForm):
 
         model = Order
         fields = ('month',
-                  'surname',
+                  'user',
                   'product',
                   'detail',
                   'operations',
@@ -45,7 +45,7 @@ class TimeOfWorkInStageForm(forms.ModelForm):
 
     def clean(self):
         time_of_work = self.data['time'] # 'time' - <input  name="time" value="{{ form.time_of_work }}">
-        stage = get_stage_in_work(self.instance.surname,
+        stage = get_stage_in_work(self.instance.user,
                               self.instance.batch.id,
                               self.instance.operations)
         stage.time_of_work = time_of_work

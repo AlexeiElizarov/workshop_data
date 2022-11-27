@@ -1,11 +1,43 @@
-{% extends 'workshop_data/product/product_main_template.html' %}
+{% extends 'main.html' %}
 
 {% block title %}
     Все Изделия
 {% endblock title %}
 
-{% block data_product %}
 
-    {% include 'workshop_data/product/includes/table_body_products_template.html' %}
 
-{% endblock data_product %}
+{% block content %}
+    <h5>'main.html'  >>>  product/product_main_template.html  >>>  product/product_list_all.html</h5>
+    <hr>
+    <form method="GET">
+        {{ filter.form }}
+        {{ filter.form.media }}
+        <input type="submit" value="Найти">
+    </form>
+    <hr>
+    <table class="table table-success table-striped">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Название</th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+            {% for product in filter.qs %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                        <td><a href="{% url 'product_detail_data' product %}">{{ product.name }}</a></td>
+                    <td>
+                        {% include 'workshop_data/product/includes/button_dropdown_menu.html' %}
+                    </td>
+
+                </tr>
+            {% endfor %}
+
+        </tbody>
+    </table>
+
+
+
+{% endblock content %}

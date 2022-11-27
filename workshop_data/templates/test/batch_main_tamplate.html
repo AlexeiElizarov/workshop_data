@@ -1,12 +1,13 @@
 {% extends 'main.html' %}
+{% load test_tag %}
 
 {% block title %}
-    Все партии
+
 {% endblock title %}
 
 {% block content %}
-    <h4>Все Партии</h4>
-    <h5>master/batch/batch_main_tamplate.html</h5>
+
+<h5>master/batch/batch_main_tamplate.html</h5>
     <form method="GET">
         {{ filter.form }}
         {{ filter.form.media }}
@@ -80,9 +81,6 @@
                         </td>
                     </tr>
                 </tbody>
-
             {% endfor %}
 </table>
-
-
 {% endblock content %}

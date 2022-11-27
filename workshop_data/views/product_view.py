@@ -50,6 +50,7 @@ class ProductAddDetailView(UpdateView):
 
 
 class ProductDataView(DetailView):
+    """Отображает Детали входящие в Изделие"""
     model = Product
     template_name = 'workshop_data/product/product_detail_view.html'
     context_object_name = 'product'

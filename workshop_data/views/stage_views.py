@@ -1,5 +1,6 @@
 import datetime
 from django.http import HttpResponseRedirect
+from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, CreateView, UpdateView
 from workshop_data.models.stage_manufacturing_detail import StageManufacturingDetail
@@ -75,12 +76,12 @@ class StageManufacturingDetailInWorkView(CreateView):
             get_dict_worker_quantity_detail(wp_obj.product, wp_obj.detail, get_list_miller())
         return context
 
-    def form_valid(self, form):
+    def form_valid(self,  form):
         self.object = form.save(commit=False)
+        # self.request.session['form'] = self.object
         order_object = Order(
             date=datetime.datetime.now(),
-            month=self.object.batch.workshopplan_detail.month,
-            surname=self.object.worker,
+            user=self.object.worker,
             employee_number=self.object.worker.employee_number,
             batch=self.get_object(),
             product=self.object.batch.workshopplan_detail.product,
@@ -91,10 +92,15 @@ class StageManufacturingDetailInWorkView(CreateView):
             price=self.object.stage_in_batch.price,
             author=self.request.user
         )
-        order_object.save()
-        self.object.author = self.request.user
-        self.object.save()
-        return HttpResponseRedirect(reverse_lazy('start_new_stage_in_work_complete'))
+        args = {}
+        args['order'] = order_object
+        if 'view' in self.request.POST:
+            return render(self.request, 'workshop_data/test.html', args)
+        elif 'save' in self.request.POST:
+            order_object.save()
+            self.object.author = self.request.user
+            self.object.save()
+            return HttpResponseRedirect(reverse_lazy('start_new_stage_in_work_complete'))
 
 
 class EditStageManufacturingDetailInWorkView(UpdateView):

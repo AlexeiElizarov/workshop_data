@@ -5,10 +5,9 @@
     Все сотрудники
 {% endblock title %}
 
-
-    {% block content %}
-<h5>master/workers_main_template.html</h5>
-<hr>
+{% block content %}
+    <h5>master/workers_main_template.html</h5>
+    <hr>
     <table class="table table-success table-striped">
         <thead>
         <tr>
@@ -25,9 +24,7 @@
 
         </tr>
         </thead>
-        {% block data_worker %}
-
-        {% endblock data_worker %}
+        {% include 'workshop_data/master/includes/table_workers_template.html' %}
     </table>
     <!--    <form action="#" method="get">-->
 <!--        <input type="submit" class="btn btn-primary" onclick="" name="mybtn">-->

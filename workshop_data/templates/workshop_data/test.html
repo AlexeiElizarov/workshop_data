@@ -91,7 +91,7 @@ td {
                 <td style="height:22px; width:86px">Участок</td>
             </tr>
             <tr>
-                <td></td>
+                <td>{{ order.date }}</td>
                 <td></td>
                 <td></td>
             </tr>
@@ -108,11 +108,11 @@ td {
                 <td style="height:37px; width:130px">Заказ</td>
             </tr>
             <tr>
-                <td colspan="2" style="height:41px; width:320px"></td>
-                <td style="height:41px; width:94px"></td>
+                <td colspan="2" style="height:41px; width:320px">{{ order.user.get_full_name }}</td>
+                <td style="height:41px; width:94px">{{ order.user.employee_number }}</td>
                 <td style="height:41px; width:94px"></td>
                 <td style="height:41px; width:75px"></td>
-                <td style="height:41px; width:81px"></td>
+                <td style="height:41px; width:81px">{{ order.user.employee_rank }}</td>
                 <td style="height:41px; width:59px"></td>
                 <td style="height:41px; width:130px"></td>
             </tr>
@@ -134,10 +134,10 @@ td {
                 <td style="height:34px; width:132px">Подпись мастера</td>
             </tr>
             <tr>
-                <td style="height:53px"></td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td style="height:53px">{{ order.product }}</td>
+                <td>{{ order.detail }}</td>
+                <td>{{ order.operations.operations }}</td>
+                <td>{{ order.quantity }}</td>
                 <td></td>
             </tr>
         </table>
@@ -160,8 +160,8 @@ td {
             <tr>
                 <td style="height:56px"></td>
                 <td></td>
-                <td></td>
-                <td></td>
+                <td>{{ order.normalized_time }}</td>
+                <td>{{ order.price }}</td>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -184,7 +184,7 @@ td {
                 <td style="height:34px; width:102px">Подпись и клеймо БТК</td>
             </tr>
             <tr>
-                <td style="height:45px"></td>
+                <td style="height:44.5px"></td>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -295,3 +295,4 @@ td {
         </table>
     </div>
 </div>
+<!--<a class="btn btn-success btn" href="javascript:window.print()">Распечатать наряд</a>-->
