@@ -1,0 +1,61 @@
+{% extends 'main.html' %}
+{% load bonus_tag %}
+{% load static %}
+
+{% block title %}
+
+{% endblock title %}
+
+{% block content %}
+    <link rel="stylesheet" href="{% static 'css/style_month_panel.css' %}" type="text/css">
+    <div class="filter-wrapper">
+        <form method="GET">
+            <div class="input-group mb-3">
+                <div class="input-group-text">
+                    <h5 style="margin-right: 10px;">Выбрать месяц</h5>
+                    {{ filter.form.month }}
+                    {{ filter.form.media }}
+                </div>
+            </div>
+            <input type="submit" value="Найти">
+        </form>
+    </div>
+    <table class="table table-primary">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th></th>
+                <th scope="col">Месяц</th>
+                <th scope="col">ФИО</th>
+                <th scope="col">Премия</th>
+            </tr>
+            </thead>
+
+            {% for worker in workers %}
+                <tbody>
+                    {% ifchanged worker.position %}
+                    <tr class="table-light">
+                        <td></td>
+                        <td>    <h5>{{ worker.position }}</h5></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    {% endifchanged %}
+                    <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td></td>
+                        <td>{{ month }}</td>
+                        <td>{{ worker.get_full_name }}</td>
+                        <td>{% if month %}
+                                {% get_all_bonuses_per_month_tag user=worker month=month %}
+                            {% else %}
+                                Выберите месяц
+                            {% endif %}
+                        </td>
+
+                    </tr>
+                    </tbody>
+            {% endfor %}
+        </table>
+{% endblock content %}

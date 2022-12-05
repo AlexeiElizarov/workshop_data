@@ -1,0 +1,16 @@
+{% extends 'main.html' %}
+
+{% block title %}
+    Выписать Премию
+{% endblock title %}
+
+{% block content %}
+    <h4>Новая премия</h4>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        {{ form.media }}
+
+        <input type="submit" value="Сохранить" class="btn btn-primary">
+    </form>
+{% endblock content %}

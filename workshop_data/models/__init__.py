@@ -9,6 +9,7 @@ from workshop_data.models.category_detail import CategoryDetail
 from workshop_data.models.node import Node
 from workshop_data.models.comment import Comment
 from workshop_data.models.workshop_plan import WorkshopPlan
+from workshop_data.models.bonus import Bonus
 
 __all__ = (
     'Product',
@@ -22,6 +23,7 @@ __all__ = (
     'Node',
     'Comment',
     'WorkshopPlan',
+    'Bonus',
 
 )
 

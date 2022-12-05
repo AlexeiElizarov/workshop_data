@@ -38,4 +38,5 @@ class User(AbstractUser):
     def get_full_name(self):
         return f'{self.surname} {self.name[0]}.{self.patronymic[0]}.'
 
-# User.add_to_class("__str__", User.add_to_class)
+
+

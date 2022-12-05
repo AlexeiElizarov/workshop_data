@@ -5,7 +5,7 @@ from django.views.generic import UpdateView, CreateView, DeleteView, ListView
 from workshop_data.models.workshop_plan import WorkshopPlan
 from workshop_data.forms import WorkshopPlanCreateForm, EditWorkshopPlanForm
 from ..filters import WorkshopPlanFilter
-from workshop_data.services.services import current_month
+from workshop_data.services.general_services import current_month
 
 
 class WorkshopPlanView(ListView):

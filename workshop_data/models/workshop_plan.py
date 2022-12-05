@@ -19,6 +19,8 @@ class WorkshopPlan(models.Model):
         default=current_year(), validators=[MinValueValidator(2022), max_value_current_year])
     author = models.ForeignKey(User, on_delete=models.PROTECT, related_name='user_workshopplan')
 
+    objects = models.Manager()
+
     def __str__(self):
         return f'{self.product}_{self.detail}'
 

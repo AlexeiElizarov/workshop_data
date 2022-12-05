@@ -14,5 +14,7 @@ class StageManufacturingDetail(models.Model):
     normalized_time = models.FloatField(default=0, blank=False, verbose_name="Нормированное время")
     price = models.FloatField(default=0, blank=False, verbose_name="Расценка")
 
+    objects = models.Manager()
+
     def __str__(self):
         return f'{self.operations} {self.name}'

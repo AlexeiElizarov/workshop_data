@@ -1,9 +1,10 @@
+from dal import autocomplete
 from django import forms
 
 from sign.forms import User
 from workshop_data.models.stage_manufacturing_detail_in_work import StageManufacturingDetailInWork
 from workshop_data.models.comment import Comment
-from workshop_data.services.services import get_list_all_workers, get_list_all_workers_initials
+from workshop_data.services.general_services import get_list_all_workers, get_list_all_workers_initials
 
 class InitialsModelChoiceField(forms.ModelChoiceField):
     def label_from_instance(self, obj):
@@ -15,7 +16,7 @@ class CreateNewStageManufacturingInWorkForm(forms.ModelForm):
     comment_in_batch = forms.CharField(widget=forms.Textarea)
     class Meta:
         model = StageManufacturingDetailInWork
-        fields = ('batch', 'stage_in_batch', 'worker', 'in_work', 'time_of_work', 'comment_in_batch')
+        fields = ('batch', 'stage_in_batch', 'worker', 'in_work', 'time_of_work_stage', 'comment_in_batch')
         exclude = ('author',)
 
     def __init__(self, *args, **kwargs):
@@ -31,7 +32,10 @@ class CreateNewStageManufacturingInWorkForm(forms.ModelForm):
             self.fields['stage_in_batch'] = forms.ModelChoiceField(
                 queryset=stages, label='Этап производста')
         self.fields['batch'].initial = batch_id
-        self.fields['worker'] = InitialsModelChoiceField(queryset=User.objects.all(), label='Рабочий')
+        self.fields['worker'] = InitialsModelChoiceField(
+            queryset=User.objects.all(),
+            label='Рабочий',
+            widget=autocomplete.ModelSelect2(url='data_autocomplete_worker'))
 
     def clean(self):
         batch = self.cleaned_data.get('batch')

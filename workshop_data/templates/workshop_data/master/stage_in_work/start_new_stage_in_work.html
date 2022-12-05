@@ -14,6 +14,7 @@
             <form method="POST">
                 {% csrf_token %}
                 {{ form.as_p }}
+                {{ form.media }}
                 <input type="submit" name="view" value="Просмотр" class="btn btn-primary">
                 <input type="submit" name="save" value="Сохранить" class="btn btn-primary">
             </form>

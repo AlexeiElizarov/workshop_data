@@ -82,14 +82,21 @@
                                         Добавить
                                     </a>
                                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                        {% if not request.user.profile %}
-                                            <li><a class="dropdown-item" href="{% url 'create_new_product' %}">Изделие</a></li>
-                                            <li><a class="dropdown-item" href="{% url 'create_new_detail' %}">Деталь</a></li>
-
-                                        {% endif %}
+                                        <li><a class="dropdown-item" href="{% url 'create_new_product' %}">Изделие</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'create_new_detail' %}">Деталь</a></li>
                                     </ul>
                                 </li>
 
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Разное
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        <li><a class="dropdown-item" href="{% url 'create_new_bonus' %}">Добавить премию</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'list_bonuses_all_worker' %}">Все бонусы</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'list_all_worker_here_bonuses' %}">Рабочии и премия</a></li>
+                                    </ul>
+                                </li>
                             {% else %}
                                 <li class="nav-item">
                                     <a class="nav-link" href="{% url 'order_user_create' username=user.username %}">Добавить наряд</a>
@@ -97,13 +104,11 @@
 
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        Добавить
+                                        Просмотр
                                     </a>
                                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                        {% if not request.user.profile %}
-                                            <li><a class="dropdown-item" href="{% url 'create_new_product' %}">Изделие</a></li>
-                                            <li><a class="dropdown-item" href="{% url 'create_new_detail' %}">Деталь</a></li>
-                                        {% endif %}
+                                        <li><a class="dropdown-item" href="{% url 'product_list_all' %}">Все Изделия</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'detail_list_all' %}">Все Детали</a></li>
                                     </ul>
                                 </li>
                                 <li class="nav-item">
@@ -129,13 +134,15 @@
             </div>
         </nav>
         <!-- Page content-->
-
+        {% include 'workshop_data/includes/button_back.html' %}
+        {{  user }}
+        <hr>
         <div class="main-block-content">
-            {{  user }}
+
+
             {% block content %}
 
             {% endblock content%}
-            {% include 'workshop_data/includes/button_back.html' %}
         </div>
         <!-- Bootstrap core JS-->
 <!--        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>-->

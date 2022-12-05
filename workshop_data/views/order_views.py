@@ -1,8 +1,9 @@
+import datetime
 from typing import Any
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpRequest
-from django.shortcuts import redirect
+from django.http import HttpRequest, HttpResponseRedirect
+from django.shortcuts import redirect, render
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, DeleteView, UpdateView, ListView
 
@@ -15,7 +16,7 @@ from sign.models import User, LIST_POSITION_WORKER
 from workshop_data.models.stage_manufacturing_detail_in_work import  StageManufacturingDetailInWork
 from workshop_data.services import get_average_price_orders, get_average_price_orders_per_month, \
     get_average_cost_per_hour, get_average_cost_per_hour_per_month
-from workshop_data.services.services import get_stage_in_work
+from workshop_data.services.general_services import get_stage_in_work
 
 
 
@@ -25,17 +26,16 @@ class OrderUserCreateView(LoginRequiredMixin, CreateView):
     form_class = OrderForm
     template_name = 'workshop_data/worker/order_user_create_view.html'
 
-    def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> "HttpResponse":
-        form = self.form_class(request.POST)
-        current_user = request.user
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
         if form.is_valid():
-            order = Order(
-                # date=request.POST['date'],
+            order_object = Order(
+                date=datetime.datetime.now(),
                 month=form.cleaned_data['month'],
                 # workshop=form.cleaned_data['workshop'],
                 # section=form.cleaned_data['section'],
-                surname_id=User.objects.get(username=current_user.username).id,
-                employee_number=current_user.employee_number,
+                user=self.object.user,
+                employee_number=self.object.user.employee_number,
                 product=form.cleaned_data['product'],
                 detail=form.cleaned_data['detail'],
                 operations=form.cleaned_data['operations'],
@@ -44,8 +44,18 @@ class OrderUserCreateView(LoginRequiredMixin, CreateView):
                 price=form.cleaned_data['price'],
                 author_id=self.request.user.id,
             )
-            order.save()
-        return redirect('orders_user_list_all', username=current_user.username)
+        #     order.save()
+        # return redirect('orders_user_list_all', username=current_user.username)
+        args = {}
+        args['order'] = order_object
+        if 'view' in self.request.POST:
+            return render(self.request, 'workshop_data/order_template_for_print.html', args)
+        elif 'save' in self.request.POST:
+            order_object.author =self.request.user
+            order_object.save()
+            # self.object.author = self.request.user
+            # self.object.save()
+            return HttpResponseRedirect(reverse_lazy('start_new_stage_in_work_complete'))
 
 
 class OrderUserParametrListView(LoginRequiredMixin, ListView):
@@ -64,21 +74,21 @@ class OrderUserParametrListView(LoginRequiredMixin, ListView):
             user = User.objects.get(username=self.request.user.username)
         if 'month' in self.kwargs:
             month = self.kwargs['month']
-            context['orders'] = Order.objects.filter(user_id=user.id).filter(month=month)
+            context['orders'] = Order.objects.filter(user_id=user.id).filter(month=month).order_by('date')
             context['month'] = month
             context['average_cost_per_hour_per_month'] = get_average_cost_per_hour_per_month(user.id, month)
             context['average_price_per_month'] = get_average_price_orders_per_month(user, month)
         elif 'product' in self.kwargs:
             context['orders'] = Order.objects.filter(user_id=user.id). \
-                filter(product_id=Product.objects.get(name=self.kwargs['product']))
+                filter(product_id=Product.objects.get(name=self.kwargs['product'])).order_by('date')
         elif 'detail' in self.kwargs:
             context['orders'] = Order.objects.filter(user_id=user.id). \
-                filter(detail_id=Detail.objects.get(name=self.kwargs['detail']))
+                filter(detail_id=Detail.objects.get(name=self.kwargs['detail'])).order_by('date')
         elif 'category' in self.kwargs:
             context['orders'] = Order.objects.filter(user_id=user.id). \
-                filter(detail__category__name=self.kwargs['category'])
+                filter(detail__category__name=self.kwargs['category']).order_by('date')
         else:
-            context['orders'] = Order.objects.filter(user_id=user.id)
+            context['orders'] = Order.objects.filter(user_id=user.id).order_by('date')
         context['average_price'] = get_average_price_orders(user)
         context['average_cost_per_hour'] = get_average_cost_per_hour(user.id)
         return context

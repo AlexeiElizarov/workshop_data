@@ -8,7 +8,7 @@ from django.conf import settings
 import django.core.validators
 from django.db import migrations, models
 import django.db.models.deletion
-import workshop_data.services.services
+import workshop_data.services.general_services
 
 
 class Migration(migrations.Migration):

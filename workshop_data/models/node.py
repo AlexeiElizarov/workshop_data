@@ -19,5 +19,7 @@ class Node(models.Model):
         related_name='node'
     )
 
+    objects = models.Manager()
+
     def __str__(self):
         return f'{self.name}уз'

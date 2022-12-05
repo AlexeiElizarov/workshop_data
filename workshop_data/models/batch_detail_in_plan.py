@@ -16,7 +16,9 @@ class BatchDetailInPlan(models.Model):
                                 null=True,
                                 verbose_name='Комментарий'
                                 )
-    author = models.ForeignKey(User, on_delete=models.PROTECT, related_name='uesr_batch')
+    author = models.ForeignKey(User, on_delete=models.PROTECT, related_name='user_batch')
+
+    objects = models.Manager()
 
     class Meta:
         verbose_name = "Партия"

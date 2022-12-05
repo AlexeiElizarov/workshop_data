@@ -1,0 +1,7 @@
+{% extends 'main.html' %}
+
+{% block content %}
+    <h5>Добавлена премия {{ bonus }}руб. рабочему {{ worker.get_full_name }}</h5>
+    <hr>
+    <a href="{% url 'create_new_bonus' %}" class="btn btn-primary">Новая премия</a>
+{% endblock content %}

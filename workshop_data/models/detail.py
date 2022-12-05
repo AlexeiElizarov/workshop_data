@@ -12,5 +12,7 @@ class Detail(models.Model):
         null=True,
         verbose_name='Категория')
 
+    objects = models.Manager()
+
     def __str__(self):
         return f'{self.name}'

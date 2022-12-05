@@ -1,4 +1,6 @@
 import datetime
+
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse_lazy
@@ -18,7 +20,7 @@ from workshop_data.services import (
     get_dict_worker_quantity_detail)
 
 
-class StageManufacturingDetailInWorkInPlanView(DetailView):
+class StageManufacturingDetailInWorkInPlanView(LoginRequiredMixin, DetailView):
     '''Все Этапы производства определенной Партии'''
     model = StageManufacturingDetailInWork
     template_name = 'workshop_data/master/stage_in_work/all_stage_batch_in_work.html'
@@ -43,7 +45,7 @@ class StageManufacturingDetailInWorkInPlanView(DetailView):
         self.object.save()
 
 
-class StageManufacturingDetailInWorkView(CreateView):
+class StageManufacturingDetailInWorkView(LoginRequiredMixin, CreateView):
     '''Запуска в производство определенного Этапа изготовления Партии Детали'''
     model = StageManufacturingDetailInWork
     form_class = CreateNewStageManufacturingInWorkForm
@@ -78,7 +80,6 @@ class StageManufacturingDetailInWorkView(CreateView):
 
     def form_valid(self,  form):
         self.object = form.save(commit=False)
-        # self.request.session['form'] = self.object
         order_object = Order(
             date=datetime.datetime.now(),
             user=self.object.worker,
@@ -95,15 +96,15 @@ class StageManufacturingDetailInWorkView(CreateView):
         args = {}
         args['order'] = order_object
         if 'view' in self.request.POST:
-            return render(self.request, 'workshop_data/test.html', args)
+            return render(self.request, 'workshop_data/order_template_for_print.html', args)
         elif 'save' in self.request.POST:
+            order_object.author = self.request.user
             order_object.save()
-            self.object.author = self.request.user
             self.object.save()
             return HttpResponseRedirect(reverse_lazy('start_new_stage_in_work_complete'))
 
 
-class EditStageManufacturingDetailInWorkView(UpdateView):
+class EditStageManufacturingDetailInWorkView(LoginRequiredMixin, UpdateView):
     '''Отображает страницу редактирования запуска Этапа'''
     model = StageManufacturingDetailInWork
     form_class = CreateNewStageManufacturingInWorkForm
@@ -167,7 +168,7 @@ class EditStageManufacturingDetailInWorkView(UpdateView):
         return HttpResponseRedirect(reverse_lazy('start_new_stage_in_work_complete'))
 
 
-class EditStageInDetailView(UpdateView):
+class EditStageInDetailView(LoginRequiredMixin, UpdateView):
     '''Отображает страницу редактирования Этапа в Детали'''
     model = StageManufacturingDetail
     form_class = EditStageInDetailForm
@@ -179,7 +180,7 @@ class EditStageInDetailView(UpdateView):
         return obj
 
 
-class StageInDetailView(DetailView):
+class StageInDetailView(LoginRequiredMixin, DetailView):
     '''Просмотр всех Этапов производства Детали'''
     model = StageManufacturingDetail
     template_name = 'workshop_data/detail/stage/stage_in_detail_all.html'
@@ -194,7 +195,7 @@ class StageInDetailView(DetailView):
         return context
 
 
-class AddStageInDeatailVeiw(CreateView):
+class AddStageInDeatailVeiw(LoginRequiredMixin, CreateView):
     '''Добавление Этапа к Детали'''
     model = StageManufacturingDetail
     form_class = AddStageInDeatailForm

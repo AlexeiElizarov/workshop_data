@@ -85,19 +85,19 @@
 
             {% if request.user.position == 'MSR' %}
             <td>
-                {% get_stage_in_work_tag user=order.user batch_id=order.batch.id operations=order.operations %}
+                {% get_stage_in_work_done_tag order=order user=order.user batch_id=order.batch.id operations=order.operations %}
             </td>
             {% else %}
             <td>
                 <a href="{% url 'stage_work_done' username=order.user batch=order.batch operations=order.operations %}">
-                    {% get_stage_in_work_tag user=order.user batch_id=order.batch.id operations=order.operations %}
+                    {% get_stage_in_work_done_tag order=order user=order.user batch_id=order.batch.id operations=order.operations %}
                 </a>
             </td>
             {% endif %}
 
             <td>
                 <div class="time_of_work_form">
-                    {% get_time_of_work_tag user=order.user batch_id=order.batch.id operations=order.operations %}
+                    {% get_time_of_work_stage_or_order_tag order=order %}
                     {% if request.user.position != 'MSR' %}
                         {% include 'workshop_data/worker/includes/time_of_work_form.html' %}
                     {% endif %}
@@ -105,7 +105,9 @@
             </td>
             <td>{{ order.quantity }}</td>
             <td>{{ order.price }}</td>
-            <td>{% get_cost_per_hour_tag order.id %} руб.</td>
+            <td>
+                {% get_cost_per_hour_tag order.id %} руб.
+            </td>
             <td>{% include 'workshop_data/worker/includes/button_dropdown_menu.html' %}</td>
         </tr>
     {% endfor %}

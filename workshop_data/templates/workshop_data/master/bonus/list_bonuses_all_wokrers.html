@@ -1,0 +1,84 @@
+{% extends 'main.html' %}
+{% load bonus_tag %}
+{% load static %}
+
+{% block title %}
+    Общаяя премия
+{% endblock title %}
+for bonus in bonuses|dictsort:"worker.position"
+{% block content %}
+    <link rel="stylesheet" href="{% static 'css/style_month_panel.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/master_css/bonus/bonus.css' %}" type="text/css">
+    <div class="filter-wrapper">
+        <form method="GET">
+            <div class="input-group mb-3">
+                <div class="input-group-text">
+                    <h5 style="margin-right: 10px;">Выбрать месяц</h5>
+                    {{ filter.form.month }}
+                    {{ filter.form.media }}
+                </div>
+            </div>
+            <input type="submit" value="Найти">
+        </form>
+    </div>
+
+    <div class="wrapper-table-list-all-bonus">
+        <table class="table table-primary">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th></th>
+                <th scope="col">Месяц</th>
+                <th scope="col">Дата</th>
+                <th scope="col">ФИО</th>
+                <th scope="col">Комментарий</th>
+                <th scope="col">Затраченное время</th>
+                <th scope="col">Количество</th>
+                <th>Общаяя премия за месяц</th>
+            </tr>
+            </thead>
+
+            {% for bonus in filter.qs|dictsort:"worker.position" %}
+            <tbody>
+            {% ifchanged bonus.worker.position %}
+            <tr class="table-light">
+                <td></td>
+                <td><h5>{{ bonus.worker.position }}</h5></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            {% endifchanged %}
+            <tr>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td></td>
+                <td>
+                    {% if bonus.month == 13 %}
+                    <a href="{% url 'update-bonus' bonus.id %}" style="color: red">{{ bonus.get_month_display }}</a>
+                    {% else %}
+                    <a href="">
+                        {{ bonus.get_month_display }}
+                    </a>
+                    {% endif %}
+                </td>
+                <td>{{ bonus.date }}</td>
+                <td><a href="">{{ bonus.worker.get_full_name }}</a></td>
+                <td><a  title="{{ bonus.comment.body }}" href="">{{ bonus.comment.body|truncatechars:9 }}</a></td>
+                <td><a href="">{{ bonus.time }}</a></td>
+                <td><a href="">{{ bonus.quantity }}</a></td>
+                <td><a style="{% if bonus.month == 13 %} color: red {% endif %}"
+                       href="{% url 'update-bonus' bonus.id %}">
+                    {% get_all_bonuses_per_month_tag user=bonus.worker month=bonus.month %}
+                </a></td>
+            </tr>
+            </tbody>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock content %}
+<tr class="{% if batch.sos == True %}table-danger
+                   {% else %}{% endif %}">
