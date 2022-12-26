@@ -3,9 +3,15 @@
         Инструменты
     </button>
     <ul class="dropdown-menu">
-
-        <li><a class="dropdown-item" href="">Удалить</a></li>
+        {% if product %}
+            <li><a class="dropdown-item" href="{% url 'delete_detail_from_product' product=product detail=detail%}">
+                Удалить Деталь из {{ product }}</a>
+            </li>
+        {% else %}
+            <li><a class="dropdown-item" href="{% url 'detail_delete' id=detail.id %}">Удалить</a></li>
+        {% endif %}
         <li><a class="dropdown-item" href="{% url 'add_stage_in_detail' detail.id %}">Добавить этап в Деталь</a></li>
         <li><a class="dropdown-item" href="{% url 'all_stage_in_detail' detail.id %}">Просмотр всех Этапов</a></li>
+        <li><a class="dropdown-item" href="{% url 'add_image_in_detail' detail %}">Добавить изображение</a></li>
     </ul>
 </div>

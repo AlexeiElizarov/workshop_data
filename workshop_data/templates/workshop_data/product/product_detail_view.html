@@ -1,11 +1,35 @@
-{% extends 'workshop_data/detail/detail_main_template.html' %}
+{% extends 'main.html' %}
 
 {% block title %}
     Детали {{ product }}
 {% endblock title %}
 
-{% block data_detail %}
-    {% for detail in details %}
-        {% include 'workshop_data/detail/includes/table_header_details_template.html' %}
-    {% endfor %}
-{% endblock data_detail %}
+{% block content %}
+    <h3>{{ product }}</h3>
+        <table class="table table-success table-striped">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Название</th>
+                <th scope="col">Категория</th>
+                <th scope="col"></th>
+                <th scope="col"></th>
+            </tr>
+            </thead>
+            {% for detail in details %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ detail.name }}</td>
+                    <td>{{ detail.category }}</td>
+                    <td><a href="{% url 'image_detail' detail %}">Изображение</a></td>
+
+                    <td>
+                        {% block product_list %}
+                            {% include 'workshop_data/detail/includes/button_dropdown_menu.html' %}
+                        {% endblock product_list %}
+                    </td>
+
+                </tr>
+            {% endfor %}
+        </table>
+{% endblock content %}

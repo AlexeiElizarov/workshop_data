@@ -10,6 +10,9 @@ from workshop_data.models.node import Node
 from workshop_data.models.comment import Comment
 from workshop_data.models.workshop_plan import WorkshopPlan
 from workshop_data.models.bonus import Bonus
+from workshop_data.models.statement_about_job_over_detail import (
+    StatementAboutJobOverDetail,
+    ResolutionForStatementAboutJobOverDetail)
 
 __all__ = (
     'Product',
@@ -24,6 +27,8 @@ __all__ = (
     'Comment',
     'WorkshopPlan',
     'Bonus',
+    'StatementAboutJobOverDetail',
+    'ResolutionForStatementAboutJobOverDetail',
 
 )
 

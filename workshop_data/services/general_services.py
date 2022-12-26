@@ -6,6 +6,8 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from sign.models import User
+from workshop_data.models.statement_about_job_over_detail import ResolutionForStatementAboutJobOverDetail, \
+    StatementAboutJobOverDetail
 from workshop_data.models.batch_detail_in_plan import BatchDetailInPlan
 from workshop_data.models.stage_manufacturing_detail_in_work import StageManufacturingDetailInWork
 from workshop_data.models.stage_manufacturing_detail import StageManufacturingDetail
@@ -40,11 +42,11 @@ def get_stage_in_work(user, batch_id, operations):
             detail_id=batch.workshopplan_detail.detail, operations=operations.split()[0]
         )
         stage = StageManufacturingDetailInWork.objects.get(
-            worker=user, batch=batch_id, stage_in_batch_id=stage_in_batch_id
+            worker=get_user_by_username(user), batch=batch, stage_in_batch_id=stage_in_batch_id
         )
         return stage
     except ObjectDoesNotExist:
-        stage = None
+        return None
 
 
 def stage_in_work_ready(request, username, batch, operations):
@@ -54,6 +56,18 @@ def stage_in_work_ready(request, username, batch, operations):
     stage.save()
     return HttpResponseRedirect(reverse_lazy('orders_user_month_list',
                                              kwargs={'month': current_month(), 'username': username}))
+
+
+def resolution_statement_about_job_over_detail(request, id, username):
+    """Реализует одобрение или нет заявления на работу с Деталью"""
+    statement = StatementAboutJobOverDetail.objects.get(id=id)
+    resolute = statement.resolute.first()
+    resolute.resolution = True if resolute.resolution == False else True
+    resolute.master = User.objects.get(username=username)
+    resolute.date_approval = datetime.date.today()
+    resolute.save()
+    return HttpResponseRedirect(reverse_lazy('list_all_resolution_or_not_detail',
+                                             kwargs={'username': username}))
 
 
 def batch_ready(request, year, month, id):
@@ -81,7 +95,12 @@ def get_list_all_workers_initials():
 
 def get_user(user_id):
     """Получает пользователя по id"""
-    return User.objects.get(id=user_id)
+    return get_object_or_404(User, id=user_id)
+
+
+def get_user_by_username(username):
+    """Получает user по username"""
+    return get_object_or_404(User, username=username)
 
 
 def get_list_all_workers():
@@ -106,11 +125,10 @@ def get_list_miller():
 
 def get_dict_worker_quantity_detail(product, detail, workers) -> dict:
     """
-    Получает колличество определенных деталей у всех работников из списка.
+    Получает количество определенных деталей у всех работников из списка.
     Возвращает словарь {worker: quantity}
     """
     dict_workers_quantity = {}
-    print(workers)
     for worker in workers:
         quantity = 0
         dict_workers_quantity[worker.surname] = quantity
@@ -120,7 +138,7 @@ def get_dict_worker_quantity_detail(product, detail, workers) -> dict:
 
 
 def get_quantity_detail(worker, product, detail):
-    """Получает колличество деталей по определеным нарядам"""
+    """Получает количество деталей по определенным нарядам"""
     return get_all_orders_per_detail_per_worker(worker, product, detail).aggregate(Sum('quantity'))['quantity__sum']
 
 
@@ -205,9 +223,9 @@ def get_all_orders_per_detail_per_worker(product, detail, user):  # FIXME
         return 0
 
 
-def get_time_of_work(order_id):
+def get_time_of_work(id):
     """Возвращает время работы(time_of_work) из StageManufacturingDetailInWork или из Order"""
-    order = get_order_by_id(order_id)
+    order = get_order_by_id(id)
     try:
         time_of_work = get_stage_in_work(order.user, order.batch.id, order.operations).time_of_work_stage
         return time_of_work

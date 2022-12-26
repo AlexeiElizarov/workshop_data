@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
 def product_create_complite(request):
-    return render(request, 'workshop_data/worker/product_create_complete.html')
+    return render(request, 'workshop_data/product/product_create_complete.html')
 
 
 def detaile_create_complite(request):

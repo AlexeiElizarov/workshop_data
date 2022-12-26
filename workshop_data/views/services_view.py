@@ -6,7 +6,6 @@ from sign.models import User, LIST_POSITION_WORKER
 
 class WorkerAutocomplete(autocomplete.Select2QuerySetView):
     """Реализует поле авто подсказки Рабочего по вводимым символам"""
-
     def get_result_label(self, result):
         """Меняет __str__() представление модели на get_full_name()"""
         return result.get_full_name()

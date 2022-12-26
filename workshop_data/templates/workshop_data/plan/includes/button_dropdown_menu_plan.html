@@ -7,20 +7,27 @@
         {% if request.user.position == 'MSR' %}
             <li>
                 <a class="dropdown-item"
-                   href="{% url 'update_object_from_workshopplan' current_year current_month object %}">
-                    Редактировать
-                </a>
-            </li>
-            <li>
-                <a class="dropdown-item"
                    href="{% url 'create_new_batch' object %}">
                     Новая партия
                 </a>
             </li>
             <li>
                 <a class="dropdown-item"
+                   href="{% url 'add_existing_batch_in_plan' object %}">
+                    Добавить существующую партию
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item"
                    href="{% url 'delete_object_from_workshopplan' year=current_year month=current_month object=object %}">
                     Удалить
+                </a>
+            </li>
+        {% elif request.user.position == 'PDB' %}
+            <li>
+                <a class="dropdown-item"
+                   href="{% url 'update_object_from_workshopplan' current_year current_month object %}">
+                    Редактировать
                 </a>
             </li>
         {% endif %}

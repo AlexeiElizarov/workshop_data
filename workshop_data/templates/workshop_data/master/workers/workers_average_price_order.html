@@ -1,4 +1,4 @@
-{% extends 'workshop_data/master/workers/master_workers_main_template.html' %}
+{% extends 'main.html' %}
 {% load order_templatetags %}
 {% load static %}
 
@@ -6,7 +6,7 @@
     ???????
 {% endblock title %}
 
-{% block workers %}
+{% block content %}
     <script type="text/javascript" src="{% static 'js/jquery.tablesorter.min.js' %}"></script>
     <script type="text/javascript">
        $(document).ready(function() {
@@ -97,4 +97,4 @@
   );
 </script>
 <p id="jqtest"></p>
-{% endblock workers %}
+{% endblock content %}

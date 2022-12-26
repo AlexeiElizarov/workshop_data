@@ -1,16 +1,19 @@
+import time
 from typing import Any
 
-from django.http import HttpRequest
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpRequest, HttpResponseRedirect
 from django.shortcuts import redirect
-from django.urls import reverse_lazy
-from django.views.generic import ListView, CreateView, UpdateView, DetailView
+from django.urls import reverse_lazy, reverse
+from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
 
-from ..models import Product, Detail
-from ..filters import ProductFilter
-from ..forms import ProductCreateForm, ProductAddDetailForm
+from workshop_data.models import Product, Detail
+from workshop_data.filters import ProductFilter
+from workshop_data.forms import ProductCreateForm, ProductAddDetailForm
 
-class ProductAllView(ListView):
-    '''Отображает страницу со всеми Изделиями'''
+
+class ProductAllView(LoginRequiredMixin, ListView):
+    """Отображает страницу со всеми Изделиями"""
     model = Product
     template_name = 'workshop_data/product/product_list_all.html'
     context_object_name = 'products'
@@ -21,35 +24,56 @@ class ProductAllView(ListView):
         return context
 
 
-class ProductCreateView(CreateView):
-    '''Отображает страницу создания нового Изделия'''
+class ProductCreateView(LoginRequiredMixin, CreateView):
+    """Отображает страницу создания нового Изделия"""
     model = Product
     form_class = ProductCreateForm
-    template_name = 'workshop_data/worker/product_create.html'
-    success_url = reverse_lazy('create_new_product_complite')
+    template_name = 'workshop_data/product/product_create.html'
+    success_url = reverse_lazy('create_new_product_complete')
+
+    def post(self, request, *args, **kwargs):
+        new_product = super(ProductCreateView, self).post(request, *args, **kwargs)
+        if "save_and_continue" in request.POST:
+            new_product = HttpResponseRedirect(reverse('create_new_product'))
+            time.sleep(1)
+        return new_product
+
+    def get_success_url(self):
+        if "save_and_continue" in self.request.POST:
+            return reverse('create_new_product')
+        return super(ProductCreateView, self).get_success_url()
 
 
-class ProductAddDetailView(UpdateView):
-    '''Отображает страницу добавления Детали в  Изделия'''
+class ProductAddDetailView(LoginRequiredMixin, UpdateView):
+    """Отображает страницу добавления Детали в Изделия"""
     model = Product
     form_class = ProductAddDetailForm
     template_name = 'workshop_data/product/product_add_detail.html'
-    success_url = reverse_lazy('product_add_detail_complite')
+    success_url = reverse_lazy('product_add_detail_complete')
 
     def get_object(self, **kwargs):
         obj = Product.objects.get(name=self.kwargs['product'])
         return obj
 
-    def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> "HttpResponse":
+    # def get_initial(self):
+    #     initial = super(ProductAddDetailView, self).get_initial()
+    #     initial.update(
+    #         {'name': self.get_object()}
+    #     )
+    #     return initial
+
+    def form_valid(self, form):
         obj = self.get_object()
-        if request.method == "POST":
-            form = self.form_class(request.POST)
-            detail_id = Detail.objects.get(id=form.data['detail'])
-            obj.detail.add(detail_id)
-        return redirect('product_add_detail_complite')
+        form = self.form_class(self.request.POST)
+        added_detail = Detail.objects.get(id=form.data['detail'])
+        obj.detail.add(added_detail)
+        if "save_and_continue" in self.request.POST:
+            time.sleep(.5)
+            return HttpResponseRedirect(reverse('product_add_detail', kwargs={'product': self.get_object()}))
+        return redirect('product_add_detail_complete')
 
 
-class ProductDataView(DetailView):
+class ProductDataView(LoginRequiredMixin, DetailView):
     """Отображает Детали входящие в Изделие"""
     model = Product
     template_name = 'workshop_data/product/product_detail_view.html'
@@ -64,3 +88,32 @@ class ProductDataView(DetailView):
         context['details'] = self.get_object().detail.all()
         return context
 
+
+class ProductDeleteView(LoginRequiredMixin, DeleteView):
+    """Вьюха удаления Изделия"""
+    model = Product
+    template_name = 'workshop_data/product/delete_product.html'
+    success_url = reverse_lazy('product_list_all')
+
+    def get_object(self, queryset=None):
+        name = self.kwargs.pop('product_name')
+        obj = Product.objects.get(name=name)
+        return obj
+
+
+class DeleteDetailFromProductView(LoginRequiredMixin, DeleteView):
+    """Удаление Детали из Изделия"""
+    model = Product
+    template_name = 'workshop_data/product/delete_detail_from_product.html'
+    success_url = reverse_lazy('product_detail_data')
+
+    def get_object(self, queryset=None):
+        return Product.objects.get(name=self.kwargs.get('product'))
+
+    def post(self, request, *args, **kwargs):
+        detail = Detail.objects.get(name=self.kwargs.get('detail'))
+        self.get_object().detail.remove(detail)
+        return HttpResponseRedirect(reverse(
+            'product_detail_data',
+            kwargs={'product': self.get_object()}
+        ))

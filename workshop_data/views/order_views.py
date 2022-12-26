@@ -13,15 +13,12 @@ from workshop_data.models.product import Product
 from workshop_data.models.detail import Detail
 from workshop_data.forms import OrderForm
 from sign.models import User, LIST_POSITION_WORKER
-from workshop_data.models.stage_manufacturing_detail_in_work import  StageManufacturingDetailInWork
 from workshop_data.services import get_average_price_orders, get_average_price_orders_per_month, \
     get_average_cost_per_hour, get_average_cost_per_hour_per_month
-from workshop_data.services.general_services import get_stage_in_work
-
 
 
 class OrderUserCreateView(LoginRequiredMixin, CreateView):
-    '''Отображает страницу заполнения нового наряда'''
+    """Отображает страницу заполнения нового наряда"""
     model = Order
     form_class = OrderForm
     template_name = 'workshop_data/worker/order_user_create_view.html'
@@ -51,7 +48,7 @@ class OrderUserCreateView(LoginRequiredMixin, CreateView):
         if 'view' in self.request.POST:
             return render(self.request, 'workshop_data/order_template_for_print.html', args)
         elif 'save' in self.request.POST:
-            order_object.author =self.request.user
+            order_object.author = self.request.user
             order_object.save()
             # self.object.author = self.request.user
             # self.object.save()
@@ -59,7 +56,7 @@ class OrderUserCreateView(LoginRequiredMixin, CreateView):
 
 
 class OrderUserParametrListView(LoginRequiredMixin, ListView):
-    '''Отображает наряды пользователя фильтруя их в зависимости от переданного параметра'''
+    """Отображает наряды пользователя фильтруя их в зависимости от переданного параметра"""
     model = Order
     login_url = '/login/'
     context_object_name = 'orders'
@@ -95,7 +92,7 @@ class OrderUserParametrListView(LoginRequiredMixin, ListView):
 
 
 class OrderUserEditView(LoginRequiredMixin, UpdateView):
-    '''Редактирование наряда'''
+    """Редактирование наряда"""
     template_name = 'workshop_data/worker/order_user_create_view.html'
     form_class = OrderForm
 
@@ -108,13 +105,9 @@ class OrderUserEditView(LoginRequiredMixin, UpdateView):
         id = self.kwargs.get('id')
         return Order.objects.get(pk=id)
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return context
-
 
 class OrderDeleteView(LoginRequiredMixin, DeleteView):
-    '''Удаление наряда'''
+    """Удаление наряда"""
     template_name = 'workshop_data/worker/order_user_delete_view.html'
     queryset = Order.objects.all()
 

@@ -27,9 +27,6 @@ class CreateNewBonusView(LoginRequiredMixin, CreateView):
         object = form.save(commit=False)
         object.author = self.request.user
         if object.time:
-            print()
-            print(get_average_cost_per_hour(object.worker.id))
-            print()
             object.quantity = object.time * get_average_cost_per_hour(object.worker.id)
         elif object.quantity:
             object.time = 0

@@ -6,11 +6,11 @@ from workshop_data.models.workshop_plan import WorkshopPlan
 
 
 class WorkshopPlanCreateForm(forms.ModelForm):
-    '''Отображает форму создания нового Плана'''
+    """Отображает форму создания нового Плана"""
     class Meta:
         model = WorkshopPlan
         fields = '__all__'
-        exclude= ('author',)
+        exclude= ('author', 'in_work',)
         widgets = {
             'product': autocomplete.ModelSelect2(url='data_autocomplete_product'),
             'detail': autocomplete.ModelSelect2(url='data_autocomplete_detail'),
@@ -31,7 +31,17 @@ class WorkshopPlanCreateForm(forms.ModelForm):
 
 
 class EditWorkshopPlanForm(forms.ModelForm):
-    '''Отображает форму редактирования Детали в Плане'''
+    """Отображает форму редактирования Детали в Плане"""
     class Meta:
         model = WorkshopPlan
         fields = '__all__'
+
+
+class WorkshopPlanAddExistingBatchForm(forms.ModelForm):
+    """Форма добавления существующей партии в план"""
+    batch = forms.IntegerField(
+        label='Номер существующей партии'
+    )
+    class Meta:
+        model = WorkshopPlan
+        fields = ('product', 'detail',)

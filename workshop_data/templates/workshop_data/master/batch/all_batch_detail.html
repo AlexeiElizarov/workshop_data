@@ -1,0 +1,22 @@
+{% extends 'main.html' %}
+
+{% block title %}
+    Все партии
+{% endblock title %}
+
+{% block content %}
+    <h4>Все Партии</h4>
+    <form method="GET">
+        {{ filter.form }}
+        {{ filter.form.media }}
+        <input type="submit" value="Найти">
+    </form>
+    <hr>
+
+    <table class="table table-primary">
+        {% include 'workshop_data/master/batch/includes/table_header_all_batch.html' %}
+        {% for batch in filter.qs %}
+            {% include 'workshop_data/master/batch/includes/tabel_body_all_batch.html' %}
+        {% endfor %}
+    </table>
+{% endblock content %}

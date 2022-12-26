@@ -1,12 +1,11 @@
 {% extends 'main.html' %}
 
 {% block title %}
-    Все партии
+    Все партии {{ object }}
 {% endblock title %}
 
 {% block content %}
     <h4>Все Партии</h4>
-    <h5>master/batch/batch_main_tamplate.html</h5>
     <form method="GET">
         {{ filter.form }}
         {{ filter.form.media }}
@@ -18,71 +17,18 @@
     <p></p>
 
     <table class="table table-primary">
-        <thead>
-        <tr>
-            <th scope="col">#</th>
-            <th scope="col"></th>
-            <th scope="col"></th>
-            <th scope="col">Партия</th>
-            <th scope="col">Изделие-Деталь</th>
-            <th scope="col">Колличество в партии</th>
-            <th scope="col">SOS</th>
-            <th scope="col">Комментарий</th>
-            <th scope="col">Этап</th>
-            <th scope="col">Исполнитель</th>
-            <th scope="col"></th>
-            <th scope="col"></th>
-        </tr>
-        </thead>
+        {% include 'workshop_data/master/batch/includes/table_header_all_batch.html' %}
+        {% for batch in batchs_in_plan %}
+            {% include 'workshop_data/master/batch/includes/tabel_body_all_batch.html' %}
+        {% endfor %}
+    </table>
 
-            {% for batch in batchs_in_plan %}
-                <tbody>
-                    {% ifchanged batch.workshopplan_detail %}
-                    <tr class="table-light">
-                        <td></td>
-                        <td>    <h5>{{ batch.workshopplan_detail }}</h5></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    {% endifchanged %}
-                    <tr class="{% if batch.sos == True %}table-danger
-                               {% elif batch.ready == True %}table-success{% endif %}">
-                        <th scope="row">{{ forloop.counter }}</th>
-                        <td></td>
-                        <td></td>
-                        <td>{{ batch.id }}</td>
-
-                        <td>{{ batch.workshopplan_detail }}</td>
-                        <td><a href="{% url 'all_stage_this_batch' id=batch.id %}">{{ batch.quantity_in_batch }}</a></td>
-                        <td><a href="">{{ batch.sos }}</a></td>
-                        <td><a href="">{{ batch.comment.body }}</a></td>
-                        <td>
-                            <a href="{% url 'all_stage_this_batch' id=batch.id %}">
-                                {{ batch.stages.all.last.stage_in_batch }}
-                            </a>
-                        </td>
-                        <td>
-                            <a href="{% url 'edit_start_new_stage_in_work' batch %}">
-                                {{ batch.stages.all.last.worker.get_full_name }}
-                            </a>
-                        </td>
-                        <td><a href=""></a>{{ batch.stages.all.last.worker }}</td>
-                        <td>
-                            {% include 'workshop_data/master/batch/includes/button_dropdown_menu_batch.html' %}
-                        </td>
-                    </tr>
-                </tbody>
-
-            {% endfor %}
-</table>
-
+    <div class="wrapper-button">
+        <a class="btn btn-outline-success btn-sm"
+           type="button"
+           href="{% url 'create_new_batch' object %}">
+            Добавить партию
+        </a>
+    </div>
 
 {% endblock content %}

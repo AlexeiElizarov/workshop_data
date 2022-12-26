@@ -1,0 +1,9 @@
+<div class="dropdown">
+    <button class="btn btn btn-outline-success btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        Инструменты
+    </button>
+    <ul class="dropdown-menu">
+        <li><a class="dropdown-item" href="{% url 'category_detail_update' id=category.id %}">Редактировать</a></li>
+        <li><a class="dropdown-item" href="{% url 'category_detail_delete' id=category.id %}">Удалить</a></li>
+    </ul>
+</div>

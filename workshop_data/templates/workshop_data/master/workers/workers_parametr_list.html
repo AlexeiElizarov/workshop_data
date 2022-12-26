@@ -1,12 +1,23 @@
-{% extends 'workshop_data/master/workers/master_workers_main_template.html' %}
+{% extends 'main.html' %}
+{% load static %}
 
 {% block title %}
-    ???????
+
 {% endblock title %}
 
-{% block workers %}
+{% block content %}
+    <link rel="stylesheet" href="{% static 'css/master_css/workers_average_price_cost.css' %}" type="text/css">
+    <div class="master-all-workers-data">
+        <div id="master-worker-price-cost-buttons">
+            <a class="btn  btn-outline-success btn-sm" type="button" href="{% url 'master_workers_average_price_list' %}">
+                По средней расценке
+            </a>
+        </div>
 
-        <h5>master/workers_main_template.html</h5>
+    </div>
+
+
+        <h5>master/workers_parametr_list.html</h5>
         <hr>
         <table class="table table-success table-striped">
             <thead>
@@ -48,7 +59,7 @@
                 </td>
 
                 <td>
-                    <a href="">
+                    <a href="{% url 'workers_list_position' position=worker.position %}">
                         {{ worker.get_position_display }}
                     </a>
                 </td>
@@ -65,5 +76,4 @@
             {% endfor %}
             </tbody>
         </table>
-
-{% endblock workers %}
+{% endblock content %}

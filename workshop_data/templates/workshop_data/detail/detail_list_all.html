@@ -1,11 +1,40 @@
-{% extends 'workshop_data/detail/detail_main_template.html' %}
+{% extends 'main.html' %}
 
 {% block title %}
     Все Изделия
 {% endblock title %}
 
-{% block data_detail %}
+{% block content %}
+     <form method="GET">
+        {{ filter.form }}
+        {{ filter.form.media }}
+        <input type="submit" value="Найти">
+    </form>
+    <hr>
+    <table class="table table-success table-striped">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Название</th>
+            <th scope="col">Категория</th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+            {% for detail in filter.qs %}
+                 <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ detail.name }}</td>
+                    <td>{{ detail.category }}</td>
+                    <td>
+                        {% block all_list %}
+                            {% include 'workshop_data/detail/includes/button_dropdown_menu.html' %}
+                        {% endblock all_list %}
 
-    {% include 'workshop_data/detail/includes/table_details_template.html' %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
-{% endblock data_detail %}
+{% endblock content %}

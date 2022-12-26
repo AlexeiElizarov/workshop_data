@@ -35,9 +35,9 @@
                         {% if request.user.is_authenticated %}
                             {% now "Y" as current_year %}
                             {% now "M" as current_month %}
-                            {% if request.user.position in 'MSR' or  request.user.position == 'EPB'%}
+                            {% if request.user.position == 'MSR' or  request.user.position == 'EPB'%}
                                 <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle" href="" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <a class="nav-link dropdown-toggle" href="" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         План
                                     </a>
                                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -48,7 +48,7 @@
                                 </li>
 
                                 <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         Сотрудники
                                     </a>
                                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -56,7 +56,7 @@
                                             <li><a class="dropdown-item" href="{% url 'workers_list_all' %}">Все</a></li>
                                             <li><a class="dropdown-item" href="{% url 'workers_LSM_all' %}">Слесари</a></li>
                                             <li><a class="dropdown-item" href="{% url 'workers_TRN_all' %}">Токари</a></li>
-                                            <li><a class="dropdown-item" href="">Фрезеровщики</a></li>
+                                            <li><a class="dropdown-item" href="{% url 'workers_MLR_all' %}">Фрезеровщики</a></li>
                                         {% elif request.user.profile %}
                                             <li><a class="dropdown-item" href="">Profile</a></li>
                                             <li><a class="dropdown-item" href="">Update profile</a></li>
@@ -68,17 +68,18 @@
                                 </li>
 
                                 <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         Просмотр
                                     </a>
                                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                         <li><a class="dropdown-item" href="{% url 'product_list_all' %}">Все Изделия</a></li>
                                         <li><a class="dropdown-item" href="{% url 'detail_list_all' %}">Все Детали</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'category_detail_all_list' %}">Все Категории</a></li>
                                     </ul>
                                 </li>
 
                                 <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         Добавить
                                     </a>
                                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -88,13 +89,14 @@
                                 </li>
 
                                 <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         Разное
                                     </a>
                                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                         <li><a class="dropdown-item" href="{% url 'create_new_bonus' %}">Добавить премию</a></li>
                                         <li><a class="dropdown-item" href="{% url 'list_bonuses_all_worker' %}">Все бонусы</a></li>
                                         <li><a class="dropdown-item" href="{% url 'list_all_worker_here_bonuses' %}">Рабочии и премия</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'list_all_resolution_or_not_detail' user.username %}">Заявки на Детали</a></li>
                                     </ul>
                                 </li>
                             {% else %}
@@ -103,23 +105,31 @@
                                 </li>
 
                                 <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         Просмотр
                                     </a>
                                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                         <li><a class="dropdown-item" href="{% url 'product_list_all' %}">Все Изделия</a></li>
                                         <li><a class="dropdown-item" href="{% url 'detail_list_all' %}">Все Детали</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'create_new_category' %}">Все Категории</a></li>
                                     </ul>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" aria-current="page" href="{% url 'orders_user_list_all' username=user.username %}">Мои наряды</a>
                                 </li>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Детали
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        <li><a class="dropdown-item" href="{% url 'statement_for_detail' user.username %}">Заявка на работу над Деталью</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'list_all_resolution_or_not_detail' user.username %}">Все Детали</a></li>
+                                    </ul>
+                                </li>
                             {% endif %}
                         {% endif %}
 
-                        <li class="nav-item">
-                            <a class="nav-link disabled">Disabled</a>
-                        </li>
+
                     </ul>
                     {% if request.user.is_authenticated %}
                         <li class="navbar-user white_letter"> {{ user.username }} | <a class="white_letter" href="{% url 'logout' %}">Выйти</a></li>

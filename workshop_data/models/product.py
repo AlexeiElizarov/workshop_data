@@ -1,7 +1,8 @@
 from django.db import models
 
+
 class Product(models.Model):
-    '''Класс описывает Изделие'''
+    """Класс описывает Изделие"""
     name = models.CharField(
         max_length=100,
         unique=True,

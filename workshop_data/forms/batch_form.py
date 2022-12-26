@@ -6,12 +6,13 @@ from workshop_data.models.comment import Comment
 
 
 class CreateBatchDetailInPlanForm(forms.ModelForm):
-    '''Отображает форму создания новой Партии Деталей'''
+    """Отображает форму создания новой Партии Деталей"""
     comment = forms.CharField(widget=forms.Textarea(attrs={"class": "form-control"}))
     workshopplan_detail = forms.ModelChoiceField(
         widget=forms.Select(attrs={"class": "form-control"}),
         queryset=WorkshopPlan.objects.all()
     )
+
     class Meta:
         model = BatchDetailInPlan
         fields = ['workshopplan_detail', 'quantity_in_batch', 'sos', 'comment']

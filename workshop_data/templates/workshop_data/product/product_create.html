@@ -1,0 +1,37 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block title %}
+    Новое Изделие
+{% endblock title %}
+
+{% block content %}
+
+    <div class="wrapper-form">
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="Сохранить" class="btn btn-primary">
+            <button type="submit" name="save_and_continue" class="btn btn-primary add">Сохранить и добавить еще</button>
+        </form>
+    </div>
+
+   <script>
+        $('.add').click(function() {
+            $(this).parent().after($('<h3>', {
+                'text': 'Изделие сохранено'
+            }));
+        });
+    </script>
+
+
+
+{% endblock content %}
+
+
+    <script>
+        $('.wrapper-form').after($('<div>', {
+            class: 'complete',
+            text: 'Изделие сохранено'
+        }));
+    </script>

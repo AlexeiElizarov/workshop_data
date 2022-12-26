@@ -1,7 +1,7 @@
 {% extends 'main.html' %}
 {% load static %}
 % load test_tag %}
-{% load get_stage_in_work_in_order %}
+
 {% load order_templatetags %}
 {% load static %}
 
@@ -97,7 +97,7 @@
 
             <td>
                 <div class="time_of_work_form">
-                    {% get_time_of_work_stage_or_order_tag order=order %}
+                    {% get_time_of_work_stage_or_order_tag id=order.id %}
                     {% if request.user.position != 'MSR' %}
                         {% include 'workshop_data/worker/includes/time_of_work_form.html' %}
                     {% endif %}

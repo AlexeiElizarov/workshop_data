@@ -1,0 +1,13 @@
+{% extends 'main.html' %}
+
+{% block title %}
+
+{% endblock title %}
+
+{% block content %}
+    {% if detail.image %}
+        <td><img src="{{ detail.image.url }}" width="500px"></td>
+    {% else %}
+        <td><img src="" width="100px"></td>
+    {% endif %}
+{% endblock content %}

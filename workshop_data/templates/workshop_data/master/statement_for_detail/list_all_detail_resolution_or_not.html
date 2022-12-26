@@ -1,0 +1,45 @@
+{% extends 'main.html' %}
+
+{% block title %}
+
+{% endblock title %}
+
+{% block content %}
+    <div>
+        <table class="table table-success table-striped">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">ФИО</th>
+                <th scope="col">Должность</th>
+                <th scope="col">Деталь</th>
+                <th scope="col">Дата заявки</th>
+                <th scope="col">Одобрена</th>
+                <th scope="col">Мастер</th>
+                <th scope="col">Дата одобрения</th>
+                <th scope="col"></th>
+            </tr>
+            </thead>
+            <tbody>
+                {% for statement in statements %}
+                    <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                            <td>{{ statement.worker.get_full_name }}</td>
+                            <td>{{ statement.worker.position }}</td>
+                            <td>{{ statement.detail }}</td>
+                            <td>{{ statement.date_statement }}</td>
+                            <td><a href="{% url 'resolution_statement_done' username=user.username id=statement.id %}">
+                                {{ statement.resolute.first.resolution }}
+                            </a></td>
+                            <td>{{ statement.resolute.first.master.get_full_name }}</td>
+                            <td>{{ statement.resolute.first.date_approval }}</td>
+                            {% if request.user.position == 'MSR'  %}
+                                <td><a href=""></a></td>
+                            {% endif %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+{% endblock content %}

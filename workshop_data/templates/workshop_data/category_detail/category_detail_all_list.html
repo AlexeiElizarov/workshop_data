@@ -1,0 +1,37 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block title %}
+    Все категории
+{% endblock title %}
+
+{% block content %}
+    <link rel="stylesheet" href="{% static 'css/categories_details/categoies_details.css' %}" type="text/css">
+    <div class="wrapper-button">
+        <a class="btn btn-outline-success btn-sm" type="button" href="{% url 'create_new_category' %}">
+            Добавить категорию
+        </a>
+    </div>
+    <div>
+        <table class="table table-success table-striped">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col"><a href="{% url 'category_detail_all_list' %}">Название</a></th>
+                <th scope="col"></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for category in categories_details %}
+            <tr>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td><a href="{% url 'category_detail_list' category=category.name %}">{{ category.name }}</a></td>
+                <td>
+                    {% include 'workshop_data/category_detail/includes/button_dropdown_menu_category_detail.html' %}
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock content %}

@@ -7,7 +7,7 @@ from workshop_data.services import get_average_price_orders, get_average_price_o
 
 
 class WorkerListView(LoginRequiredMixin, ListView):
-    '''Отображает страницу всех работников(или выборка по специальности)'''
+    """Отображает страницу всех работников(или выборка по специальности)"""
     model = User
     login_url = '/login/'
     template_name = 'workshop_data/master/workers/workers_parametr_list.html'
@@ -15,17 +15,19 @@ class WorkerListView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
-        if 'LSM' in self.kwargs:
+        if not 'position' in self.kwargs:
+            context['workers'] = User.objects.filter(~Q(position='MSR') & ~Q(position='EPB'))
+        elif self.kwargs['position'] == 'LSM':
             context['workers'] = User.objects.filter(position='LSM')
-        elif 'TRN' in self.kwargs:
+        elif self.kwargs['position'] == 'TRN':
             context['workers'] = User.objects.filter(position='TRN')
-        else:
-            context['workers'] = User.objects.filter(~Q(position='MSR'))
+        elif self.kwargs['position'] == 'MLR':
+            context['workers'] = User.objects.filter(position='MLR')
         return context
 
 
 class WorkerOrdersListForMaster(LoginRequiredMixin, ListView):
-    '''Показывает наряды работников(все, по месяцам)'''
+    """Показывает наряды работников(все, по месяцам)"""
     model = Order
     login_url = '/login/'
     template_name = 'workshop_data/worker/order/orders_user_parametr_list.html'  # шаблон из OrderUserParametrListView
@@ -46,6 +48,7 @@ class WorkerOrdersListForMaster(LoginRequiredMixin, ListView):
             context['average_price_for_month'] = get_average_price_orders_per_month(user, month)
         context['average_price'] = get_average_price_orders(user)
         return context
+
 
 class WorkerAveragePriceListForMaster(LoginRequiredMixin, ListView):
     """Отображает страницу работников и их средней расценки по нарядам"""

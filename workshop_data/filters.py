@@ -41,6 +41,10 @@ class WorkshopPlanFilter(FilterSet):
         queryset=Product.objects.all(),
         widget=autocomplete.Select2(url='data_autocomplete_product')
     )
+    detail = django_filters.ModelChoiceFilter(
+        queryset=Detail.objects.all(),
+        widget=autocomplete.Select2(url='data_autocomplete_detail')
+    )
     month = django_filters.MultipleChoiceFilter(
         choices=Month.choices,
         widget=forms.CheckboxSelectMultiple()
@@ -49,12 +53,13 @@ class WorkshopPlanFilter(FilterSet):
 
     class Meta:
         model = WorkshopPlan
-        fields = ['product', 'month']
+        fields = ['product', 'detail', 'month']
 
 
 class BatchFilter(FilterSet):
     """Фильтр поиска Партии"""
     id = django_filters.ModelChoiceFilter(
+        label='Номер Партии',
         queryset=BatchDetailInPlan.objects.all(),
         widget=autocomplete.Select2(url='data_autocomplete_batch')
     )

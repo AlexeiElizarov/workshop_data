@@ -11,8 +11,17 @@
         {% csrf_token %}
         {{ form.as_p }}
         {{ form.media }}
-        <input type="submit" value="Добавить" class="btn btn-primary">
+    <input type="submit" value="Сохранить" class="btn btn-primary">
+    <button type="submit" name="save_and_continue" class="btn btn-primary add">Сохранить и добавить еще</button>
 
     </form>
+
+   <script>
+        $('.add').click(function() {
+            $(this).parent().after($('<h3>', {
+                'text': 'Деталь добавлена'
+            }));
+        });
+    </script>
 
 {% endblock content %}

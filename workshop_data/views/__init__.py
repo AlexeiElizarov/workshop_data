@@ -1,7 +1,7 @@
 from workshop_data.views.batch_views import (
     CreateBatchDetailInPlan,
     AllBatchDetailInPlanView,
-    DeleteBatchDetailInPlanView,
+    # DeleteBatchDetailInPlanView,
     AllBatchDetailProductInPlan
 )
 from workshop_data.views.stage_views import (
@@ -37,6 +37,12 @@ from workshop_data.views.product_view import (
 from workshop_data.views.detail_view import (
     DetailAllView,
     DetailCreateView
+)
+from workshop_data.views.category_detail_views import (
+    CreateCategoryDetailView,
+)
+from workshop_data.views.statement_about_job_over_detail_view import (
+    StatementAboutJobOverDetailView
 )
 from workshop_data.views.complite_view import *
 from workshop_data.views.test_views import *

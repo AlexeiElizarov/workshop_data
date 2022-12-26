@@ -2,9 +2,13 @@ from dal import autocomplete
 from django import forms
 
 from sign.forms import User
+from workshop_data.models import BatchDetailInPlan, StageManufacturingDetail
 from workshop_data.models.stage_manufacturing_detail_in_work import StageManufacturingDetailInWork
 from workshop_data.models.comment import Comment
 from workshop_data.services.general_services import get_list_all_workers, get_list_all_workers_initials
+from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
+
 
 class InitialsModelChoiceField(forms.ModelChoiceField):
     def label_from_instance(self, obj):
@@ -12,8 +16,10 @@ class InitialsModelChoiceField(forms.ModelChoiceField):
 
 
 class CreateNewStageManufacturingInWorkForm(forms.ModelForm):
-    '''Форма задания(глагол) нового Этапа работы конкретной Партии Деталей'''
-    comment_in_batch = forms.CharField(widget=forms.Textarea)
+    """Форма задания(глагол) нового Этапа работы конкретной Партии Деталей"""
+    comment_in_batch = forms.CharField(widget=forms.Textarea,
+                                       label="Комментарий")
+
     class Meta:
         model = StageManufacturingDetailInWork
         fields = ('batch', 'stage_in_batch', 'worker', 'in_work', 'time_of_work_stage', 'comment_in_batch')
@@ -38,12 +44,38 @@ class CreateNewStageManufacturingInWorkForm(forms.ModelForm):
             widget=autocomplete.ModelSelect2(url='data_autocomplete_worker'))
 
     def clean(self):
-        batch = self.cleaned_data.get('batch')
-        stage_in_batch = self.cleaned_data.get('stage_in_batch')
-        comment = self.cleaned_data.pop('comment_in_batch')
+        cleaned_data = super().clean()
+        comment = cleaned_data.pop('comment_in_batch')
         new_comment = Comment.objects.create(body=comment, author=self.user)
-        self.cleaned_data.update({'comment_in_batch': new_comment})
-        if StageManufacturingDetailInWork.objects.filter(
-                batch_id=batch.id, stage_in_batch_id=stage_in_batch.id
-        ).exists():
-            raise forms.ValidationError(f"Этап {stage_in_batch} в Партии {batch} уже есть!") #FIXME реализовать проверку View
+        cleaned_data.update({'comment_in_batch': new_comment})
+        worker = self.cleaned_data['worker']
+        stage_in_batch = self.cleaned_data['stage_in_batch']
+        batch = self.cleaned_data['batch']
+
+        # список типа [1, 2, 3] где 1,2,3 номера этапов
+        stage_exists_list = [i.stage_in_batch.order for i in StageManufacturingDetailInWork.objects.filter(batch=batch)]
+
+        # список типа [<StageManufacturingDetail: 10,20,30 LSM>,
+        # <StageManufacturingDetail: 40,50 MLR>]
+        stage_in_batch_list = [i.stage_in_batch for i in
+                               StageManufacturingDetailInWork.objects.filter(batch=self.cleaned_data['batch'])]
+
+        if stage_in_batch in stage_in_batch_list:
+            raise ValidationError(_("Такой этап уже есть в партии"))
+        if not StageManufacturingDetailInWork.objects.filter(batch=batch).exists() and stage_in_batch.order != 1:
+            raise forms.ValidationError(f"Не пройдены предыдущие этапы в Партии {batch}!")
+
+        if stage_exists_list:
+            if stage_in_batch.order - 1 != sorted(stage_exists_list)[-1]:
+                raise forms.ValidationError(
+                    f"Не пройдены предыдущие этапы в Партии {batch}")
+        if worker.position != stage_in_batch.name:
+            raise forms.ValidationError(
+                f"Вы пытаетесь выписать наряд на {stage_in_batch.name} рабочему {worker.position}")
+        return cleaned_data
+
+
+
+
+
+
