@@ -13,6 +13,7 @@ from workshop_data.models.bonus import Bonus
 from workshop_data.models.statement_about_job_over_detail import (
     StatementAboutJobOverDetail,
     ResolutionForStatementAboutJobOverDetail)
+from workshop_data.models.order import Order
 
 __all__ = (
     'Product',
@@ -29,6 +30,7 @@ __all__ = (
     'Bonus',
     'StatementAboutJobOverDetail',
     'ResolutionForStatementAboutJobOverDetail',
+    'Order',
 
 )
 

@@ -2,7 +2,7 @@ from dal import autocomplete
 from django import forms
 
 from sign.forms import User
-from workshop_data.models import BatchDetailInPlan, StageManufacturingDetail
+from workshop_data.models import BatchDetailInPlan, StageManufacturingDetail, Detail
 from workshop_data.models.stage_manufacturing_detail_in_work import StageManufacturingDetailInWork
 from workshop_data.models.comment import Comment
 from workshop_data.services.general_services import get_list_all_workers, get_list_all_workers_initials
@@ -73,6 +73,17 @@ class CreateNewStageManufacturingInWorkForm(forms.ModelForm):
             raise forms.ValidationError(
                 f"Вы пытаетесь выписать наряд на {stage_in_batch.name} рабочему {worker.position}")
         return cleaned_data
+
+
+class EnteringDetailToViewAverageTimeOfWorkForm(forms.ModelForm):
+    """Форма ввода Изделия Детали для отображения среднего времени работы"""
+    quantity_detail = forms.IntegerField()
+    class Meta:
+        model = Detail
+        fields = ('name', 'quantity_detail')
+        # fields = '__all__'
+
+
 
 
 

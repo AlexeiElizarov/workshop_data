@@ -3,7 +3,7 @@ from workshop_data.models.stage_name import StageName
 
 
 class StageManufacturingDetail(models.Model):
-    '''Описывает этапы изготовления Детали(технология)'''
+    """Описывает этапы изготовления Детали(технология)"""
     detail = models.ForeignKey('workshop_data.Detail', on_delete=models.PROTECT,
                                verbose_name="Деталь", related_name='stages')
     order = models.PositiveSmallIntegerField(verbose_name="Порядок", unique=True)

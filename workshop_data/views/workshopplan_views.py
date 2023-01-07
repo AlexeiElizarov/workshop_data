@@ -1,4 +1,5 @@
 import datetime
+from time import sleep
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
@@ -22,8 +23,11 @@ class WorkshopPlanView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
-        context['list_product'] = WorkshopPlan.objects.filter(month=current_month()).order_by('product')
-        context['filter'] = WorkshopPlanFilter(self.request.GET, queryset=self.get_queryset().order_by('product'))
+        # context['list_product'] = WorkshopPlan.objects.filter(month=current_month()).order_by('product')
+        context['filter'] = WorkshopPlanFilter(
+            self.request.GET,
+            queryset=self.get_queryset().select_related('detail').select_related('product').
+            order_by('product'))
         return context
 
 

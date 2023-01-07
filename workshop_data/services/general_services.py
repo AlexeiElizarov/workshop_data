@@ -6,6 +6,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from sign.models import User
+from workshop_data.models import Detail
 from workshop_data.models.statement_about_job_over_detail import ResolutionForStatementAboutJobOverDetail, \
     StatementAboutJobOverDetail
 from workshop_data.models.batch_detail_in_plan import BatchDetailInPlan
@@ -130,10 +131,9 @@ def get_dict_worker_quantity_detail(product, detail, workers) -> dict:
     """
     dict_workers_quantity = {}
     for worker in workers:
-        quantity = 0
-        dict_workers_quantity[worker.surname] = quantity
-        for order in get_all_orders_per_detail_per_worker(product, detail, worker):
-            dict_workers_quantity[worker.surname] += order.quantity
+        dict_workers_quantity[worker.surname] = 0
+        dict_workers_quantity[worker.surname] += \
+            get_all_orders_per_detail_per_worker_unigue_batch(product, detail, worker)
     return dict_workers_quantity
 
 
@@ -146,6 +146,14 @@ def get_order_by_id(id):
     """Получает Наряд по id"""
     try:
         return Order.objects.get(id=id)
+    except ObjectDoesNotExist:
+        return None
+
+
+def get_order_by_batch_user_operations(batch_id, worker, operations):
+    """Получает наряд по batch_id, worker, operations"""
+    try:
+        return Order.objects.get(batch=batch_id, user=worker.id, operations=operations)
     except ObjectDoesNotExist:
         return None
 
@@ -213,12 +221,55 @@ def get_average_price_orders(user):
         return '--'
 
 
-def get_all_orders_per_detail_per_worker(product, detail, user):  # FIXME
+def get_all_orders_per_detail_per_worker(product, detail, user):
     """Получает все наряды определенного работника по определенной детали"""
     try:
         orders = Order.objects.filter(user=user.id). \
             filter(product_id=product.id).filter(detail_id=detail.id)
         return orders
+    except:
+        return 0
+
+
+def get_all_orders_per_detail_per_worker_unigue_batch(product, detail, user):
+    """Получает количество деталей определенного работника по определенной детали учитывая уникальность партии"""
+    try:
+        orders = Order.objects.filter(user=user.id). \
+            filter(product_id=product.id).filter(detail_id=detail.id).\
+            select_related('batch').order_by('date')
+        quantity = 0
+        batch = []
+        for order in orders:
+            if order.batch not in batch:
+                quantity += order.quantity
+                batch.append(order.batch)
+        return quantity
+    except:
+        return 0
+
+
+def get_average_time_of_work_stage_in_detail(detail):
+    """Получает среднее время работы определённого этапа производства детали (общее)"""
+    try:
+        stages_and_time = {}
+        for stage in StageManufacturingDetail.objects.filter(detail=Detail.objects.get(name=detail)):
+            stages_and_time[stage] = \
+                round(mean(
+                    [order.time_of_work_order / order.quantity for order in Order.objects.filter(operations=stage)]
+                ) / 8, 8)
+        return stages_and_time
+    except:
+        return None
+
+
+def get_average_time_of_work_stage_in_detail_per_worker(worker, product, detail, operations):
+    """Получает среднее время работы определённого этапа производства детали у рабочего"""
+    try:
+        for operation in operations:
+            orders = Order.objects.filter(
+                user=worker.id, product_id=product.id, detail_id=detail.id, operations=operation)
+            average_time_of_work = sum([order.time_of_work_order for order in orders])
+            return round(mean(average_time_of_work), 2)
     except:
         return 0
 

@@ -2,8 +2,9 @@ from django.db import models
 from workshop_data.models.month import Month
 from sign.models import User
 
+
 class Order(models.Model):
-    '''Класс описывает Наряд'''
+    """Класс описывает Наряд"""
     date = models.DateTimeField(auto_now_add=True)
     month = models.PositiveSmallIntegerField(choices=Month.choices, default=Month.NOT_SPECIFIED, verbose_name='Месяц')
     workshop = models.PositiveSmallIntegerField(default=464)
@@ -28,5 +29,3 @@ class Order(models.Model):
     def get_clean_operations(self):
         """Получает операции без приставки профессии"""
         return self.operations.operations
-
-

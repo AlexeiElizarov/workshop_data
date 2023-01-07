@@ -96,7 +96,8 @@
                                         <li><a class="dropdown-item" href="{% url 'create_new_bonus' %}">Добавить премию</a></li>
                                         <li><a class="dropdown-item" href="{% url 'list_bonuses_all_worker' %}">Все бонусы</a></li>
                                         <li><a class="dropdown-item" href="{% url 'list_all_worker_here_bonuses' %}">Рабочии и премия</a></li>
-                                        <li><a class="dropdown-item" href="{% url 'list_all_resolution_or_not_detail' user.username %}">Заявки на Детали</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'list_all_resolution_or_not_detail' username=user.username %}">Заявки на Детали</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'average_time_of_work_stage_in_detail' %}">Среднее время работы</a></li>
                                     </ul>
                                 </li>
                             {% else %}

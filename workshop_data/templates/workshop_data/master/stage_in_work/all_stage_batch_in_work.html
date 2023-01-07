@@ -1,5 +1,5 @@
 {% extends 'main.html' %}
-
+{% load order_templatetags %}
 {% block title %}
     Все Этапы
 {% endblock title %}
@@ -31,7 +31,7 @@
                             <td><a href="">{{ stage_in_work.stage_in_batch }}</a></td>
                             <td><a href="">{{ stage_in_work.start_of_work }}</a></td>
                             <td><a href="">{{ stage_in_work.in_work }}</a></td>
-                            <td><a href="">{{ stage_in_work.time_of_work }}</a></td>
+                            <td><a href="">{% get_time_of_work_order_tag batch_id stage_in_work.worker stage_in_work.stage_in_batch %}</a></td>
                             <td><a href="">{{ stage_in_work.comment_in_batch.body }}</a></td>
                             <td>
 

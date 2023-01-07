@@ -11,7 +11,8 @@ class Detail(models.Model):
         max_length=150,
         blank=False,
         unique=True,
-        verbose_name='Деталь')
+        verbose_name='Деталь',
+        db_index=True)
     image = models.ImageField(upload_to='images/',
                               blank=True,
                               default=None,

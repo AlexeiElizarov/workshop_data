@@ -21,7 +21,7 @@ class AddStageInDetailForm(forms.ModelForm):
 
 
 class EditStageInDetailForm(forms.ModelForm):
-    '''Отображает форму редактирования Этапа в Детали'''
+    """Отображает форму редактирования Этапа в Детали"""
     class Meta:
         model = StageManufacturingDetail
         fields = ('__all__')

@@ -1,0 +1,47 @@
+{% extends 'main.html' %}
+{% load static  %}
+{% load stage_in_work_in_order %}
+{% load order_templatetags %}
+{% block title %}
+    Все Этапы
+{% endblock title %}
+
+{% block content %}
+    <div class="time-of-work-stage-block1">
+        <link rel="stylesheet" href="{% static 'css/master_css/time_of_work_stage.css' %}" type="text/css">
+        <h4>Общеее среднее время производства этапа(по нарядам)</h4>
+        <form method="POST">
+            {% csrf_token %}
+            {{ filter.form }}
+            {{ filter.form.media }}
+            {{ form.quantity_detail }}
+            <input type="submit" value="Отправить" class="btn btn-primary add">
+        </form>
+    </div>
+    <div>
+
+             <table class="table table-success table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Этап</th>
+                    <th scope="col">Среднее время работы {{ quantity_detail }} деталей, смен.</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% for stage, time in stages_in_detail.items %}
+                        <tr>
+                            <th scope="row">{{ forloop.counter }}</th>
+                            <td><a href="">{{ stage }}</a></td>
+                            <td>
+                                {% get_time_for_work_quantity_detail_tag time quantity_detail %}
+                            </td>
+
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+    </div>
+
+
+{% endblock content %}

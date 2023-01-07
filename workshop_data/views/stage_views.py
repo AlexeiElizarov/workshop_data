@@ -4,8 +4,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views.generic import DetailView, CreateView, UpdateView
+from django.views import View
+from django.views.generic import DetailView, CreateView, UpdateView, ListView, TemplateView, FormView
 
+from workshop_data.filters import DetailFilter
 from workshop_data.models import Detail
 from workshop_data.models.stage_manufacturing_detail import StageManufacturingDetail
 from workshop_data.models.stage_manufacturing_detail_in_work import StageManufacturingDetailInWork
@@ -13,13 +15,15 @@ from workshop_data.models.batch_detail_in_plan import BatchDetailInPlan
 from workshop_data.forms import (
     CreateNewStageManufacturingInWorkForm,
     EditStageInDetailForm,
-    AddStageInDetailForm)
+    AddStageInDetailForm,
+    EnteringDetailToViewAverageTimeOfWorkForm)
 from workshop_data.models.order import Order
 from workshop_data.services import (
     get_list_locksmith,
     get_list_turner,
     get_list_miller,
-    get_dict_worker_quantity_detail)
+    get_dict_worker_quantity_detail,
+    get_average_time_of_work_stage_in_detail)
 
 
 class StageManufacturingDetailInWorkInPlanView(LoginRequiredMixin, DetailView):
@@ -48,7 +52,7 @@ class StageManufacturingDetailInWorkInPlanView(LoginRequiredMixin, DetailView):
 
 
 class StageManufacturingDetailInWorkView(LoginRequiredMixin, CreateView):
-    """Запуска в производство определенного Этапа изготовления Партии Детали"""
+    """Запуск в производство определенного Этапа изготовления Партии Детали"""
     model = StageManufacturingDetailInWork
     form_class = CreateNewStageManufacturingInWorkForm
     template_name = 'workshop_data/master/stage_in_work/start_new_stage_in_work.html'
@@ -74,13 +78,13 @@ class StageManufacturingDetailInWorkView(LoginRequiredMixin, CreateView):
         wp_obj = self.get_object().workshopplan_detail
         context['workers_quantity_lsm'] = \
             get_dict_worker_quantity_detail(wp_obj.product, wp_obj.detail, get_list_locksmith())
-        context['workers_quantity_trn'] = \
-            get_dict_worker_quantity_detail(wp_obj.product, wp_obj.detail, get_list_turner())
-        context['workers_quantity_mlr'] = \
-            get_dict_worker_quantity_detail(wp_obj.product, wp_obj.detail, get_list_miller())
+        # context['workers_quantity_trn'] = \
+        #     get_dict_worker_quantity_detail(wp_obj.product, wp_obj.detail, get_list_turner())
+        # context['workers_quantity_mlr'] = \
+        #     get_dict_worker_quantity_detail(wp_obj.product, wp_obj.detail, get_list_miller())
         return context
 
-    def form_valid(self,  form):
+    def form_valid(self, form):
         self.object = form.save(commit=False)
         order_object = Order(
             date=datetime.datetime.now(),
@@ -96,7 +100,6 @@ class StageManufacturingDetailInWorkView(LoginRequiredMixin, CreateView):
             author=self.request.user
         )
         args = {}
-        args['order'] = order_object
         if 'view' in self.request.POST:
             return render(self.request, 'workshop_data/order_template_for_print.html', args)
         elif 'save' in self.request.POST:
@@ -215,3 +218,43 @@ class AddStageInDeatailVeiw(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form = form.save()
         return HttpResponseRedirect(reverse_lazy('all_stage_in_detail', kwargs={'pk': self.kwargs.get('pk')}))
+
+
+class EnteringDetailToViewAverageTimeOfWorkView(FormView):
+    """Ввод детали для отображения таблицы среднего времени работы над этапом детали"""
+    model = StageManufacturingDetailInWork
+    form_class = EnteringDetailToViewAverageTimeOfWorkForm
+    template_name = 'workshop_data/master/stage_in_work/average_time_of_work_stage_in_detail.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['filter'] = DetailFilter(self.request.GET)
+        if 'detail' in self.kwargs:
+            context['stages_in_detail'] = get_average_time_of_work_stage_in_detail(self.kwargs['detail'])
+        if 'quantity_detail' in self.kwargs:
+            context['quantity_detail'] = self.kwargs.get('quantity_detail')
+        return context
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            detail = Detail.objects.get(id=form.cleaned_data['name'])
+            quantity_detail = form.cleaned_data['quantity_detail']
+            if detail and quantity_detail:
+                return HttpResponseRedirect(reverse_lazy('average_time_of_work_stage_in_detail_2_parameter',
+                                                  kwargs={'detail': detail.name,
+                                                          'quantity_detail': quantity_detail}))
+            if detail:
+                return HttpResponseRedirect(reverse_lazy('average_time_of_work_stage_in_detail_1_parameter',
+                                                         kwargs={'detail': detail.name,
+                                                                 }))
+        return HttpResponseRedirect(reverse_lazy('average_time_of_work_stage_in_detail'))
+
+
+class AverageTimeOfWorkStageInDetailView(ListView):
+    """Таблица среднего времени работы над этапом детали"""
+
+    model = StageManufacturingDetail
+    template_name = 'workshop_data/master/stage_in_work/average_time_of_work_stage_in_detail.html'
+
+

@@ -12,7 +12,6 @@
         <td></td>
         <td></td>
         <td></td>
-        <td></td>
     </tr>
     {% endifchanged %}
     <tr class="{% if batch.sos == True %}table-danger
@@ -28,15 +27,30 @@
         <td><a href="">{{ batch.comment.body }}</a></td>
         <td>
             <a href="{% url 'all_stage_this_batch' id=batch.id %}">
-                {{ batch.stages.all.last.stage_in_batch }}
+                {% for stage in batch.stages.all %}
+                    {% if forloop.last %}
+                        {{ stage.stage_in_batch }}
+                    {% endif %}
+                {% endfor %}
             </a>
         </td>
         <td>
             <a href="{% url 'edit_start_new_stage_in_work' batch %}">
+                {% for stage in batch.stages.all %}
+                    {% if forloop.last %}
+                        {{ stage.worker.get_full_name }}
+                    {% endif %}
+                {% endfor %}
+                {% comment %}
                 {{ batch.stages.all.last.worker.get_full_name }}
+                {% endcomment %}
+
             </a>
         </td>
-        <td><a href=""></a>{{ batch.stages.all.last.worker }}</td>
+        {% comment %}
+        <td><a href=""></a>
+            {{ batch.stages.all.last.worker }}
+            </td>{% endcomment %}
         <td>
             {% include 'workshop_data/master/batch/includes/button_dropdown_menu_batch.html' %}
         </td>

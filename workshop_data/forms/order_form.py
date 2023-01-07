@@ -50,12 +50,10 @@ class TimeOfWorkInStageForm(forms.ModelForm):
 
     def clean(self):
         time_of_work = self.data['time']  # 'time' - <input  name="time" value="{{ form.time_of_work }}">
-        try:
-            stage = get_stage_in_work(self.instance.user,
-                                      self.instance.batch.id,
-                                      self.instance.operations)
-            stage.time_of_work_stage = time_of_work
-            stage.save()
-        except:
-            self.instance.time_of_work_order = time_of_work
-            self.instance.save()
+        stage = get_stage_in_work(self.instance.user,
+                                  self.instance.batch.id,
+                                  self.instance.operations)
+        stage.time_of_work_stage = time_of_work
+        stage.save()
+        self.instance.time_of_work_order = time_of_work
+        self.instance.save()

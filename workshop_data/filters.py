@@ -61,8 +61,12 @@ class BatchFilter(FilterSet):
     id = django_filters.ModelChoiceFilter(
         label='Номер Партии',
         queryset=BatchDetailInPlan.objects.all(),
-        widget=autocomplete.Select2(url='data_autocomplete_batch')
+        widget=autocomplete.Select2(url='data_autocomplete_batch'),
+        method='filter_id'
     )
+
+    def filter_id(self, queryset, name, value):
+        return queryset.filter(id=value.id)
 
     class Meta:
         model = BatchDetailInPlan

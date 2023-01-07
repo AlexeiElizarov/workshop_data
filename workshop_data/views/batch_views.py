@@ -6,8 +6,9 @@ from ..filters import BatchFilter
 from workshop_data.models.batch_detail_in_plan import BatchDetailInPlan
 from workshop_data.models.workshop_plan import WorkshopPlan
 from workshop_data.forms.batch_form import CreateBatchDetailInPlanForm
-from workshop_data.models import Detail, Product
+from workshop_data.models import Detail, Product, StageManufacturingDetailInWork
 from ..services import current_month, current_year
+from django.db.models import Prefetch
 
 
 class CreateBatchDetailInPlan(LoginRequiredMixin, CreateView):
@@ -54,7 +55,21 @@ class AllBatchDetailInPlanView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
-        context['filter'] = BatchFilter(self.request.GET, queryset=self.get_queryset())
+        # context['batchs'] = BatchDetailInPlan.objects.\
+        #     select_related('detail', 'workshopplan_detail', 'comment').\
+        #     prefetch_related('detail__product').\
+        #     prefetch_related(Prefetch('stages',
+        #                               queryset=StageManufacturingDetailInWork.objects.
+        #                               select_related('worker', 'stage_in_batch')))
+
+        context['filter'] = BatchFilter(
+            self.request.GET,
+            queryset=self.get_queryset().\
+                    select_related('detail', 'workshopplan_detail', 'comment').\
+                    prefetch_related('detail__product').\
+                    prefetch_related(Prefetch('stages',
+                                              queryset=StageManufacturingDetailInWork.objects.
+                                              select_related('worker', 'stage_in_batch'))))
         return context
 
 

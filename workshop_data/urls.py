@@ -25,7 +25,8 @@ from workshop_data.views.stage_views import (
     EditStageManufacturingDetailInWorkView,
     EditStageInDetailView,
     StageInDetailView,
-    AddStageInDeatailVeiw)
+    AddStageInDeatailVeiw,
+    EnteringDetailToViewAverageTimeOfWorkView)
 from workshop_data.views.complite_view import *
 from workshop_data.views.detail_view import (
     DetailAllView,
@@ -128,6 +129,9 @@ urlpatterns = [
     path('master/start-new-stage-in-work/batch-<batch>/', StageManufacturingDetailInWorkView.as_view(), name='start_new_stage_in_work'),
     path('master/start-new-stage-in-work/complete/', start_new_stage_in_work_complite, name='start_new_stage_in_work_complete'),
     path('master/all-stage-in-work/batch-<id>', StageManufacturingDetailInWorkInPlanView.as_view(), name='all_stage_this_batch'),
+    path('master/average_time_of_work_stage_in_detail/<detail>/<quantity_detail>', EnteringDetailToViewAverageTimeOfWorkView.as_view(), name='average_time_of_work_stage_in_detail_2_parameter'),
+    path('master/average_time_of_work_stage_in_detail/<detail>', EnteringDetailToViewAverageTimeOfWorkView.as_view(), name='average_time_of_work_stage_in_detail_1_parameter'),
+    path('master/average_time_of_work_stage_in_detail/', EnteringDetailToViewAverageTimeOfWorkView.as_view(), name='average_time_of_work_stage_in_detail' ),
     path('master/batchs-in-plan/<object>/', AllBatchDetailProductInPlan.as_view(), name='batchs_in_plan'),
     # path('master/delete-batch/<id>', DeleteBatchDetailInPlanView.as_view(), name='delete_batch'),
 

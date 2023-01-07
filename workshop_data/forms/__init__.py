@@ -19,7 +19,9 @@ from workshop_data.forms.statement_about_job_over_detail_form import (
     StatementAboutJobOverDetailForm
 )
 from workshop_data.forms.batch_form import CreateBatchDetailInPlanForm
-from workshop_data.forms.stage_in_work_form import CreateNewStageManufacturingInWorkForm
+from workshop_data.forms.stage_in_work_form import (
+    CreateNewStageManufacturingInWorkForm,
+    EnteringDetailToViewAverageTimeOfWorkForm)
 
 
 
