@@ -27,7 +27,7 @@ class WorkshopPlanView(LoginRequiredMixin, ListView):
         context['filter'] = WorkshopPlanFilter(
             self.request.GET,
             queryset=self.get_queryset().select_related('detail').select_related('product').
-            order_by('product'))
+            prefetch_related('batchs').order_by('product'))
         return context
 
 

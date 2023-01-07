@@ -22,7 +22,7 @@ class StageManufacturingDetailInWork(models.Model):
         verbose_name='Этап')
     start_of_work = models.DateTimeField(auto_now_add=True)
     in_work = models.BooleanField(default=False, verbose_name='В работе')
-    time_of_work_stage = models.SmallIntegerField(default=0, blank=True, verbose_name='Время')
+    # time_of_work_stage = models.SmallIntegerField(default=0, blank=True, verbose_name='Время')
     job_is_done = models.BooleanField(default=False)
     comment_in_batch = models.ForeignKey(
         "workshop_data.Comment",

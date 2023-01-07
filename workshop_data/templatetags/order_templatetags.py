@@ -8,7 +8,7 @@ register = template.Library()
 
 from workshop_data.services.general_services import (
     get_stage_in_work, get_time_of_work,
-    get_order_by_batch_user_operations)
+    get_order_by_batch_user_operations, get_order_by_user_month)
 
 
 @register.simple_tag
@@ -22,9 +22,9 @@ def get_stage_in_work_done_tag(order, user, batch_id, operations):
 
 
 @register.simple_tag
-def get_cost_per_hour_tag(order_id):
+def get_cost_per_hour_tag(order: Order):
     """Тэг стоимость часа при изготовлении определённой детали"""
-    return get_cost_per_hour(order_id)
+    return get_cost_per_hour(order)
 
 
 @register.simple_tag
@@ -48,17 +48,8 @@ def get_average_price_orders_tag(user):
 @register.simple_tag
 def get_average_price_orders_per_month_tag(user, month):
     """Тэг средняя расценка по нарядам работника за месяц"""
-    return get_average_price_orders_per_month(user, month)
-
-
-@register.simple_tag
-def get_time_of_work_stage_or_order_tag(id):
-    """Возвращает время работы по id наряда"""
-    try:
-        time = get_time_of_work(id)
-        return time
-    except:
-        return '--'
+    orders = get_order_by_user_month(user, month)
+    return get_average_price_orders_per_month(orders)
 
 
 @register.simple_tag

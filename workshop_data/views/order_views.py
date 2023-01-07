@@ -14,7 +14,7 @@ from workshop_data.models.detail import Detail
 from workshop_data.forms import OrderForm
 from sign.models import User, LIST_POSITION_WORKER
 from workshop_data.services import get_average_price_orders, get_average_price_orders_per_month, \
-    get_average_cost_per_hour, get_average_cost_per_hour_per_month
+    get_average_cost_per_hour, get_average_cost_per_hour_per_month, get_order_by_user
 
 
 class OrderUserCreateView(LoginRequiredMixin, CreateView):
@@ -69,25 +69,34 @@ class OrderUserParametrListView(LoginRequiredMixin, ListView):
                 surname=self.kwargs['surname'], name=self.kwargs['name'])
         elif self.request.user.position in LIST_POSITION_WORKER:
             user = User.objects.get(username=self.request.user.username)
+
+        orders = get_order_by_user(user.id)
+        context['average_price'] = get_average_price_orders(orders)
+        context['average_cost_per_hour'] = get_average_cost_per_hour(orders)
+
         if 'month' in self.kwargs:
             month = self.kwargs['month']
-            context['orders'] = Order.objects.filter(user_id=user.id).filter(month=month).order_by('date')
+            orders = orders.filter(month=month).order_by('date'). \
+                select_related('batch', 'detail__category', 'product', 'user')
+            context['orders'] = orders
             context['month'] = month
-            context['average_cost_per_hour_per_month'] = get_average_cost_per_hour_per_month(user.id, month)
-            context['average_price_per_month'] = get_average_price_orders_per_month(user, month)
+            context['average_cost_per_hour_per_month'] = get_average_cost_per_hour_per_month(orders)
+            context['average_price_per_month'] = get_average_price_orders_per_month(orders)
         elif 'product' in self.kwargs:
             context['orders'] = Order.objects.filter(user_id=user.id). \
-                filter(product_id=Product.objects.get(name=self.kwargs['product'])).order_by('date')
+                filter(product_id=Product.objects.get(name=self.kwargs['product'])).order_by('date').\
+                select_related('batch', 'detail__category', 'product', 'user')
         elif 'detail' in self.kwargs:
             context['orders'] = Order.objects.filter(user_id=user.id). \
-                filter(detail_id=Detail.objects.get(name=self.kwargs['detail'])).order_by('date')
+                filter(detail_id=Detail.objects.get(name=self.kwargs['detail'])).order_by('date').\
+                select_related('batch', 'detail__category', 'product', 'user')
         elif 'category' in self.kwargs:
             context['orders'] = Order.objects.filter(user_id=user.id). \
-                filter(detail__category__name=self.kwargs['category']).order_by('date')
+                filter(detail__category__name=self.kwargs['category']).order_by('date').\
+                select_related('batch', 'detail__category', 'product', 'user')
         else:
-            context['orders'] = Order.objects.filter(user_id=user.id).order_by('date')
-        context['average_price'] = get_average_price_orders(user)
-        context['average_cost_per_hour'] = get_average_cost_per_hour(user.id)
+            context['orders'] = Order.objects.filter(user_id=user.id).order_by('date').\
+                select_related('batch', 'detail__category', 'product', 'user')
         return context
 
 

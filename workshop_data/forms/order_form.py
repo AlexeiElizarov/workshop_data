@@ -45,15 +45,15 @@ class TimeOfWorkInStageForm(forms.ModelForm):
     """Форма поля для ввода времени затраченного на работу в Наряде"""
 
     class Meta:
-        model = StageManufacturingDetailInWork
-        fields = ('time_of_work_stage',)
+        model = Order
+        fields = ('time_of_work_order',)
 
     def clean(self):
         time_of_work = self.data['time']  # 'time' - <input  name="time" value="{{ form.time_of_work }}">
-        stage = get_stage_in_work(self.instance.user,
-                                  self.instance.batch.id,
-                                  self.instance.operations)
-        stage.time_of_work_stage = time_of_work
-        stage.save()
+        # stage = get_stage_in_work(self.instance.user,
+        #                           self.instance.batch.id,
+        #                           self.instance.operations)
+        # stage.time_of_work_stage = time_of_work
+        # stage.save()
         self.instance.time_of_work_order = time_of_work
         self.instance.save()

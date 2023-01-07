@@ -7,10 +7,11 @@ from workshop_data.models.workshop_plan import WorkshopPlan
 
 class WorkshopPlanCreateForm(forms.ModelForm):
     """Отображает форму создания нового Плана"""
+
     class Meta:
         model = WorkshopPlan
         fields = '__all__'
-        exclude= ('author', 'in_work',)
+        exclude = ('author', 'in_work',)
         widgets = {
             'product': autocomplete.ModelSelect2(url='data_autocomplete_product'),
             'detail': autocomplete.ModelSelect2(url='data_autocomplete_detail'),

@@ -21,7 +21,8 @@ class CreateBatchDetailInPlan(LoginRequiredMixin, CreateView):
         name = self.kwargs.get('product')
         product = name.split('_')[0]
         detail = name.split('_')[1]
-        obj = WorkshopPlan.objects.get(product__name=product, detail__name=detail)
+        obj = WorkshopPlan.objects.filter(product__name=product, detail__name=detail).\
+            select_related('product', 'detail')[0]
         return obj
 
     def get_context_data(self, **kwargs):

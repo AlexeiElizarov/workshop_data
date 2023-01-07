@@ -22,7 +22,7 @@ class CreateNewStageManufacturingInWorkForm(forms.ModelForm):
 
     class Meta:
         model = StageManufacturingDetailInWork
-        fields = ('batch', 'stage_in_batch', 'worker', 'in_work', 'time_of_work_stage', 'comment_in_batch')
+        fields = ('batch', 'stage_in_batch', 'worker', 'in_work', 'comment_in_batch')#, 'time_of_work_stage'
         exclude = ('author',)
 
     def __init__(self, *args, **kwargs):

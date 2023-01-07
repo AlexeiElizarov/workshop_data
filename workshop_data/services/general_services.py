@@ -1,4 +1,5 @@
 import datetime
+from typing import Union
 
 from django.core.validators import MaxValueValidator
 from django.db.models import Sum
@@ -34,16 +35,15 @@ def get_current_user(request):
     return request.user
 
 
-def get_stage_in_work(user, batch_id, operations):
+def get_stage_in_work(order: Order) -> Union[StageManufacturingDetailInWork or None]:
     """Возвращает id StageManufacturingDetailInWork по username, batch, operations"""
     try:
-        batch = BatchDetailInPlan.objects.get(id=batch_id)
-        # worker = User.objects.get(username=user)
+        batch = BatchDetailInPlan.objects.get(id=order.batch).select_related('workshopplan_detail')
         stage_in_batch_id = StageManufacturingDetail.objects.get(
-            detail_id=batch.workshopplan_detail.detail, operations=operations.split()[0]
+            detail_id=order.detail, operations=order.operations.split()[0]
         )
         stage = StageManufacturingDetailInWork.objects.get(
-            worker=get_user_by_username(user), batch=batch, stage_in_batch_id=stage_in_batch_id
+            worker=get_user_by_username(order.user), batch=batch, stage_in_batch_id=stage_in_batch_id
         )
         return stage
     except ObjectDoesNotExist:
@@ -142,10 +142,10 @@ def get_quantity_detail(worker, product, detail):
     return get_all_orders_per_detail_per_worker(worker, product, detail).aggregate(Sum('quantity'))['quantity__sum']
 
 
-def get_order_by_id(id):
+def get_order_by_id(order_id: int) -> Union[Order, None]:
     """Получает Наряд по id"""
     try:
-        return Order.objects.get(id=id)
+        return Order.objects.get(id=order_id)
     except ObjectDoesNotExist:
         return None
 
@@ -174,48 +174,42 @@ def get_order_by_user_month(user_id, month):
         return None
 
 
-def get_cost_per_hour(order_id):
+def get_cost_per_hour(order: Order) -> float:
     """Получает стоимость часа при изготовлении детали"""
-    order = get_order_by_id(order_id)
-    time = get_time_of_work(order_id)
+    time = order.time_of_work_order
     if time != 0:
-        cost_per_hour = order.quantity * order.price / time
-        return cost_per_hour
+        return order.quantity * order.price / time
     else:
         return 0
 
 
-def get_average_cost_per_hour(user_id):
-    """Получает средний заработок работника в час за все время"""
-    orders = get_order_by_user(user_id)
+def get_average_cost_per_hour(orders):
+    """Получает средний заработок работника по нарядам в час за все время"""
     try:
-        return round(mean([get_cost_per_hour(order.id) for order in orders]), 2)
+        return round(mean([get_cost_per_hour(order) for order in orders]), 2)
     except:
         return '--'
 
 
-def get_average_cost_per_hour_per_month(user_id, month):
+def get_average_cost_per_hour_per_month(orders):
     """Получает средний заработок работника в час за месяц"""
     try:
-        orders = get_order_by_user_month(user_id, month)
         return round(mean([get_cost_per_hour(order.id) for order in orders]), 2)
     except:
         return '--'
 
 
-def get_average_price_orders_per_month(user, month):
+def get_average_price_orders_per_month(orders):
     """Получает среднюю расценку по нарядам работника за месяц"""
     try:
-        orders = Order.objects.filter(user=user, month=month)
         return round(mean([order.price for order in orders]), 2)
     except:
         return '--'
 
 
-def get_average_price_orders(user):
+def get_average_price_orders(orders):
     """Получает среднюю расценку по нарядам работника за все время"""
     try:
-        orders = Order.objects.filter(user=user)
         return round(mean([order.price for order in orders]), 2)
     except:
         return '--'
@@ -274,12 +268,10 @@ def get_average_time_of_work_stage_in_detail_per_worker(worker, product, detail,
         return 0
 
 
-def get_time_of_work(id):
+def get_time_of_work(order: Order):
     """Возвращает время работы(time_of_work) из StageManufacturingDetailInWork или из Order"""
-    order = get_order_by_id(id)
     try:
-        time_of_work = get_stage_in_work(order.user, order.batch.id, order.operations).time_of_work_stage
-        return time_of_work
+        return get_stage_in_work(order).time_of_work_stage
     except:
         return order.time_of_work_order
 
