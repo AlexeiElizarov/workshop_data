@@ -14,7 +14,7 @@ class AddStageInDetailForm(forms.ModelForm):
         id = kwargs.pop('pk')
         detail = Detail.objects.get(pk=id)
         super(AddStageInDetailForm, self).__init__(*args, **kwargs)
-        self.fields['detail'].initial = Detail.objects.get(pk=id)
+        self.fields['detail'].initial = detail
         if StageManufacturingDetail.objects.filter(detail=detail):
             self.fields['order'].initial = \
                 StageManufacturingDetail.objects.filter(detail=detail).order_by('-order')[0].order + 1

@@ -38,9 +38,11 @@ class AllDetailResolutionOrNotView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         if self.request.user.position == "MSR":
             context['statements'] = StatementAboutJobOverDetail.objects.select_related("detail").\
-                select_related("worker").prefetch_related('resolute').order_by('date_statement')
+                select_related("worker").prefetch_related('resolute__master').order_by('date_statement')
         else:
-            context['statements'] = StatementAboutJobOverDetail.objects.filter(worker=self.request.user).order_by('date_statement')
+            context['statements'] = StatementAboutJobOverDetail.objects.filter(worker=self.request.user).\
+                select_related("detail").select_related("worker").\
+                prefetch_related('resolute').order_by('date_statement')
         return context
 
 

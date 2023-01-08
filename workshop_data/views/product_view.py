@@ -20,7 +20,7 @@ class ProductAllView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
-        context['filter'] = ProductFilter(self.request.GET, queryset=self.get_queryset())
+        context['filter'] = ProductFilter(self.request.GET)
         return context
 
 
@@ -77,15 +77,13 @@ class ProductDataView(LoginRequiredMixin, DetailView):
     """Отображает Детали входящие в Изделие"""
     model = Product
     template_name = 'workshop_data/product/product_detail_view.html'
-    context_object_name = 'product'
 
     def get_object(self, **kwargs):
-        id = Product.objects.get(name=self.kwargs.get('product')).id
-        return Product.objects.get(id=id)
+        return Product.objects.get(name=self.kwargs.get('product'))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
-        context['details'] = self.get_object().detail.all()
+        context['details'] = self.get_object().detail.select_related('category')
         return context
 
 
@@ -112,6 +110,7 @@ class DeleteDetailFromProductView(LoginRequiredMixin, DeleteView):
 
     def post(self, request, *args, **kwargs):
         detail = Detail.objects.get(name=self.kwargs.get('detail'))
+        # detail = self.get_object()
         self.get_object().detail.remove(detail)
         return HttpResponseRedirect(reverse(
             'product_detail_data',

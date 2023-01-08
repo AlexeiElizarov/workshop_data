@@ -17,7 +17,6 @@
                 <th scope="col">Одобрена</th>
                 <th scope="col">Мастер</th>
                 <th scope="col">Дата одобрения</th>
-                <th scope="col"></th>
             </tr>
             </thead>
             <tbody>
@@ -28,14 +27,16 @@
                             <td>{{ statement.worker.position }}</td>
                             <td>{{ statement.detail }}</td>
                             <td>{{ statement.date_statement }}</td>
-                            <td><a href="{% url 'resolution_statement_done' username=user.username id=statement.id %}">
-                                {{ statement.resolute.first.resolution }}
-                            </a></td>
-                            <td>{{ statement.resolute.first.master.get_full_name }}</td>
-                            <td>{{ statement.resolute.first.date_approval }}</td>
-                            {% if request.user.position == 'MSR'  %}
-                                <td><a href=""></a></td>
-                            {% endif %}
+
+                            {% for resolute in statement.resolute.all %}
+                                {% if forloop.first %}
+                                    <td><a href="{% url 'resolution_statement_done' username=user.username id=statement.id %}">
+                                        {{ resolute.resolution }}
+                                    </a></td>
+                                    <td>{{ resolute.master.get_full_name }}</td>
+                                    <td>{{ resolute.date_approval }}</td>
+                                {% endif %}
+                            {% endfor %}
                     </tr>
                 {% endfor %}
             </tbody>
