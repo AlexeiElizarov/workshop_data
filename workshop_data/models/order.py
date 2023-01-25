@@ -9,7 +9,7 @@ class Order(models.Model):
     month = models.PositiveSmallIntegerField(choices=Month.choices, default=Month.NOT_SPECIFIED, verbose_name='Месяц')
     workshop = models.PositiveSmallIntegerField(default=464)
     section = models.PositiveSmallIntegerField(default=1, blank=False)
-    user = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name='Рабочий')
+    user = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name='Рабочий', related_name="orders")
     employee_number = models.PositiveSmallIntegerField(blank=False)
     product = models.ForeignKey('workshop_data.Product', on_delete=models.PROTECT, verbose_name='Изделие')
     detail = models.ForeignKey('workshop_data.Detail', on_delete=models.PROTECT, verbose_name='Деталь')

@@ -1,35 +1,176 @@
 {% extends 'main.html' %}
+{% load other_tag %}
 
 {% block title %}
     Детали {{ product }}
 {% endblock title %}
 
 {% block content %}
+{% total_count 0 %}
     <h3>{{ product }}</h3>
+
         <table class="table table-success table-striped">
             <thead>
             <tr>
                 <th scope="col">#</th>
                 <th scope="col">Название</th>
+                <th scope="col"></th>
+                <th scope="col"></th>
+                <th scope="col"></th>
+                <th scope="col"></th>
                 <th scope="col">Категория</th>
                 <th scope="col"></th>
                 <th scope="col"></th>
             </tr>
             </thead>
-            {% for detail in details %}
+            {{ product.node.all }}
+            {% for node in product.node.all %}
+                <tr>
+                    <th scope="row">{% total_count %}</th>
+                    <td>{{ node.prefix }}.{{ node }}</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>{{ node.category }}</td>
+                    <td><a href="">Изображение</a></td>
+                    <td>
+                        {% include 'workshop_data/detail/includes/button_dropdown_menu.html' %}
+                    </td>
+                </tr>
+                {% if node.node.all %}
+                    {% for node in node.node.all %}
+                        <tr>
+                            <th scope="row">{% total_count %}</th>
+                            <td></td>
+                            <td>{{ node.prefix }}.{{ node }}</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>{{ node.category }}</td>
+                            <td><a href="">Изображение</a></td>
+                            <td>
+                                {% include 'workshop_data/detail/includes/button_dropdown_menu.html' %}
+                            </td>
+                        </tr>
+                        {% if node.node.all %}
+                            {% for node in node.node.all %}
+                                <tr>
+                                    <th scope="row">{% total_count %}</th>
+                                    <td></td>
+                                    <td></td>
+                                    <td>{{ node.prefix }}.{{ node }}</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>{{ node.category }}</td>
+                                    <td><a href="">Изображение</a></td>
+                                    <td>
+                                        {% include 'workshop_data/detail/includes/button_dropdown_menu.html' %}
+                                    </td>
+                                </tr>
+                                {% for detail in node.detail.all %}
+                                    <tr>
+                                        <th scope="row">{% total_count %}</th>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>{{ detail.prefix }}.{{ detail.name }}</td>
+                                        <td></td>
+                                        <td>{{ detail.category }}</td>
+                                        <td><a href="">Изображение</a></td>
+                                        <td>
+                                            {% include 'workshop_data/detail/includes/button_dropdown_menu.html' %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% endfor %}
+                            {% for detail in node.detail.all %}
+                                <tr>
+                                    <th scope="row">{% total_count %}</th>
+                                    <td></td>
+                                    <td></td>
+                                    <td>{{ detail.prefix }}.{{ detail }}</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>{{ detail.category }}</td>
+                                    <td><a href="">Изображение</a></td>
+                                    <td>
+                                        {% include 'workshop_data/detail/includes/button_dropdown_menu.html' %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            {% for detail in node.detail.all %}
+                                <tr>
+                                    <th scope="row">{% total_count %}</th>
+                                    <td></td>
+                                    <td></td>
+                                    <td>{{ detail.prefix }}.{{ detail.name }}</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>{{ detail.category }}</td>
+                                    <td><a href="">Изображение</a></td>
+                                    <td>
+                                        {% include 'workshop_data/detail/includes/button_dropdown_menu.html' %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% endif %}
+                    {% endfor %}
+                    {% for detail in node.detail.all %}
+                        {% for detail in node.detail.all %}
+                            <tr>
+                                <th scope="row">{{ forloop.counter }}</th>
+                                <td></td>
+                                <td>{{ detail.prefix }}.{{ detail.name }}</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>{{ detail.category }}</td>
+                                <td><a href="">Изображение</a></td>
+                                <td>
+                                    {% include 'workshop_data/detail/includes/button_dropdown_menu.html' %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% endfor %}
+                {% else %}
+                    {% for detail in node.detail.all %}
+                        <tr>
+                            <th scope="row">{{ forloop.counter }}</th>
+                            <td></td>
+                            <td></td>
+                            <td>{{ detail.prefix }}.{{ detail.name }}</td>
+                            <td>{{ detail.category }}</td>
+                            <td><a href="">Изображение</a></td>
+                            <td>
+                                {% include 'workshop_data/detail/includes/button_dropdown_menu.html' %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% endif %}
+            {% endfor %}
+            {% for detail in product.detail.all %}
                 <tr>
                     <th scope="row">{{ forloop.counter }}</th>
-                    <td>{{ detail.name }}</td>
+                    <td>{{ detail.prefix }}.{{ detail.name }}</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
                     <td>{{ detail.category }}</td>
-                    <td><a href="{% url 'image_detail' detail %}">Изображение</a></td>
-
+                    <td><a href="">Изображение</a></td>
                     <td>
-                        {% block product_list %}
-                            {% include 'workshop_data/detail/includes/button_dropdown_menu.html' %}
-                        {% endblock product_list %}
+                        {% include 'workshop_data/detail/includes/button_dropdown_menu.html' %}
                     </td>
-
                 </tr>
             {% endfor %}
         </table>
+        <div class="master-all-workers-data">
+            <div id="master-worker-price-cost-buttons">
+                <a class="btn  btn-outline-success btn-sm" type="button" href="{% url 'product_add_detail' product=product.name %}">
+                    Добвить деталь
+                </a>
+            </div>
+        </div>
 {% endblock content %}

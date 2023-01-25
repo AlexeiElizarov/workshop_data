@@ -34,7 +34,7 @@ class DetailCreateView(LoginRequiredMixin, CreateView):
         new_detail = super(DetailCreateView, self).post(request, *args, **kwargs)
         if "save_and_continue" in request.POST:
             new_detail = HttpResponseRedirect(reverse('create_new_detail'))
-            time.sleep(1)
+            time.sleep(0.3)
         return new_detail
 
 

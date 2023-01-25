@@ -36,7 +36,7 @@ def get_average_cost_per_hour_tag(user_id):
 @register.simple_tag
 def get_average_cost_per_hour_per_month_tag(user_id, month):
     """Тэг средний заработок работника в час за месяц"""
-    return get_average_cost_per_hour_per_month(user_id, month)
+    return get_average_cost_per_hour_per_month(get_order_by_user_month(user_id, month))
 
 
 @register.simple_tag
@@ -48,7 +48,7 @@ def get_average_price_orders_tag(user):
 @register.simple_tag
 def get_average_price_orders_per_month_tag(user, month):
     """Тэг средняя расценка по нарядам работника за месяц"""
-    orders = get_order_by_user_month(user, month)
+    orders = get_order_by_user_month(user, month)#.values_list('price', flat=True)
     return get_average_price_orders_per_month(orders)
 
 

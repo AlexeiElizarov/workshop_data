@@ -8,6 +8,12 @@ class Product(models.Model):
         unique=True,
         blank=False,
         verbose_name='Изделие')
+    node = models.ManyToManyField(
+        'workshop_data.Node',
+        blank=True,
+        related_name='product',
+        verbose_name='Узел'
+    )
     detail = models.ManyToManyField(
         'workshop_data.Detail',
         blank=True,

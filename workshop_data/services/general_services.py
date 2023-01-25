@@ -230,7 +230,7 @@ def get_all_orders_per_detail_per_worker_unigue_batch(product, detail, user):
     try:
         orders = Order.objects.filter(user=user.id). \
             filter(product_id=product.id).filter(detail_id=detail.id).\
-            select_related('batch').order_by('date')
+            order_by('date')
         quantity = 0
         batch = []
         for order in orders:

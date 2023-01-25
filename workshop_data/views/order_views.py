@@ -1,9 +1,8 @@
 import datetime
-from typing import Any
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpRequest, HttpResponseRedirect
-from django.shortcuts import redirect, render
+from django.http import HttpResponseRedirect
+from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, DeleteView, UpdateView, ListView
 
@@ -13,8 +12,10 @@ from workshop_data.models.product import Product
 from workshop_data.models.detail import Detail
 from workshop_data.forms import OrderForm
 from sign.models import User, LIST_POSITION_WORKER
-from workshop_data.services import get_average_price_orders, get_average_price_orders_per_month, \
-    get_average_cost_per_hour, get_average_cost_per_hour_per_month, get_order_by_user
+from workshop_data.services import (
+    get_average_price_orders, get_average_price_orders_per_month,
+    get_average_cost_per_hour, get_average_cost_per_hour_per_month,
+    get_order_by_user)
 
 
 class OrderUserCreateView(LoginRequiredMixin, CreateView):

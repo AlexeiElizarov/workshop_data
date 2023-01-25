@@ -1,0 +1,27 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block title %}
+
+{% endblock title %}
+
+{% block content %}
+    <table class="table table-success table-striped">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Узел</th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+        {% for node in nodes %}
+        <tr>
+            <th scope="row">{{ forloop.counter }}</th>
+            <td>{{ node }}</td>
+             <td>
+                {% include 'workshop_data/node/includes/button_dropdown_menu.html' %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+{% endblock content %}

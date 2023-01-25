@@ -60,15 +60,17 @@ class StageManufacturingDetailInWorkView(LoginRequiredMixin, CreateView):
 
     def get_object(self, queryset=None):
         batch_id = self.kwargs.get('batch')
-        obj = BatchDetailInPlan.objects.get(id=batch_id)
-        return obj
+        obj = BatchDetailInPlan.objects.filter(id=batch_id).\
+            select_related('workshopplan_detail__detail','workshopplan_detail__product')
+        return obj[0]
 
     def get_form_kwargs(self):
         kwargs = super(StageManufacturingDetailInWorkView, self).get_form_kwargs()
         kwargs.update({'batch': self.kwargs.get('batch')})
         kwargs.update(
             {'stages': StageManufacturingDetail.objects.filter(
-                detail_id=self.get_object().workshopplan_detail.detail_id)}
+                detail_id=
+                self.get_object().workshopplan_detail.detail.id)}
         )
         kwargs.update({'user': self.request.user})
         return kwargs
@@ -78,10 +80,10 @@ class StageManufacturingDetailInWorkView(LoginRequiredMixin, CreateView):
         wp_obj = self.get_object().workshopplan_detail
         context['workers_quantity_lsm'] = \
             get_dict_worker_quantity_detail(wp_obj.product, wp_obj.detail, get_list_locksmith())
-        # context['workers_quantity_trn'] = \
-        #     get_dict_worker_quantity_detail(wp_obj.product, wp_obj.detail, get_list_turner())
-        # context['workers_quantity_mlr'] = \
-        #     get_dict_worker_quantity_detail(wp_obj.product, wp_obj.detail, get_list_miller())
+        context['workers_quantity_trn'] = \
+            get_dict_worker_quantity_detail(wp_obj.product, wp_obj.detail, get_list_turner())
+        context['workers_quantity_mlr'] = \
+            get_dict_worker_quantity_detail(wp_obj.product, wp_obj.detail, get_list_miller())
         return context
 
     def form_valid(self, form):

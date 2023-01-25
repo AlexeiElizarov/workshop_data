@@ -1,15 +1,17 @@
 import time
-from typing import Any
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpRequest, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
 
-from workshop_data.models import Product, Detail
+from workshop_data.models import Product, Detail, Node
 from workshop_data.filters import ProductFilter
-from workshop_data.forms import ProductCreateForm, ProductAddDetailForm
+from workshop_data.forms import (
+    ProductCreateForm,
+    ProductAddDetailForm, ProductAddNodeForm,
+)
 
 
 class ProductAllView(LoginRequiredMixin, ListView):
@@ -50,10 +52,11 @@ class ProductAddDetailView(LoginRequiredMixin, UpdateView):
     form_class = ProductAddDetailForm
     template_name = 'workshop_data/product/product_add_detail.html'
     success_url = reverse_lazy('product_add_detail_complete')
+    context_object_name = 'product'
 
     def get_object(self, **kwargs):
-        obj = Product.objects.get(name=self.kwargs['product'])
-        return obj
+        obj = Product.objects.filter(name=self.kwargs['product']).prefetch_related('detail__category')
+        return obj.first()
 
     # def get_initial(self):
     #     initial = super(ProductAddDetailView, self).get_initial()
@@ -64,19 +67,35 @@ class ProductAddDetailView(LoginRequiredMixin, UpdateView):
 
     def form_valid(self, form):
         obj = self.get_object()
-        form = self.form_class(self.request.POST)
-        added_detail = Detail.objects.get(id=form.data['detail'])
-        obj.detail.add(added_detail)
+        for added_detail in form.cleaned_data['detail']:
+            obj.detail.add(added_detail)
         if "save_and_continue" in self.request.POST:
-            time.sleep(.5)
+            time.sleep(.2)
             return HttpResponseRedirect(reverse('product_add_detail', kwargs={'product': self.get_object()}))
         return redirect('product_add_detail_complete')
+
+
+class ProductAddNodeView(LoginRequiredMixin, UpdateView):
+    """Отображает страницу добавления Узла в Изделие"""
+    model = Product
+    form_class = ProductAddNodeForm
+    template_name = 'workshop_data/product/product_add_node.html'
+    success_url = reverse_lazy('product_add_detail_complete')
+    context_object_name = 'product'
+
+    def get_object(self, **kwargs):
+        obj = Product.objects.filter(name=self.kwargs['product']).prefetch_related('detail__category')
+        return obj.first()
+
+
+
 
 
 class ProductDataView(LoginRequiredMixin, DetailView):
     """Отображает Детали входящие в Изделие"""
     model = Product
     template_name = 'workshop_data/product/product_detail_view.html'
+    context_object_name = 'product'
 
     def get_object(self, **kwargs):
         return Product.objects.get(name=self.kwargs.get('product'))
@@ -84,6 +103,7 @@ class ProductDataView(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
         context['details'] = self.get_object().detail.select_related('category')
+        # context['nodes'] = Node.objects.filter(product=self.get_object())
         return context
 
 

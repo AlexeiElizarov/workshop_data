@@ -9,7 +9,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
     <script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
     <link rel="stylesheet" href="{% static 'css/product/product_add_detail.css' %}">
-
+    <h4>Добавить узел в изделие {{ product }}</h4>
     <div class="wrapper-product-add-detail">
         <div class="form">
             <form method="POST">
@@ -21,6 +21,8 @@
             </form>
         </div>
 
+
+
         <div class="wrapper-table">
             <table class="table table-primary">
                 <thead>
@@ -28,20 +30,32 @@
                     <th scope="col">#</th>
                     <th scope="col">Детали</th>
                     <th scope="col"></th>
+                    <th scope="col"></th>
                 </tr>
                 </thead>
+                {% for detail in product.node.all %}
+                    {% if detail.node.all %}
+
+                    {% endif %}
+                    <tr class="table-light">
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td>Узел</td>
+                        <td>{{ detail }}</td>
+                    </tr>
+                {% endfor %}
 
                 {% for detail in product.detail.all %}
                 <tbody>
-                <tr class="table-light">
-                    <th scope="row">{{ forloop.counter }}</th>
-                    <td>{{ detail.category }}</td>
-                    <td>{{ detail }}</td>
-                </tr>
+                    <tr class="table-light">
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td>{{ detail.category }}</td>
+                        <td>{{ detail }}</td>
+                    </tr>
                 </tbody>
                 {% endfor %}
             </table>
         </div>
+
     </div>
 
    <script>

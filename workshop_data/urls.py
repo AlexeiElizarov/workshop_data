@@ -12,13 +12,15 @@ from workshop_data.views import (
     CreateNewBonusView,
     ListAllBonuses,
     ListAllWorkersAndBonuses,
-    UpdateBonusView,)
+    UpdateBonusView)
 from workshop_data.views.services_view import (
     ProductAutocomplete,
     DetailAutocomplete,
     WorkerAutocomplete,
     CategoryDetailAutocomplete,
-    BatchlAutocomplete)
+    BatchlAutocomplete,
+    NodeAutocomplete,
+    NodeAndDetailAutocomplete, )
 from workshop_data.views.stage_views import (
     StageManufacturingDetailInWorkInPlanView,
     StageManufacturingDetailInWorkView,
@@ -34,13 +36,21 @@ from workshop_data.views.detail_view import (
     DetailDeleteView,
     AddImageInDetailView,
     DetailImageView)
+from workshop_data.views.node_views import (
+    NodeAllView,
+    NodeCreateView,
+    NodeAddDetailView,
+    NodeAddNodeView,
+)
 from workshop_data.views.product_view import (
     ProductAllView,
     ProductCreateView,
     ProductAddDetailView,
     ProductDataView,
     ProductDeleteView,
-    DeleteDetailFromProductView)
+    DeleteDetailFromProductView,
+    ProductAddNodeView,
+)
 from workshop_data.views.order_views import (
     OrderUserCreateView,
     OrderUserParametrListView,
@@ -69,6 +79,8 @@ from workshop_data.services.general_services import batch_ready, batch_cancel_re
 urlpatterns = [
     path('data_autocomplete_product/', ProductAutocomplete.as_view(), name='data_autocomplete_product'),
     path('data_autocomplete_detail/', DetailAutocomplete.as_view(), name='data_autocomplete_detail'),
+    path('data_autocomplete_node/', NodeAutocomplete.as_view(), name='data_autocomplete_node'),
+    path('data_autocomplete_node_and_detail/', NodeAndDetailAutocomplete.as_view(), name='data_autocomplete_node_and_detail'),
     path('data_autocomplete_worker/', WorkerAutocomplete.as_view(), name='data_autocomplete_worker'),
     path('data_autocomplete_categorydetail/', CategoryDetailAutocomplete.as_view(), name='data_autocomplete_category_detail'),
     path('data_autocomplete_batch/', BatchlAutocomplete.as_view(), name='data_autocomplete_batch'),
@@ -86,6 +98,12 @@ urlpatterns = [
     path('add-image-in-<detail>/', AddImageInDetailView.as_view(), name='add_image_in_detail'),
     path('image-<pk>/', DetailImageView.as_view(), name='image_detail'),
 
+    path('node/all/', NodeAllView.as_view(), name='nodes_list_all'),
+    path('new-node/', NodeCreateView.as_view(), name='create_new_node'),
+    path('<node>/add-detail-in-node/', NodeAddDetailView.as_view(), name='node_add_detail'),
+    path('<node>/add-node-in-node/', NodeAddNodeView.as_view(), name='node_add_node'),
+
+    path('<product>/add-node/', ProductAddNodeView.as_view(), name='product_add_node'),
     path('<product>/add-detail/', ProductAddDetailView.as_view(), name='product_add_detail'),
     path('<product>/detail/', ProductDataView.as_view(), name='product_detail_data'),
     path('<product>/delete-<detail>/',DeleteDetailFromProductView.as_view(), name='delete_detail_from_product'),

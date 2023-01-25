@@ -1,0 +1,10 @@
+<div class="dropdown">
+    <button class="btn btn-success btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        Инструменты
+    </button>
+    <ul class="dropdown-menu">
+        <li><a class="dropdown-item" href="{% url 'node_add_detail' node=node.name %}">Добавить Деталь</a></li>
+        <li><a class="dropdown-item" href="{% url 'node_add_node' node=node.name %}">Добавить Узел</a></li>
+        <li><a class="dropdown-item" href="">Удалить</a></li>
+    </ul>
+</div>
