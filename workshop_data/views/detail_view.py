@@ -2,10 +2,14 @@ import time
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
+from django.shortcuts import redirect
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, CreateView, DeleteView, UpdateView, DetailView
 
-from workshop_data.forms import AddImageInDetailForm, DetailCreateForm
+from workshop_data.forms import (
+    AddImageInDetailForm,
+    DetailCreateForm,
+    DetailAddDetailForm,)
 from workshop_data.models import Detail
 from ..filters import DetailFilter
 
@@ -56,6 +60,9 @@ class AddImageInDetailView(LoginRequiredMixin, UpdateView):
     success_url = reverse_lazy('detail_list_all')
 
     def get_object(self, queryset=None):
+        print()
+        print(self.kwargs)
+        print()
         return Detail.objects.get(name=self.kwargs.pop('detail'))
 
 
@@ -67,4 +74,26 @@ class DetailImageView(DetailView):
 
     def get_object(self, queryset=None):
         return Detail.objects.get(name=self.kwargs.get('pk'))
+
+
+class DetailAddDetailView(LoginRequiredMixin, UpdateView):
+    """Отображает страницу добавления Детали в Деталь"""
+    model = Detail
+    form_class = DetailAddDetailForm
+    template_name = 'workshop_data/detail/detail_add_detail.html'
+    success_url = reverse_lazy('node_list_all')
+    context_object_name = 'detail'
+
+    def get_object(self, **kwargs):
+        obj = Detail.objects.filter(name=self.kwargs.get('detail'))
+        return obj.first()
+
+    def form_valid(self, form):
+        obj = self.get_object()
+        for added_detail in form.cleaned_data['secondary_detail']:
+            obj.secondary_detail.add(added_detail)
+        if "save_and_continue" in self.request.POST:
+            time.sleep(.2)
+            return HttpResponseRedirect(reverse('detail_add_detail', kwargs={'detail': obj.name}))
+        return redirect('detail_list_all') #Fixme
 

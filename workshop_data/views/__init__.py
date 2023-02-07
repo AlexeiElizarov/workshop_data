@@ -44,9 +44,7 @@ from workshop_data.views.category_detail_views import (
 from workshop_data.views.statement_about_job_over_detail_view import (
     StatementAboutJobOverDetailView
 )
-from workshop_data.views.node_views import (
-    NodeAllView
-)
+
 from workshop_data.views.complite_view import *
 from workshop_data.views.test_views import *
 from workshop_data.views.bonus_view import *

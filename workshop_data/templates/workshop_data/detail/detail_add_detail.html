@@ -1,0 +1,54 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block title %}
+    Добавить Деталь в Узел
+{% endblock title %}
+
+{% block content %}
+    <link rel="stylesheet" href="{% static 'css/detail/detail_add_detail.css' %}">
+    <div class="wrapper-node-add-detail">
+        <div class="form">
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+                {{ form.media }}
+                <input type="submit" value="Сохранить" class="btn btn-primary">
+                <button type="submit" name="save_and_continue" class="btn btn-primary add">Сохранить и добавить еще</button>
+            </form>
+        </div>
+        <div class="wrapper-table">
+            <table class="table table-primary">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col"></th>
+                    <th scope="col">Детали</th>
+                </tr>
+                </thead>
+
+                {% for detail in detail.secondary_detail.all %}
+                <tbody>
+                <tr class="table-light">
+                    <th scope="row">{{ forloop.counter }}</th>
+                    {% if detail.category %}
+                        <td>{{ detail.category }}</td>
+                    {% else %}
+                        <td>--</td>
+                    {% endif %}
+
+                    <td>{{ detail }}</td>
+                </tr>
+                </tbody>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+    <script>
+        $('.add').click(function() {
+            $(this).parent().after($('<h3>', {
+                'text': 'Деталь добавлена  Узел'
+            }));
+        });
+    </script>
+{% endblock content %}

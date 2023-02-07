@@ -2,11 +2,11 @@ from workshop_data.forms.order_form import OrderForm
 from workshop_data.forms.product_form import (
     ProductCreateForm,
     ProductAddDetailForm,
-    ProductAddNodeForm,
     )
 from workshop_data.forms.detail_form import (
     DetailCreateForm,
-    AddImageInDetailForm)
+    AddImageInDetailForm,
+    DetailAddDetailForm,)
 from workshop_data.forms.stage_in_detail_form import (
     AddStageInDetailForm,
     EditStageInDetailForm)
@@ -24,11 +24,7 @@ from workshop_data.forms.batch_form import CreateBatchDetailInPlanForm
 from workshop_data.forms.stage_in_work_form import (
     CreateNewStageManufacturingInWorkForm,
     EnteringDetailToViewAverageTimeOfWorkForm)
-from workshop_data.forms.node_form import (
-    NodeCreateForm,
-    NodeAddDetailForm,
-    NodeAddNodeForm
-)
+
 
 
 

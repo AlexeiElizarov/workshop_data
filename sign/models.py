@@ -5,7 +5,9 @@ from django.db import models
 LIST_POSITION_WORKER = [
     'LSM',
     'MLR',
-    'TRN'
+    'TRN',
+    'SLR',
+    'WLR'
 ]
 
 class User(AbstractUser):
@@ -20,6 +22,10 @@ class User(AbstractUser):
         MILLER = 'MLR', 'Фрезеровщик'
         MASTER = 'MSR', 'Мастер'
         ENGINEER_PDB = 'EPB', 'Инженер ПДБ'
+        SOLDER = 'SLR', 'Пайщик'
+        WELDER = 'WLR', 'Сварщик'
+
+
 
     id = models.AutoField(auto_created=True, primary_key=True, verbose_name='ID')
     username = models.CharField(max_length=200, blank=False, unique=True)

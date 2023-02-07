@@ -1,7 +1,7 @@
 from dal import autocomplete
 from django import forms
 
-from workshop_data.models import Detail, Node
+from workshop_data.models import Detail
 from workshop_data.models.product import Product
 
 
@@ -43,14 +43,14 @@ class ProductAddDetailForm(forms.ModelForm):
         return cleaned_data
 
 
-class ProductAddNodeForm(forms.ModelForm):
-    """Отображает форму добавления Узла в Изделие"""
-    node = forms.ModelMultipleChoiceField(
-        label="Узел",
-        widget=autocomplete.ModelSelect2Multiple(url='data_autocomplete_node'),
-        queryset=Node.objects.all()
-    )
-
-    class Meta:
-        model = Product
-        fields = ('node',)
+# class ProductAddNodeForm(forms.ModelForm):
+#     """Отображает форму добавления Узла в Изделие"""
+#     node = forms.ModelMultipleChoiceField(
+#         label="Узел",
+#         widget=autocomplete.ModelSelect2Multiple(url='data_autocomplete_node'),
+#         queryset=Node.objects.all()
+#     )
+#
+#     class Meta:
+#         model = Product
+#         fields = ('node',)

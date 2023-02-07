@@ -43,28 +43,28 @@ class DetailAutocomplete(autocomplete.Select2QuerySetView):
         return qs
 
 
-class NodeAutocomplete(autocomplete.Select2QuerySetView):
-    """Реализует поле авто подсказки Деталей по вводимым символам"""
+# class NodeAutocomplete(autocomplete.Select2QuerySetView):
+#     """Реализует поле авто подсказки Деталей по вводимым символам"""
+#
+#     def get_queryset(self):
+#         if not self.request.user.is_authenticated:
+#             return Detail.objects.none()
+#         qs = Node.objects.all()
+#         if self.q:
+#             qs = qs.filter(name__istartswith=self.q)
+#         return qs
 
-    def get_queryset(self):
-        if not self.request.user.is_authenticated:
-            return Detail.objects.none()
-        qs = Node.objects.all()
-        if self.q:
-            qs = qs.filter(name__istartswith=self.q)
-        return qs
 
-
-class NodeAndDetailAutocomplete(autocomplete.Select2QuerySetView):
-    """Реализует поле авто подсказки Деталей по вводимым символам"""
-
-    def get_queryset(self):
-        if not self.request.user.is_authenticated:
-            return Detail.objects.none()
-        qs = Node.objects.all() + Detail.objects.all()
-        if self.q:
-            qs = qs.filter(name__istartswith=self.q)
-        return qs
+# class NodeAndDetailAutocomplete(autocomplete.Select2QuerySetView):
+#     """Реализует поле авто подсказки Деталей по вводимым символам"""
+#
+#     def get_queryset(self):
+#         if not self.request.user.is_authenticated:
+#             return Detail.objects.none()
+#         qs = Node.objects.all() + Detail.objects.all()
+#         if self.q:
+#             qs = qs.filter(name__istartswith=self.q)
+#         return qs
 
 
 class CategoryDetailAutocomplete(autocomplete.Select2QuerySetView):

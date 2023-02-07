@@ -5,38 +5,14 @@
 {% endblock title %}
 
 {% block content %}
-    <h3>Этапы производства Детали {{ detail }}</h3>
-
-    <table class="table table-primary">
-    <thead>
-    <tr>
-        <th scope="col">#</th>
-        <th scope="col">Этап</th>
-        <th scope="col">Вид работы</th>
-        <th scope="col">операции</th>
-        <th scope="col">Нормированное время</th>
-        <th scope="col">Расценка</th>
-        <th scope="col"></th>
-    </tr>
-    </thead>
-        {% for stage in stages %}
-            <tbody>
-                <tr>
-                    <th scope="row">{{ forloop.counter }}</th>
-                        <td><a href="">{{ stage.order }}</a></td>
-                        <td><a href="">{{ stage.name }}</a></td>
-                        <td><a href="">{{ stage.operations }}</a></td>
-                        <td><a href="">{{ stage.normalized_time }}</a></td>
-                        <td><a href="">{{ stage.price }}</a></td>
-                    <td>
-                        {% include 'workshop_data/detail/stage/includes/button_dropdown_menu.html' %}
-                    </td>
-
-                </tr>
-            </tbody>
-        {% endfor %}
-    </table>
-    <a class="btn  btn-outline-success btn-sm" type="button" href="{% url 'add_stage_in_detail' detail.id %}">
-        Добавить этап в Деталь
-    </a>
+    {% include 'workshop_data/detail/stage/includes/stage_in_detail_all_template.html' %}
+    {% if detail %}
+        <a class="btn  btn-outline-success btn-sm" type="button" href="{% url 'add_stage_in_detail' detail.id %}">
+            Добавить этап в Деталь
+        </a>
+    {% elif node %}
+        <a class="btn  btn-outline-success btn-sm" type="button" href="{% url 'add_stage_in_node' node.id %}">
+            Добавить этап в Узел
+        </a>
+    {% endif %}
 {% endblock content %}

@@ -27,12 +27,12 @@ class WorkshopPlanView(LoginRequiredMixin, ListView):
         context['filter'] = WorkshopPlanFilter(
             self.request.GET,
             queryset=self.get_queryset().select_related('detail').select_related('product').
-            prefetch_related('batchs').order_by('product'))
+            prefetch_related('batchs').order_by('product', 'detail'))
         return context
 
 
 class WorkshopPlanCreateView(LoginRequiredMixin, CreateView):
-    """Отображает страницу создания новой Детали в Плане"""
+    """Отображает страницу создания новой Детали/Узла в Плане"""
     model = WorkshopPlan
     form_class = WorkshopPlanCreateForm
     template_name = 'workshop_data/plan/plan_create.html'
@@ -95,5 +95,3 @@ class WorkshopPlanAddExistingBatchView(LoginRequiredMixin, UpdateView):
             batch.workshopplan_detail = self.get_object()
             batch.save()
             return HttpResponseRedirect(reverse_lazy('batchs_in_plan', kwargs={'object': self.get_object()}))
-
-

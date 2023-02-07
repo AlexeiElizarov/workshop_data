@@ -42,3 +42,26 @@ class AddImageInDetailForm(forms.ModelForm):
     class Meta:
         model = Detail
         fields = ('image',)
+
+
+class DetailAddDetailForm(forms.ModelForm):
+    """Отображает форму добавления Детали в Деталь"""
+    # detail = fields.CharField(required=False, widget=forms.Textarea())
+    # detail = forms.ModelMultipleChoiceField(
+    #     queryset=Detail.objects.all()
+    # )
+    class Meta:
+        model = Detail
+        fields = (
+            'name',
+            'secondary_detail',
+        )
+        widgets = {
+            'secondary_detail': autocomplete.ModelSelect2Multiple(url='data_autocomplete_detail'),
+        }
+
+    def clean(self):
+        cleaned_data = super(DetailAddDetailForm, self).clean()
+        # detail = Detail.objects.get(id=int(self.data.get('detail')))
+        # cleaned_data['detail'] = [detail,]
+        return cleaned_data

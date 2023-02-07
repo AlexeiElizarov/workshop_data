@@ -2,7 +2,14 @@
     {% ifchanged batch.workshopplan_detail %}
     <tr class="table-light">
         <td></td>
-        <td>    <h5>{{ batch.get_product }}_{{ batch.get_detail }}</h5></td>
+        <td><h5>
+            {{ batch.get_product }}_
+            {% if batch.get_detail %}
+                {{ batch.get_detail }}
+            {% else %}
+                {{ batch.get_node }}
+            {% endif %}
+            </h5></td>
         <td></td>
         <td></td>
         <td></td>

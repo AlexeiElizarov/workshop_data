@@ -16,7 +16,7 @@ class CreateBatchDetailInPlanForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         name = kwargs.pop('object')
         self.user = kwargs.pop('user')
-        detail = name.split('_')[1]
+        # detail = name.split('_')[1]
         super(CreateBatchDetailInPlanForm, self).__init__(*args, **kwargs)
         # вот так показывает "LSM", "TRN"...
         # self.fields['stage'].queryset = StageManufacturingDetail.objects.filter(detail_id=detail_id)

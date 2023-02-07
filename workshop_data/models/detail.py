@@ -14,6 +14,11 @@ class Detail(models.Model):
         verbose_name='Деталь',
         db_index=True)
     prefix = models.ForeignKey("workshop_data.Prefix", on_delete=models.PROTECT, null=True)
+    secondary_detail = models.ManyToManyField(
+        "workshop_data.Detail",
+        through='workshop_data.DetailDetail',
+        related_name="detail_in_detail",
+        through_fields=('main_detail', 'secondary_detail'),)
     image = models.ImageField(
         upload_to='images/',
         blank=True,
@@ -31,10 +36,14 @@ class Detail(models.Model):
     def __str__(self):
         return f'{self.name}'
 
+    def get_name_detail(self):
+        if self.secondary_detail.all():
+            return f'{self.name}уз'
+        return f'{self.name}'
+
 
 class Prefix(models.Model):
     """Приставка к названию Детали"""
-    #FIXME
     name = models.CharField(max_length=10, blank=True)
 
     objects = models.Manager()

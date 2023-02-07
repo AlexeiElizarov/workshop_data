@@ -15,6 +15,7 @@ class WorkshopPlanCreateForm(forms.ModelForm):
         widgets = {
             'product': autocomplete.ModelSelect2(url='data_autocomplete_product'),
             'detail': autocomplete.ModelSelect2(url='data_autocomplete_detail'),
+            # 'node': autocomplete.ModelSelect2(url='data_autocomplete_node'),
         }
 
     def clean_month(self):
@@ -26,7 +27,7 @@ class WorkshopPlanCreateForm(forms.ModelForm):
         product = self.cleaned_data.get('product')
         month = self.cleaned_data.get('month')
         detail = self.cleaned_data.get('detail')
-        if WorkshopPlan.objects.filter(detail=detail, month=month).exists():
+        if WorkshopPlan.objects.filter(detail=detail, month=month).exclude(detail=None).exists():
             raise forms.ValidationError(f"Деталь {product} {detail} уже есть в Плане на {Month.choices[month][1]}")
         return self.cleaned_data
 

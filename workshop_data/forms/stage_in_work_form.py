@@ -69,9 +69,9 @@ class CreateNewStageManufacturingInWorkForm(forms.ModelForm):
             if stage_in_batch.order - 1 != sorted(stage_exists_list)[-1]:
                 raise forms.ValidationError(
                     f"Не пройдены предыдущие этапы в Партии {batch}")
-        if worker.position != stage_in_batch.name:
-            raise forms.ValidationError(
-                f"Вы пытаетесь выписать наряд на {stage_in_batch.name} рабочему {worker.position}")
+        # if worker.position != stage_in_batch.name:
+        #     raise forms.ValidationError(
+        #         f"Вы пытаетесь выписать наряд на {stage_in_batch.name} рабочему {worker.position}")
         return cleaned_data
 
 

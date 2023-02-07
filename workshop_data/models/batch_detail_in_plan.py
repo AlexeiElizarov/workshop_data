@@ -9,9 +9,14 @@ class BatchDetailInPlan(models.Model):
         on_delete=models.SET_NULL,
         null=True,
         related_name='batchs')
-    detail = models.ForeignKey("Detail", on_delete=models.PROTECT,
-                               related_name="batchs",
-                               verbose_name="Деталь")
+    # node = models.ForeignKey("workshop_data.Node", on_delete=models.PROTECT,
+    #                            related_name="node_in_batchs",
+    #                            verbose_name="Узел",
+    #                            null=True)
+    detail = models.ForeignKey("workshop_data.Detail", on_delete=models.PROTECT,
+                               related_name="detail_in_batchs",
+                               verbose_name="Деталь",
+                               null=True)
     quantity_in_batch = models.SmallIntegerField(default=0, verbose_name="Количество в партии")
     ready = models.BooleanField(default=False)
     sos = models.BooleanField(default=False)
@@ -32,7 +37,8 @@ class BatchDetailInPlan(models.Model):
         return f'{self.id}'
 
     def get_product(self):
-        return self.detail.product.all()[0]
+        return self.workshopplan_detail.product
 
     def get_detail(self):
         return self.detail
+

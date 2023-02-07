@@ -9,8 +9,19 @@ from sign.models import User
 class WorkshopPlan(models.Model):
     # FIXME
     """Класс описывает Детали входящие в План цеха"""
-    product = models.ForeignKey("workshop_data.Product", on_delete=models.PROTECT, verbose_name='Изделие')
-    detail = models.ForeignKey("workshop_data.Detail", on_delete=models.PROTECT, verbose_name="Деталь")
+    product = models.ForeignKey("workshop_data.Product",
+                                on_delete=models.PROTECT,
+                                verbose_name='Изделие')
+    detail = models.ForeignKey("workshop_data.Detail",
+                               on_delete=models.PROTECT,
+                               verbose_name="Деталь",
+                               blank=True,
+                               null=True)
+    # node = models.ForeignKey("workshop_data.Node",
+    #                          on_delete=models.PROTECT,
+    #                          verbose_name="Узел",
+    #                          blank=True,
+    #                          null=True)
     quantity_state_order = models.PositiveSmallIntegerField(default=0, verbose_name='Госзаказ')
     quantity_commercial_order = models.PositiveSmallIntegerField(default=0, verbose_name='Коммерция')
     in_work = models.PositiveSmallIntegerField(default=0, verbose_name='Количество в работе')
@@ -27,7 +38,6 @@ class WorkshopPlan(models.Model):
 
     def get_product(self):
         return f'{self.product} {self.detail}'
-
     def get_quantity(self):
         """Возвращает общее количество деталей(госзаказ и коммерция)"""
         quantity = self.quantity_state_order + self.quantity_commercial_order

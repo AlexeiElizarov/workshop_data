@@ -1,16 +1,23 @@
 {% extends 'main.html' %}
-
+{% load static %}
 {% block title %}
     Добавить Этап
 {% endblock title %}
 
 {% block content %}
-    <h3>Добавить новый Этап</h3>
-<hr>
-    <form method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        {{ form.media }}
-        <input type="submit" value="Добавить" class="btn btn-primary">
-    </form>
+    <link rel="stylesheet" href="{% static 'css/detail/stage/add_stage_in_detail.css' %}">
+    <div class="wrapper-add-stage-in-detail">
+        <div class="form-add-stage-in-detail"><h3>Добавить новый Этап</h3>
+            <hr>
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+                {{ form.media }}
+                <input type="submit" value="Добавить" class="btn btn-primary">
+            </form>
+        </div>
+        <div class="all-stage-in-detail">
+            {% include 'workshop_data/detail/stage/includes/stage_in_detail_all_template.html' %}
+        </div>
+    </div>
 {% endblock content %}

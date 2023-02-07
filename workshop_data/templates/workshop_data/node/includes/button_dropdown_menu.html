@@ -5,6 +5,9 @@
     <ul class="dropdown-menu">
         <li><a class="dropdown-item" href="{% url 'node_add_detail' node=node.name %}">Добавить Деталь</a></li>
         <li><a class="dropdown-item" href="{% url 'node_add_node' node=node.name %}">Добавить Узел</a></li>
+        <li><a class="dropdown-item" href="{% url 'all_stage_in_node' pk=node.id node=node %}">Просмотр всех Этапов</a></li>
+        <li><a class="dropdown-item" href="{% url 'add_stage_in_node' node.id %}">Добавить этап в Узел</a></li>
+
         <li><a class="dropdown-item" href="">Удалить</a></li>
     </ul>
 </div>

@@ -1,0 +1,34 @@
+<h3>Этапы производства Детали {{ detail }}</h3>
+
+<table class="table table-secondary">
+<thead>
+<tr>
+    <th scope="col">#</th>
+    <th scope="col">Этап</th>
+    <th scope="col">Вид работы</th>
+    <th scope="col">Описание</th>
+    <th scope="col">Операции</th>
+    <th scope="col">Нормированное время</th>
+    <th scope="col">Расценка</th>
+    <th scope="col"></th>
+</tr>
+</thead>
+    {% for stage in stages %}
+        <tbody>
+            <tr>
+                <th scope="row">{{ forloop.counter }}</th>
+                    <td><a href="">{{ stage.order }}</a></td>
+                    <td><a href="">{{ stage.get_name_display }}</a></td>
+                    <td><a href="">{{ stage.description }}</a></td>
+                    <td><a href="">{{ stage.operations }}</a></td>
+                    <td><a href="">{{ stage.normalized_time }}</a></td>
+                    <td><a href="">{{ stage.price }}</a></td>
+                <td>
+                    {% include 'workshop_data/detail/stage/includes/button_dropdown_menu.html' %}
+                </td>
+
+            </tr>
+        </tbody>
+    {% endfor %}
+</table>
+

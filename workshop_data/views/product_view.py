@@ -6,11 +6,11 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
 
-from workshop_data.models import Product, Detail, Node
+from workshop_data.models import Product, Detail
 from workshop_data.filters import ProductFilter
 from workshop_data.forms import (
     ProductCreateForm,
-    ProductAddDetailForm, ProductAddNodeForm,
+    ProductAddDetailForm,
 )
 
 
@@ -75,20 +75,17 @@ class ProductAddDetailView(LoginRequiredMixin, UpdateView):
         return redirect('product_add_detail_complete')
 
 
-class ProductAddNodeView(LoginRequiredMixin, UpdateView):
-    """Отображает страницу добавления Узла в Изделие"""
-    model = Product
-    form_class = ProductAddNodeForm
-    template_name = 'workshop_data/product/product_add_node.html'
-    success_url = reverse_lazy('product_add_detail_complete')
-    context_object_name = 'product'
-
-    def get_object(self, **kwargs):
-        obj = Product.objects.filter(name=self.kwargs['product']).prefetch_related('detail__category')
-        return obj.first()
-
-
-
+# class ProductAddNodeView(LoginRequiredMixin, UpdateView):
+#     """Отображает страницу добавления Узла в Изделие"""
+#     model = Product
+#     form_class = ProductAddNodeForm
+#     template_name = 'workshop_data/product/product_add_node.html'
+#     success_url = reverse_lazy('product_add_detail_complete')
+#     context_object_name = 'product'
+#
+#     def get_object(self, **kwargs):
+#         obj = Product.objects.filter(name=self.kwargs['product']).prefetch_related('detail__category')
+#         return obj.first()
 
 
 class ProductDataView(LoginRequiredMixin, DetailView):

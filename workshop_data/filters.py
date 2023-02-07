@@ -48,8 +48,11 @@ class WorkshopPlanFilter(FilterSet):
     month = django_filters.MultipleChoiceFilter(
         choices=Month.choices,
         widget=forms.CheckboxSelectMultiple()
-
     )
+    # node = django_filters.ModelChoiceFilter(
+    #     queryset=Node.objects.all(),
+    #     widget=autocomplete.Select2(url='data_autocomplete_node')
+    # )
 
     class Meta:
         model = WorkshopPlan

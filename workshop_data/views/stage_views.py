@@ -39,7 +39,7 @@ class StageManufacturingDetailInWorkInPlanView(LoginRequiredMixin, DetailView):
         stages_in_work = StageManufacturingDetailInWork.objects.filter(batch_id=self.kwargs.get('id'))
         context['stages_in_work'] = stages_in_work
         context['batch_id'] = self.kwargs.get('id')
-        stages = self.get_object().workshopplan_detail.detail.stages.all()
+        stages = self.get_object().workshopplan_detail.detail.stages_detail.all()
         not_work_stages = []
         for i in range(len(stages_in_work), len(stages)):
             not_work_stages.append(stages[i])
@@ -101,7 +101,7 @@ class StageManufacturingDetailInWorkView(LoginRequiredMixin, CreateView):
             price=self.object.stage_in_batch.price,
             author=self.request.user
         )
-        args = {}
+        args = {'order': order_object}
         if 'view' in self.request.POST:
             return render(self.request, 'workshop_data/order_template_for_print.html', args)
         elif 'save' in self.request.POST:
@@ -196,12 +196,17 @@ class StageInDetailView(LoginRequiredMixin, DetailView):
     context_object_name = 'stages'
 
     def get_object(self, queryset=None):
-        return StageManufacturingDetail.objects.filter(detail_id=self.kwargs.get('pk'))
+        if 'detail' in self.kwargs:
+            return StageManufacturingDetail.objects.filter(detail_id=self.kwargs.get('pk'))
+        elif 'node' in self.kwargs:
+            return StageManufacturingDetail.objects.filter(node_id=self.kwargs.get('pk'))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['stages'] = self.get_object()
-        context['detail'] = Detail.objects.get(id=self.kwargs.get('pk'))
+        if 'detail' in self.kwargs:
+            context['detail'] = Detail.objects.get(id=self.kwargs.get('pk'))
+        elif 'node' in self.kwargs:
+            context['node'] = Node.objects.get(id=self.kwargs.get('pk'))
         return context
 
 
@@ -211,15 +216,33 @@ class AddStageInDeatailVeiw(LoginRequiredMixin, CreateView):
     form_class = AddStageInDetailForm
     template_name = 'workshop_data/detail/stage/add_stage_in_detail.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if 'detail_id' in self.kwargs:
+            context['stages'] = StageManufacturingDetail.objects.filter(detail_id=self.kwargs.get('detail_id'))
+        elif 'node_id' in self.kwargs:
+            context['stages'] = StageManufacturingDetail.objects.filter(node_id=self.kwargs.get('node_id'))
+        return context
+
     # чтобы передать pk в форму
     def get_form_kwargs(self):
         kwargs = super(AddStageInDeatailVeiw, self).get_form_kwargs()
-        kwargs.update({'pk': self.kwargs.get('pk')})
+        if self.kwargs.get('detail_id'):
+            kwargs.update({'detail_id': self.kwargs.get('detail_id')})
+        elif self.kwargs.get('node_id'):
+            kwargs.update({'node_id': self.kwargs.get('node_id')})
         return kwargs
 
     def form_valid(self, form):
         form = form.save()
-        return HttpResponseRedirect(reverse_lazy('all_stage_in_detail', kwargs={'pk': self.kwargs.get('pk')}))
+        if self.kwargs.get('detail_id'):
+            return HttpResponseRedirect(reverse_lazy(
+                'all_stage_in_detail', kwargs={'pk': self.kwargs.get('detail_id'),
+                                               'detail': self.kwargs.get('detail')}))
+        elif self.kwargs.get('node_id'):
+            return HttpResponseRedirect(reverse_lazy(
+                'all_stage_in_node', kwargs={'pk': self.kwargs.get('node_id'),
+                                             'node': self.kwargs.get('node')}))
 
 
 class EnteringDetailToViewAverageTimeOfWorkView(FormView):

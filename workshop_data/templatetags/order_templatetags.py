@@ -57,6 +57,6 @@ def get_time_of_work_order_tag(batch_id, worker, operations):
     """Возвращает время работы по batch_id, worker, operations"""
     order = get_order_by_batch_user_operations(batch_id, worker, operations)
     try:
-        return get_time_of_work(order.id)
+        return get_time_of_work(order)
     except:
         return '--'

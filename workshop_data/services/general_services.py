@@ -247,10 +247,13 @@ def get_average_time_of_work_stage_in_detail(detail):
     try:
         stages_and_time = {}
         for stage in StageManufacturingDetail.objects.filter(detail=Detail.objects.get(name=detail)):
-            stages_and_time[stage] = \
-                round(mean(
-                    [order.time_of_work_order / order.quantity for order in Order.objects.filter(operations=stage)]
-                ) / 8, 8)
+            try:
+                stages_and_time[stage] = \
+                    round(mean(
+                        [order.time_of_work_order / order.quantity for order in Order.objects.filter(operations=stage)]
+                    ) / 8, 8)
+            except:
+                stages_and_time[stage] = 0
         return stages_and_time
     except:
         return None
@@ -270,10 +273,11 @@ def get_average_time_of_work_stage_in_detail_per_worker(worker, product, detail,
 
 def get_time_of_work(order: Order):
     """Возвращает время работы(time_of_work) из StageManufacturingDetailInWork или из Order"""
-    try:
-        return get_stage_in_work(order).time_of_work_stage
+    try: #Fixme
+        time = order.time_of_work_order
+        return time if time > 0 else '--'
     except:
-        return order.time_of_work_order
+        return 'error'
 
 
 def get_all_bonuses_per_month(user, month):
@@ -281,4 +285,8 @@ def get_all_bonuses_per_month(user, month):
     bonuses = Bonus.objects.filter(worker=user, month=month)
     if Bonus.objects.filter(worker=user, month=13).exists():
         return 'Редактировать'
-    return bonuses.aggregate(Sum('quantity'))['quantity__sum']
+    sum = bonuses.aggregate(Sum('quantity'))['quantity__sum']
+    if sum is None:
+        return '--'
+    else:
+        return sum

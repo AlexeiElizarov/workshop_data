@@ -18,12 +18,21 @@ class CreateBatchDetailInPlan(LoginRequiredMixin, CreateView):
     template_name = 'workshop_data/master/batch/create_batch_in_plan.html'
 
     def get_object(self, queryset=None):
-        name = self.kwargs.get('product')
-        product = name.split('_')[0]
-        detail = name.split('_')[1]
-        obj = WorkshopPlan.objects.filter(product__name=product, detail__name=detail).\
-            select_related('product', 'detail')[0]
-        return obj
+        name = self.kwargs.get('object')
+        if name[-2:] == 'уз':
+            product = name.split('_')[0]
+            node = name.split('_')[1][:-2]
+            obj = WorkshopPlan.objects.filter(
+                product__name=product,
+                node__name=node).select_related('product', 'detail')[0]
+            return obj
+        else:
+            product = name.split('_')[0]
+            detail = name.split('_')[1]
+            obj = WorkshopPlan.objects.filter(
+                product__name=product,
+                detail__name=detail,).select_related('product', 'detail')[0]
+            return obj
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -35,17 +44,21 @@ class CreateBatchDetailInPlan(LoginRequiredMixin, CreateView):
 
     def get_form_kwargs(self):
         kwargs = super(CreateBatchDetailInPlan, self).get_form_kwargs()
-        kwargs.update({'object': self.kwargs.get('product')})
+        kwargs.update({'object': self.kwargs.get('object')})
         kwargs.update({'user': self.request.user})
         return kwargs
 
     def form_valid(self, form):
         batch = form.save(commit=False)
         batch.author = self.request.user
-        batch.detail = self.get_object().detail
+        if self.get_object().detail:
+            batch.detail = self.get_object().detail
+        elif self.get_object().node:
+            batch.node = self.get_object().node
+        batch.workshopplan_detail = self.get_object()
         batch.save()
-        batch.workshopplan_detail.save()
-        return HttpResponseRedirect(reverse_lazy('batchs_in_plan',kwargs=({'object': self.get_object()})))
+        # batch.workshopplan_detail.save()
+        return HttpResponseRedirect(reverse_lazy('batchs_in_plan', kwargs=({'object': self.get_object()})))
 
 
 class AllBatchDetailInPlanView(LoginRequiredMixin, ListView):
@@ -65,12 +78,12 @@ class AllBatchDetailInPlanView(LoginRequiredMixin, ListView):
 
         context['filter'] = BatchFilter(
             self.request.GET,
-            queryset=self.get_queryset().\
-                    select_related('detail', 'workshopplan_detail', 'comment').\
-                    prefetch_related('detail__product').\
-                    prefetch_related(Prefetch('stages',
-                                              queryset=StageManufacturingDetailInWork.objects.
-                                              select_related('worker', 'stage_in_batch'))))
+            queryset=self.get_queryset(). \
+                select_related('detail', 'workshopplan_detail', 'comment'). \
+                prefetch_related('detail__detail_in_product'). \
+                prefetch_related(Prefetch('stages',
+                                          queryset=StageManufacturingDetailInWork.objects.
+                                          select_related('worker', 'stage_in_batch'))))
         return context
 
 
@@ -92,12 +105,29 @@ class AllBatchDetailProductInPlan(LoginRequiredMixin, DetailView):
     model = BatchDetailInPlan
     template_name = 'workshop_data/master/batch/all_batch_detail_in_plan.html'
 
-    def get_object(self, **kwargs):  # FIXME можно ли как то по-другому найти obj?
+    # def get_object(self, **kwargs):  # FIXME можно ли как то по-другому найти obj?
+    #     name = self.kwargs.get('object')
+    #     product = name.split('_')[0]
+    #     detail = name.split('_')[1]
+    #     obj = WorkshopPlan.objects.get(product__name=product, detail__name=detail)
+    #     return obj
+
+    def get_object(self, queryset=None):
         name = self.kwargs.get('object')
-        product = name.split('_')[0]
-        detail = name.split('_')[1]
-        obj = WorkshopPlan.objects.get(product__name=product, detail__name=detail)
-        return obj
+        if name[-2:] == 'уз':
+            product = name.split('_')[0]
+            node = name.split('_')[1][:-2]
+            obj = WorkshopPlan.objects.filter(
+                product__name=product,
+                node__name=node).select_related('product', 'detail')[0]
+            return obj
+        else:
+            product = name.split('_')[0]
+            detail = name.split('_')[1]
+            obj = WorkshopPlan.objects.filter(
+                product__name=product,
+                detail__name=detail,).select_related('product', 'detail')[0]
+            return obj
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
