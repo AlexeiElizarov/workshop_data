@@ -1,0 +1,34 @@
+{% load order_templatetags %}
+<table class="table table-success">
+    <thead>
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col">Работник</th>
+        <th scope="col">Этап</th>
+    </tr>
+    </thead>
+    <tbody>
+        {% block stage_batch_in_work %}
+            {% for stage_in_work in stages_in_work %}
+                    <tr class="{% if batch.sos == True %}table-danger
+               {% else %}{% endif %}">
+                        <th scope="row">{{ forloop.counter }}</th>
+
+                        <td><a href="">{{ stage_in_work.worker.surname }} {{ stage_in_work.worker.name }}</a></td>
+                        <td><a href="">{{ stage_in_work.stage_in_batch }}</a></td>
+                    </tr>
+            {% endfor %}
+        {% endblock stage_batch_in_work %}
+
+        <tr><td colspan="9"><h5>Оставшеся Этапы</h5></td></tr>
+
+        {% for stage in stages %}
+            <tr class="table-danger" >
+                <th scope="row">{{ forloop.counter }}</th>
+
+                <td><a href=""></a></td>
+                <td><a href="">{{ stage.operations }} {{ stage.get_name_display }}</a></td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

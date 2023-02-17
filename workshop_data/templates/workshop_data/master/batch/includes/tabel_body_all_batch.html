@@ -33,13 +33,23 @@
         <td><a href="">{{ batch.sos }}</a></td>
         <td><a href="">{{ batch.comment.body }}</a></td>
         <td>
-            <a href="{% url 'all_stage_this_batch' id=batch.id %}">
-                {% for stage in batch.stages.all %}
-                    {% if forloop.last %}
-                        {{ stage.stage_in_batch }}
-                    {% endif %}
-                {% endfor %}
-            </a>
+            <table width="100%">
+                <tr>
+                    <td>
+                        <a href="{% url 'all_stage_this_batch' id=batch.id %}">
+                            {% for stage in batch.stages.all %}
+                                {% if forloop.last %}
+                                    {{ stage.stage_in_batch }}
+                                {% endif %}
+                            {% endfor %}
+                        </a>
+                    </td>
+                    <td width="25%" style="text-align: center">
+                        <a href="{% url 'start_new_stage_in_work' batch.id %}">&rArr;</a>
+                    </td>
+                </tr>
+          </table>
+
         </td>
         <td>
             <a href="{% url 'edit_start_new_stage_in_work' batch %}">

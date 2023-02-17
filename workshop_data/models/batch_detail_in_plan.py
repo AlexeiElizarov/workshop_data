@@ -9,10 +9,6 @@ class BatchDetailInPlan(models.Model):
         on_delete=models.SET_NULL,
         null=True,
         related_name='batchs')
-    # node = models.ForeignKey("workshop_data.Node", on_delete=models.PROTECT,
-    #                            related_name="node_in_batchs",
-    #                            verbose_name="Узел",
-    #                            null=True)
     detail = models.ForeignKey("workshop_data.Detail", on_delete=models.PROTECT,
                                related_name="detail_in_batchs",
                                verbose_name="Деталь",

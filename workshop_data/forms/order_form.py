@@ -2,7 +2,7 @@ from dal import autocomplete
 from django import forms
 
 from sign.models import User, LIST_POSITION_WORKER
-from workshop_data.models import StageManufacturingDetailInWork
+from workshop_data.models import StageManufacturingDetailInWork, StageManufacturingDetail
 from workshop_data.models.order import Order
 from workshop_data.services import get_stage_in_work
 from workshop_data.forms.stage_in_work_form import InitialsModelChoiceField
@@ -10,6 +10,11 @@ from workshop_data.forms.stage_in_work_form import InitialsModelChoiceField
 
 class OrderForm(forms.ModelForm):
     """Отображает форму добавления нового Наряда"""
+    operations = forms.ModelChoiceField(
+        queryset=StageManufacturingDetail.objects.all(),
+        widget=autocomplete.ModelSelect2(url='data_autocomplete_stage_in_detail',
+                                                    forward=('detail',))
+    )
     class Meta:
         model = Order
         fields = ('month',
@@ -24,7 +29,6 @@ class OrderForm(forms.ModelForm):
         widgets = {
             'product': autocomplete.ModelSelect2(url='data_autocomplete_product'),
             'detail': autocomplete.ModelSelect2(url='data_autocomplete_detail'),
-            # 'batch': autocomplete.ModelSelect2(url='data_autocomplete_batch'),
         }
         # help_texts = {
         #     'surname': "",

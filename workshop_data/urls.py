@@ -18,7 +18,8 @@ from workshop_data.views.services_view import (
     DetailAutocomplete,
     WorkerAutocomplete,
     CategoryDetailAutocomplete,
-    BatchlAutocomplete,)
+    BatchlAutocomplete,
+    StageForDetaillAutocomplete, )
 from workshop_data.views.stage_views import (
     StageManufacturingDetailInWorkInPlanView,
     StageManufacturingDetailInWorkView,
@@ -72,6 +73,7 @@ urlpatterns = [
     path('data_autocomplete_worker/', WorkerAutocomplete.as_view(), name='data_autocomplete_worker'),
     path('data_autocomplete_categorydetail/', CategoryDetailAutocomplete.as_view(), name='data_autocomplete_category_detail'),
     path('data_autocomplete_batch/', BatchlAutocomplete.as_view(), name='data_autocomplete_batch'),
+    path('data_autocomplete_satage_in_detail/', StageForDetaillAutocomplete.as_view(), name='data_autocomplete_stage_in_detail'),
 
     path('<pk>/edit-stage-in-detail/', EditStageInDetailView.as_view(), name='edit_stage_in_detail'),
     path('<pk>/<detail>/all-stage-in-detail/', StageInDetailView.as_view(), name='all_stage_in_detail'),

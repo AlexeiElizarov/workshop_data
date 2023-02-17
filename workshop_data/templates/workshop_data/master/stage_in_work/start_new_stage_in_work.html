@@ -71,6 +71,9 @@
                 </table>
             </div>
         </div>
+        <div>
+            {% include 'workshop_data/master/stage_in_work/includes/all_stage_batch_in_work_and_not_work_template.html' with stagesinwork=stages_in_work %}
+        </div>
     </div>
     <hr>
 {% endblock content %}

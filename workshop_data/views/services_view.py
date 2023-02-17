@@ -89,3 +89,19 @@ class BatchlAutocomplete(autocomplete.Select2QuerySetView):
         if self.q:
             qs = qs.filter(id__istartswith=self.q)
         return qs
+
+
+
+class StageForDetaillAutocomplete(autocomplete.Select2QuerySetView):
+    """Реализует поле авто подсказки ID Партии"""
+
+    def get_queryset(self):
+        if not self.request.user.is_authenticated:
+            return StageManufacturingDetail.objects.none()
+        qs = StageManufacturingDetail.objects.all()
+        detail = self.forwarded.get('detail', None)
+        if detail:
+            qs = qs.filter(detail=detail)
+        if self.q:
+            qs = qs.filter(id__istartswith=self.q)
+        return qs

@@ -124,6 +124,10 @@ def get_list_miller():
     return User.objects.filter(position='MLR')
 
 
+def get_batch_by_id(batch_id):
+    """Получает объект Партия по id"""
+    return get_object_or_404(BatchDetailInPlan, id=batch_id)
+
 def get_dict_worker_quantity_detail(product, detail, workers) -> dict:
     """
     Получает количество определенных деталей у всех работников из списка.
@@ -290,3 +294,12 @@ def get_all_bonuses_per_month(user, month):
         return '--'
     else:
         return sum
+
+def get_not_work_stages_in_batch(batch):
+    """Возвращает оставшиеся этапы Партии(не выполненные)"""
+    stages_in_work = StageManufacturingDetailInWork.objects.filter(batch_id=batch.id)
+    stages_all = batch.workshopplan_detail.detail.stages_detail.all()
+    not_work_stages = []
+    for i in range(len(stages_in_work), len(stages_all)):
+        not_work_stages.append(stages_all[i])
+    return not_work_stages

@@ -23,7 +23,7 @@ from workshop_data.services import (
     get_list_turner,
     get_list_miller,
     get_dict_worker_quantity_detail,
-    get_average_time_of_work_stage_in_detail)
+    get_average_time_of_work_stage_in_detail, get_not_work_stages_in_batch, get_batch_by_id)
 
 
 class StageManufacturingDetailInWorkInPlanView(LoginRequiredMixin, DetailView):
@@ -39,11 +39,7 @@ class StageManufacturingDetailInWorkInPlanView(LoginRequiredMixin, DetailView):
         stages_in_work = StageManufacturingDetailInWork.objects.filter(batch_id=self.kwargs.get('id'))
         context['stages_in_work'] = stages_in_work
         context['batch_id'] = self.kwargs.get('id')
-        stages = self.get_object().workshopplan_detail.detail.stages_detail.all()
-        not_work_stages = []
-        for i in range(len(stages_in_work), len(stages)):
-            not_work_stages.append(stages[i])
-        context['stages'] = not_work_stages
+        context['stages'] = get_not_work_stages_in_batch(self.get_object())
         return context
 
     def form_valid(self, form):
@@ -58,11 +54,11 @@ class StageManufacturingDetailInWorkView(LoginRequiredMixin, CreateView):
     template_name = 'workshop_data/master/stage_in_work/start_new_stage_in_work.html'
     success_url = reverse_lazy('start_new_stage_in_work_complete')
 
-    def get_object(self, queryset=None):
-        batch_id = self.kwargs.get('batch')
-        obj = BatchDetailInPlan.objects.filter(id=batch_id).\
-            select_related('workshopplan_detail__detail','workshopplan_detail__product')
-        return obj[0]
+    # def get_object(self, queryset=None):
+    #     batch_id = self.kwargs.get('batch')
+    #     obj = BatchDetailInPlan.objects.filter(id=batch_id).\
+    #         select_related('workshopplan_detail__detail','workshopplan_detail__product')
+    #     return obj[0]
 
     def get_form_kwargs(self):
         kwargs = super(StageManufacturingDetailInWorkView, self).get_form_kwargs()
@@ -70,20 +66,24 @@ class StageManufacturingDetailInWorkView(LoginRequiredMixin, CreateView):
         kwargs.update(
             {'stages': StageManufacturingDetail.objects.filter(
                 detail_id=
-                self.get_object().workshopplan_detail.detail.id)}
+                get_batch_by_id(self.kwargs.get('batch')).workshopplan_detail.detail.id)}
         )
         kwargs.update({'user': self.request.user})
         return kwargs
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
-        wp_obj = self.get_object().workshopplan_detail
+        batch = get_batch_by_id(self.kwargs.get('batch'))
+        wp_obj = batch.workshopplan_detail
+        context['batch_id'] = batch.id
+        context['stages_in_work'] = StageManufacturingDetailInWork.objects.filter(batch_id=batch.id)
         context['workers_quantity_lsm'] = \
             get_dict_worker_quantity_detail(wp_obj.product, wp_obj.detail, get_list_locksmith())
         context['workers_quantity_trn'] = \
             get_dict_worker_quantity_detail(wp_obj.product, wp_obj.detail, get_list_turner())
         context['workers_quantity_mlr'] = \
             get_dict_worker_quantity_detail(wp_obj.product, wp_obj.detail, get_list_miller())
+        context['stages'] = get_not_work_stages_in_batch(batch)
         return context
 
     def form_valid(self, form):
@@ -205,8 +205,6 @@ class StageInDetailView(LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         if 'detail' in self.kwargs:
             context['detail'] = Detail.objects.get(id=self.kwargs.get('pk'))
-        elif 'node' in self.kwargs:
-            context['node'] = Node.objects.get(id=self.kwargs.get('pk'))
         return context
 
 

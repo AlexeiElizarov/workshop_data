@@ -5,6 +5,7 @@
 {% endblock title %}
 {% block content %}
     <h3>Этапы в работе</h3>
+    {% load order_templatetags %}
     <table class="table table-primary">
         <thead>
         <tr>
@@ -27,9 +28,9 @@
                             <th scope="row">{{ forloop.counter }}</th>
 
                             <td><a href="">{{ batch_id }}</a></td>
-                            <td><a href="">{{ stage_in_work.worker }}</a></td>
+                            <td><a href="">{{ stage_in_work.worker.surname }} {{ stage_in_work.worker.name }}</a></td>
                             <td><a href="">{{ stage_in_work.stage_in_batch }}</a></td>
-                            <td><a href="">{{ stage_in_work.start_of_work }}</a></td>
+                            <td><a href="">{{ stage_in_work.start_of_work|date:"Y M d, h:m" }}</a></td>
                             <td><a href="">{{ stage_in_work.in_work }}</a></td>
                             <td><a href="">{% get_time_of_work_order_tag batch_id stage_in_work.worker stage_in_work.stage_in_batch %}</a></td>
                             <td><a href="">{{ stage_in_work.comment_in_batch.body }}</a></td>
@@ -48,7 +49,7 @@
 
                     <td><a href="">{{ batch_id }}</a></td>
                     <td><a href=""></a></td>
-                    <td><a href="">{{ stage.operations }} {{ stage.name }}</a></td>
+                    <td><a href="">{{ stage.operations }} {{ stage.get_name_display }}</a></td>
                     <td><a href=""></a></td>
                     <td><a href=""></a></td>
                     <td><a href=""></a></td>
