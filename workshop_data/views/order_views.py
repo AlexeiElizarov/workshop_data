@@ -4,9 +4,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
-from django.views.generic import CreateView, DeleteView, UpdateView, ListView
+from django.views.generic import CreateView, DeleteView, UpdateView, ListView, DetailView, RedirectView, TemplateView
 
-from workshop_data.forms.order_form import TimeOfWorkInStageForm
+from workshop_data.forms.order_form import TimeOfWorkInStageForm, OrderEditMonthForm
 from workshop_data.models.order import Order
 from workshop_data.models.product import Product
 from workshop_data.models.detail import Detail
@@ -37,13 +37,12 @@ class OrderUserCreateView(LoginRequiredMixin, CreateView):
                 product=form.cleaned_data['product'],
                 detail=form.cleaned_data['detail'],
                 operations=form.cleaned_data['operations'],
+                stage=form.cleaned_data['stage'],
                 quantity=form.cleaned_data['quantity'],
                 normalized_time=form.cleaned_data['normalized_time'],
                 price=form.cleaned_data['price'],
                 author_id=self.request.user.id,
             )
-        #     order.save()
-        # return redirect('orders_user_list_all', username=current_user.username)
         args = {}
         args['order'] = order_object
         if 'view' in self.request.POST:
@@ -56,6 +55,38 @@ class OrderUserCreateView(LoginRequiredMixin, CreateView):
             return HttpResponseRedirect(reverse_lazy('start_new_stage_in_work_complete'))
 
 
+class AllOrderForAllWorker(LoginRequiredMixin, ListView):
+    """Отображает все наряды всех работников"""
+    model = Order
+    context_object_name = 'orders'
+    template_name = 'workshop_data/master/orders/orders_all_list_for_master.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+        orders = Order.objects.all().order_by('-date').\
+            select_related('batch', 'detail__category', 'product', 'user', 'stage')
+        context['average_price'] = get_average_price_orders(orders)
+        context['average_cost_per_hour'] = get_average_cost_per_hour(orders)
+        if 'month' in self.kwargs:
+            month = self.kwargs['month']
+            orders = orders.filter(month=month).order_by('date'). \
+                select_related('batch', 'detail__category', 'product', 'user',)
+            context['orders'] = orders
+            context['month'] = month
+            context['average_cost_per_hour_per_month'] = get_average_cost_per_hour_per_month(orders)
+            context['average_price_per_month'] = get_average_price_orders_per_month(orders)
+        elif 'username' in self.kwargs:
+            context['orders'] = orders.filter(user=User.objects.get(username=self.kwargs.get('username')))
+        elif 'product' in self.kwargs:
+            context['orders'] = orders.filter(product_id=Product.objects.get(name=self.kwargs['product']))
+        elif 'detail' in self.kwargs:
+            context['orders'] = orders.filter(detail_id=Detail.objects.get(name=self.kwargs['detail']))
+        elif 'category' in self.kwargs:
+            context['orders'] = orders.filter(detail__category__name=self.kwargs['category'])
+        else:
+            context['orders'] = orders
+        return context
+
 class OrderUserParametrListView(LoginRequiredMixin, ListView):
     """Отображает наряды пользователя фильтруя их в зависимости от переданного параметра"""
     model = Order
@@ -67,42 +98,37 @@ class OrderUserParametrListView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         if self.request.user.position == 'MSR':
             user = User.objects.get(
-                surname=self.kwargs['surname'], name=self.kwargs['name'])
+                username=self.kwargs['username'])
         elif self.request.user.position in LIST_POSITION_WORKER:
             user = User.objects.get(username=self.request.user.username)
 
-        orders = get_order_by_user(user.id)
+        orders = Order.objects.all().order_by('date').filter(user_id=user.id).\
+                select_related('batch', 'detail__category', 'product', 'user', 'stage')
         context['average_price'] = get_average_price_orders(orders)
         context['average_cost_per_hour'] = get_average_cost_per_hour(orders)
 
         if 'month' in self.kwargs:
             month = self.kwargs['month']
-            orders = orders.filter(month=month).order_by('date'). \
+            orders = orders.filter(user_id=user.id).filter(month=month).order_by('date'). \
                 select_related('batch', 'detail__category', 'product', 'user')
             context['orders'] = orders
             context['month'] = month
             context['average_cost_per_hour_per_month'] = get_average_cost_per_hour_per_month(orders)
             context['average_price_per_month'] = get_average_price_orders_per_month(orders)
         elif 'product' in self.kwargs:
-            context['orders'] = Order.objects.filter(user_id=user.id). \
-                filter(product_id=Product.objects.get(name=self.kwargs['product'])).order_by('date').\
-                select_related('batch', 'detail__category', 'product', 'user')
+            context['orders'] = orders.filter(product_id=Product.objects.get(name=self.kwargs['product']))
         elif 'detail' in self.kwargs:
-            context['orders'] = Order.objects.filter(user_id=user.id). \
-                filter(detail_id=Detail.objects.get(name=self.kwargs['detail'])).order_by('date').\
-                select_related('batch', 'detail__category', 'product', 'user')
+            context['orders'] = orders.filter(detail_id=Detail.objects.get(name=self.kwargs['detail']))
         elif 'category' in self.kwargs:
-            context['orders'] = Order.objects.filter(user_id=user.id). \
-                filter(detail__category__name=self.kwargs['category']).order_by('date').\
-                select_related('batch', 'detail__category', 'product', 'user')
+            context['orders'] = orders.filter(detail__category__name=self.kwargs['category'])
         else:
-            context['orders'] = Order.objects.filter(user_id=user.id).order_by('date').\
-                select_related('batch', 'detail__category', 'product', 'user')
+            context['orders'] = orders
         return context
 
 
 class OrderUserEditView(LoginRequiredMixin, UpdateView):
     """Редактирование наряда"""
+    model = Order
     template_name = 'workshop_data/worker/order_user_create_view.html'
     form_class = OrderForm
 
@@ -114,6 +140,20 @@ class OrderUserEditView(LoginRequiredMixin, UpdateView):
     def get_object(self, **kwargs):
         id = self.kwargs.get('id')
         return Order.objects.get(pk=id)
+
+
+class OrderUserEditMonthView(LoginRequiredMixin, UpdateView):
+    """Редактирование работником месяца в наряде """
+    model = Order
+    template_name = 'workshop_data/worker/order/order_user_edit_month.html'
+    form_class = OrderEditMonthForm
+
+    def get_object(self, **kwargs):
+        id = self.kwargs.get('id')
+        return Order.objects.get(pk=id)
+
+    def get_success_url(self, **kwargs):
+        return reverse("orders_user_list_all", kwargs={'username': self.kwargs['username']})
 
 
 class OrderDeleteView(LoginRequiredMixin, DeleteView):
@@ -140,3 +180,9 @@ class TimeOfWorkInStage(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return reverse('orders_user_list_all', kwargs={'username': self.request.user})
+
+
+# class ViewingTemplateOrderView(LoginRequiredMixin, TemplateView):
+#     """Предварительный просмотр наряда для печати"""
+#
+#     template_name = 'workshop_data/order_template_for_print.html'

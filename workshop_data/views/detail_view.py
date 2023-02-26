@@ -24,6 +24,10 @@ class DetailAllView(LoginRequiredMixin, ListView):
         context = super().get_context_data()
         context['filter'] = DetailFilter(
             self.request.GET, queryset=self.get_queryset().select_related('category'))
+        if 'category' in self.kwargs:
+            context['filter'] = DetailFilter(
+                self.request.GET,
+                queryset=Detail.objects.filter(category__name=self.kwargs.get('category')))
         return context
 
 
@@ -60,9 +64,6 @@ class AddImageInDetailView(LoginRequiredMixin, UpdateView):
     success_url = reverse_lazy('detail_list_all')
 
     def get_object(self, queryset=None):
-        print()
-        print(self.kwargs)
-        print()
         return Detail.objects.get(name=self.kwargs.pop('detail'))
 
 

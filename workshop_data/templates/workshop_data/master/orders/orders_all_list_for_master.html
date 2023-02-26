@@ -46,7 +46,7 @@
                 {% if order.month == 13 %}
                     <a href="" style="color: red">{{ order.get_month_display }}</a>
                 {% else %}
-                    <a href="{% url 'orders-worker-month-for-master' username=order.user.username month=order.month %}">
+                    <a href="{% url 'all_orders_list_for_all_workers_month' month=order.month %}">
                     {{ order.get_month_display }}
                     </a>
                 {% endif %}
@@ -54,9 +54,9 @@
             {% else %}
             <td>
                 {% if order.month == 13 %}
-                    <a href="{% url 'order_user_edit_month' username=user.username id=order.id %}" style="color: red">{{ order.get_month_display }}</a>
+                    <a href="{% url 'order_user_edit' username=user.username id=order.id %}" style="color: red">{{ order.get_month_display }}</a>
                 {% else %}
-                    <a href="{% url 'orders_user_month_list' username=user.username month=order.month %}">
+                    <a href="{% url 'all_orders_list_for_all_workers_month' month=order.month %}">
                     {{ order.get_month_display }}
                     </a>
                 {% endif %}
@@ -65,22 +65,26 @@
 
 
             <td>{{ order.workshop }}</td>
-            <td>{{ order.user.surname }}</td>
+            <td>
+                <a href="{% url 'orders-worker-surname-for-master' username=order.user.username %}">
+                    {{ order.user.surname }}
+                </a>
+            </td>
             <td>{{ order.batch }}</td>
             <td>
-                <a href="{% url 'orders_user_product_list' username=order.user.username product=order.product %}">
+                <a href="{% url 'all_orders_list_for_all_workers_product' product=order.product %}">
                     {{ order.product }}
                 </a>
             </td>
 
             <td>
-                <a href="{% url 'orders_user_detail_list' username=order.user.username detail=order.detail %}">
+                <a href="{% url 'all_orders_list_for_all_workers_detail' detail=order.detail %}">
                     {{ order.detail }}
                 </a>
             </td>
 
             <td>
-                <a href="{% url 'orders_user_detailcategory_list' username=order.user.username category=order.detail.category %}">
+                <a href="{% url 'all_orders_list_for_all_workers_category' category=order.detail.category %}">
                     {{ order.detail.category }}
                 </a>
             </td>

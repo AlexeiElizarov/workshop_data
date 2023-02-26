@@ -26,28 +26,28 @@ class WorkerListView(LoginRequiredMixin, ListView):
         return context
 
 
-class WorkerOrdersListForMaster(LoginRequiredMixin, ListView):
-    """Показывает наряды работников(все, по месяцам)"""
-    model = Order
-    login_url = '/login/'
-    template_name = 'workshop_data/worker/order/orders_user_parametr_list.html'  # шаблон из OrderUserParametrListView
-    context_object_name = 'orders'
-
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(**kwargs)
-        user = User.objects.filter(
-                    surname=self.kwargs['surname'], name=self.kwargs['name'])[0]
-        if 'surname' in self.kwargs and 'month' not in self.kwargs:
-            context['orders'] = Order.objects.filter(
-                user_id=user.id)
-        elif 'month' in self.kwargs:
-            month = self.kwargs['month']
-            context['orders'] = Order.objects.filter(
-                user_id=user.id).filter(month=self.kwargs['month'])
-            context['month'] = month
-            context['average_price_for_month'] = get_average_price_orders_per_month(user, month)
-        context['average_price'] = get_average_price_orders(user)
-        return context
+# class WorkerOrdersListForMaster(LoginRequiredMixin, ListView):
+#     """Показывает наряды работников(все, по месяцам)"""
+#     model = Order
+#     login_url = '/login/'
+#     template_name = 'workshop_data/worker/order/orders_user_parametr_list.html'  # шаблон из OrderUserParametrListView
+#     context_object_name = 'orders'
+#
+#     def get_context_data(self, *args, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         user = User.objects.filter(
+#                     surname=self.kwargs['surname'], name=self.kwargs['name'])[0]
+#         if 'surname' in self.kwargs and 'month' not in self.kwargs:
+#             context['orders'] = Order.objects.filter(
+#                 user_id=user.id)
+#         elif 'month' in self.kwargs:
+#             month = self.kwargs['month']
+#             context['orders'] = Order.objects.filter(
+#                 user_id=user.id).filter(month=self.kwargs['month'])
+#             context['month'] = month
+#             context['average_price_for_month'] = get_average_price_orders_per_month(user, month)
+#         context['average_price'] = get_average_price_orders(user)
+#         return context
 
 
 class WorkerAveragePriceListForMaster(LoginRequiredMixin, ListView):

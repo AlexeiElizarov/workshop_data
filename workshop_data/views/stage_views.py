@@ -92,7 +92,7 @@ class StageManufacturingDetailInWorkView(LoginRequiredMixin, CreateView):
             date=datetime.datetime.now(),
             user=self.object.worker,
             employee_number=self.object.worker.employee_number,
-            batch=self.get_object(),
+            batch=self.get_batch(),
             product=self.object.batch.workshopplan_detail.product,
             detail=self.object.batch.workshopplan_detail.detail,
             operations=self.object.stage_in_batch,
@@ -111,6 +111,9 @@ class StageManufacturingDetailInWorkView(LoginRequiredMixin, CreateView):
             self.object.save()
             return HttpResponseRedirect(reverse_lazy('batchs_in_plan',
                                                      kwargs={'object': order_object.batch.workshopplan_detail}))
+
+    def get_batch(self):
+        return get_batch_by_id(self.kwargs.get('batch'))
 
 
 class EditStageManufacturingDetailInWorkView(LoginRequiredMixin, UpdateView):

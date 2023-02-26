@@ -19,7 +19,8 @@ from workshop_data.views.services_view import (
     WorkerAutocomplete,
     CategoryDetailAutocomplete,
     BatchlAutocomplete,
-    StageForDetaillAutocomplete, )
+    StageForDetaillAutocomplete,
+    DetaillForProductAutocomplete, )
 from workshop_data.views.stage_views import (
     StageManufacturingDetailInWorkInPlanView,
     StageManufacturingDetailInWorkView,
@@ -46,9 +47,13 @@ from workshop_data.views.order_views import (
     OrderUserCreateView,
     OrderUserParametrListView,
     OrderUserEditView,
-    OrderDeleteView, TimeOfWorkInStage)
+    OrderDeleteView,
+    TimeOfWorkInStage,
+    AllOrderForAllWorker,
+    OrderUserEditMonthView,
+)
 from workshop_data.views.master_views import (
-    WorkerOrdersListForMaster,
+    # WorkerOrdersListForMaster,
     WorkerListView, WorkerAveragePriceListForMaster)
 from workshop_data.views.batch_views import (
     CreateBatchDetailInPlan,
@@ -67,6 +72,7 @@ from workshop_data.views.category_detail_views import (
     CategoryDetailUpdateView, CategoryDetailDeleteView,
 )
 from workshop_data.services.general_services import batch_ready, batch_cancel_ready
+
 urlpatterns = [
     path('data_autocomplete_product/', ProductAutocomplete.as_view(), name='data_autocomplete_product'),
     path('data_autocomplete_detail/', DetailAutocomplete.as_view(), name='data_autocomplete_detail'),
@@ -74,6 +80,7 @@ urlpatterns = [
     path('data_autocomplete_categorydetail/', CategoryDetailAutocomplete.as_view(), name='data_autocomplete_category_detail'),
     path('data_autocomplete_batch/', BatchlAutocomplete.as_view(), name='data_autocomplete_batch'),
     path('data_autocomplete_satage_in_detail/', StageForDetaillAutocomplete.as_view(), name='data_autocomplete_stage_in_detail'),
+    path('data_autocomplete_detail_for_product/', DetaillForProductAutocomplete.as_view(), name='data_autocomplete_detail_for_product'),
 
     path('<pk>/edit-stage-in-detail/', EditStageInDetailView.as_view(), name='edit_stage_in_detail'),
     path('<pk>/<detail>/all-stage-in-detail/', StageInDetailView.as_view(), name='all_stage_in_detail'),
@@ -91,12 +98,6 @@ urlpatterns = [
     path('add-image-in-<detail>/', AddImageInDetailView.as_view(), name='add_image_in_detail'),
     path('image-<pk>/', DetailImageView.as_view(), name='image_detail'),
 
-    # path('node/all/', NodeAllView.as_view(), name='nodes_list_all'),
-    # path('new-node/', NodeCreateView.as_view(), name='create_new_node'),
-    # path('<node>/add-detail-in-node/', NodeAddDetailView.as_view(), name='node_add_detail'),
-    # path('<node>/add-node-in-node/', NodeAddNodeView.as_view(), name='node_add_node'),
-
-    # path('<product>/add-node/', ProductAddNodeView.as_view(), name='product_add_node'),
     path('<product>/add-detail/', ProductAddDetailView.as_view(), name='product_add_detail'),
     path('<product>/detail/', ProductDataView.as_view(), name='product_detail_data'),
     path('<product>/delete-<detail>/',DeleteDetailFromProductView.as_view(), name='delete_detail_from_product'),
@@ -109,10 +110,16 @@ urlpatterns = [
     path('category_detail_all_list/', CategoryDetailAllList.as_view(), name='category_detail_all_list'),
     path('category_detail_update/<id>/', CategoryDetailUpdateView.as_view(), name='category_detail_update'),
     path('category_detail_delete/<id>/', CategoryDetailDeleteView.as_view(), name='category_detail_delete'),
-    path('category_detail_list/<str:category>/', CategoryDetailAllList.as_view(), name='category_detail_list'),
+    path('category_detail_list/<str:category>/', DetailAllView.as_view(), name='category_detail_list_all'),
 
     path('<username>/create_new_order/', OrderUserCreateView.as_view(), name='order_user_create'),
     path('<username>/all_orders/batch-<batch>/operations-<operations>', stage_in_work_ready, name='stage_work_done'),
+    path('all_orders/', AllOrderForAllWorker.as_view(), name='all_orders_list_for_all_workers'),
+    path('master/all_orders/month_<month>/', AllOrderForAllWorker.as_view(), name='all_orders_list_for_all_workers_month'),
+    path('master/all_orders/orders-<username>/', AllOrderForAllWorker.as_view(), name='orders-worker-surname-for-master'),
+    path('master/all_orders/product_<str:product>/', AllOrderForAllWorker.as_view(), name='all_orders_list_for_all_workers_product'),
+    path('master/all_orders/detail_<str:detail>/', AllOrderForAllWorker.as_view(), name='all_orders_list_for_all_workers_detail'),
+    path('master/all_orders/category_<str:category>/', AllOrderForAllWorker.as_view(), name='all_orders_list_for_all_workers_category'),
     path('<username>/all_orders/', OrderUserParametrListView.as_view(), name='orders_user_list_all'),
     path('<username>/<id>/edit/', OrderUserEditView.as_view(), name='order_user_edit'),
     path('<username>/<id>/delete/', OrderDeleteView.as_view(), name='order_user_delete'),
@@ -120,18 +127,20 @@ urlpatterns = [
     path('<username>/statement_about_job_over_detail/', StatementAboutJobOverDetailView.as_view(), name='statement_for_detail'),
     path('<username>/list_all_resolution_or_not_detail/', AllDetailResolutionOrNotView.as_view(), name='list_all_resolution_or_not_detail'),
     path('<username>/resolution_or_not_detail/<id>/done/', resolution_statement_about_job_over_detail, name='resolution_statement_done'),
+    path('<username>/order_<id>_edit_month/', OrderUserEditMonthView.as_view(), name='order_user_edit_month'),
 
     path('master/workers-all-list/', WorkerListView.as_view(), name='workers_list_all'),
     path('master/workers-<position>-list/', WorkerListView.as_view(), name='workers_list_position'),
     path('master/workers-LSM-list/', WorkerListView.as_view(), {'LSM': True},  name='workers_LSM_all'),
     path('master/workers-TRN-list/', WorkerListView.as_view(), {'TRN': True},  name='workers_TRN_all'),
     path('master/workers-MLR-list/', WorkerListView.as_view(), {'MLR': True},  name='workers_MLR_all'),
-    path('master/orders-<surname>-<name>/', OrderUserParametrListView.as_view(), name='orders-worker-for-master'),
-    path('master/orders-<surname>-<name>/month_<month>/', OrderUserParametrListView.as_view(), name='orders-worker-month-for-master'),
-    path('master/orders-<surname>-<name>/product_<str:product>/', OrderUserParametrListView.as_view(), name='orders_user_product_list'),
-    path('master/orders-<surname>-<name>/detail_<str:detail>/', OrderUserParametrListView.as_view(), name='orders_user_detail_list'),
-    path('master/orders-<surname>-<name>/category_<str:category>/', OrderUserParametrListView.as_view(), name='orders_user_detailcategory_list'),
+    path('master/orders-<username>/', OrderUserParametrListView.as_view(), name='orders-worker-for-master'),
+    path('master/orders-<username>/month_<month>/', OrderUserParametrListView.as_view(), name='orders-worker-month-for-master'),
+    path('master/orders-<username>/product_<str:product>/', OrderUserParametrListView.as_view(), name='orders_user_product_list'),
+    path('master/orders-<username>/detail_<str:detail>/', OrderUserParametrListView.as_view(), name='orders_user_detail_list'),
+    path('master/orders-<username>/category_<str:category>/', OrderUserParametrListView.as_view(), name='orders_user_detailcategory_list'),
     path('master/workers-average-price/', WorkerAveragePriceListForMaster.as_view(), name='master_workers_average_price_list'),
+    # path('master/template-order-for-print/', ViewingTemplateOrderView.as_view(), name='viewing-template-order-for-print'),
 
     path('master/all-batch-in-plan/', AllBatchDetailInPlanView.as_view(), name='all_batch_in_plan'),
     path('master/create-new-batch/<object>/', CreateBatchDetailInPlan.as_view(), name='create_new_batch'),

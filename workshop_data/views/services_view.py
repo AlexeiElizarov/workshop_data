@@ -93,7 +93,7 @@ class BatchlAutocomplete(autocomplete.Select2QuerySetView):
 
 
 class StageForDetaillAutocomplete(autocomplete.Select2QuerySetView):
-    """Реализует поле авто подсказки ID Партии"""
+    """Реализует поле авто подсказки этапов производства в зависимости от выбранной детали"""
 
     def get_queryset(self):
         if not self.request.user.is_authenticated:
@@ -103,5 +103,24 @@ class StageForDetaillAutocomplete(autocomplete.Select2QuerySetView):
         if detail:
             qs = qs.filter(detail=detail)
         if self.q:
-            qs = qs.filter(id__istartswith=self.q)
+            qs = qs.filter(operations__istartswith=self.q)
+        return qs
+
+
+class DetaillForProductAutocomplete(autocomplete.Select2QuerySetView):
+    """Реализует поле авто подсказки деталей в зависимости от выбранного изделия"""
+
+    def get_queryset(self):
+        if not self.request.user.is_authenticated:
+            return Detail.objects.none()
+        qs = Detail.objects.all()
+        product = self.forwarded.get('product', None)
+        if product:
+            qs = qs.filter(detail_in_product=product)
+            for detail in qs:
+                qs = qs.union(detail.secondary_detail.all())
+                for detail in detail.secondary_detail.all():
+                    qs = qs.union(detail.secondary_detail.all())
+        if self.q:
+            qs = qs.filter(name__istartswith=self.q)
         return qs

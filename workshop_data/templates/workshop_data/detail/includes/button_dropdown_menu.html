@@ -3,6 +3,8 @@
         Инструменты
     </button>
     <ul class="dropdown-menu">
+
+        {% if request.user.position == 'MSR' or  request.user.position == 'EPB'%}
         {% if detail %}
             {% if product %}
                 <li><a class="dropdown-item" href="{% url 'delete_detail_from_product' product=product detail=detail%}">
@@ -16,15 +18,10 @@
                 <li><a class="dropdown-item" href="{% url 'add_image_in_detail' detail %}">Добавить изображение</a></li>
                 <li><a class="dropdown-item" href="{% url 'detail_add_detail' detail %}">Добавить Деталь</a></li>
         {% endif %}
-        {% if node %}
-            {% if product %}
-                <li><a class="dropdown-item" href="">
-                    Удалить Узел из {{ product }}</a>
-                </li>
-            {% else %}
-                <li><a class="dropdown-item" href="">Удалить</a></li>
+        {% else %}
+            {% if detail %}
+                <li><a class="dropdown-item" href="{% url 'all_stage_in_detail' pk=detail.id detail=detail %}">Просмотр всех Этапов</a></li>
             {% endif %}
-                <li><a class="dropdown-item" href="">Добавить изображение</a></li>
         {% endif %}
     </ul>
 </div>

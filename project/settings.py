@@ -141,6 +141,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
+# LANGUAGE_CODE = 'ru'
 
 TIME_ZONE = 'UTC'
 
@@ -167,6 +168,8 @@ LOGIN_URL = 'sign/login/'
 LOGIN_REDIRECT_URL = '/'
 
 AUTH_USER_MODEL = 'sign.User'
+
+
 
 # SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 # SESSION_COOKIE_AGE = 10  # set just 10 seconds to test

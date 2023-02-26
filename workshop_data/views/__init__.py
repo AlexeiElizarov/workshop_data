@@ -20,13 +20,15 @@ from workshop_data.views.workshopplan_views import (
 )
 from workshop_data.views.master_views import (
     WorkerListView,
-    WorkerOrdersListForMaster
+    # WorkerOrdersListForMaster
 )
 from workshop_data.views.order_views import (
     OrderUserCreateView,
     OrderUserParametrListView,
     OrderUserEditView,
-    OrderDeleteView
+    OrderDeleteView,
+    AllOrderForAllWorker,
+    OrderUserEditMonthView,
 )
 from workshop_data.views.product_view import (
     ProductAllView,

@@ -114,7 +114,8 @@
     <div class="image-detail">
 
     </div>
-<div class="master-all-workers-data">
+    {% if request.user.position == 'MSR' or  request.user.position == 'EPB'%}
+    <div class="master-all-workers-data">
         <div id="master-worker-price-cost-buttons">
             <a class="btn  btn-outline-success btn-sm" type="button"
                href="{% url 'product_add_detail' product=product.name %}">
@@ -122,5 +123,6 @@
             </a>
         </div>
     </div>
+    {% endif %}
 
 {% endblock content %}

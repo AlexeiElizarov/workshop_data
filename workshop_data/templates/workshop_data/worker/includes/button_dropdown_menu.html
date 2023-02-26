@@ -3,7 +3,10 @@
         Действия
     </button>
     <ul class="dropdown-menu">
-<!--        <li><a class="dropdown-item" href="{% url 'order_user_edit' username=user.username id=order.id %}">Исправить</a></li>-->
+        {% if request.user.position == 'MSR' or  request.user.position == 'EPB'%}
+            <li><a class="dropdown-item" href="{% url 'order_user_edit' username=order.user.username id=order.id %}">Исправить</a></li>
+        {% endif %}
+
 <!--        <li><a class="dropdown-item" href="{% url 'order_user_delete' username=user.username id=order.id %}">Удалить</a></li>-->
 <!--        <li><a class="dropdown-item" >Something else here</a></li>-->
     </ul>

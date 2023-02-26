@@ -136,7 +136,13 @@ td {
             <tr>
                 <td style="height:53px">{{ order.product }}</td>
                 <td>{{ order.detail.prefix }}.{{ order.detail }}</td>
-                <td>{{ order.operations.operations }}</td>
+                <td>
+                    {% if order.operations %}
+                        {{ order.operations }}
+                    {% elif order.stage %}
+                        {{ order.stage.get_operations }}
+                    {% endif %}
+                </td>
                 <td>{{ order.quantity }}</td>
                 <td></td>
             </tr>
@@ -160,8 +166,20 @@ td {
             <tr>
                 <td style="height:56px"></td>
                 <td></td>
-                <td>{{ order.normalized_time }}</td>
-                <td>{{ order.price }}</td>
+                <td>
+                    {% if order.normalized_time %}
+                        {{ order.normalized_time }}
+                    {% elif order.stage %}
+                        {{ order.stage.normalized_time }}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if order.price %}
+                        {{ order.price }}
+                    {% elif order.stage %}
+                        {{ order.stage.price }}
+                    {% endif %}
+                </td>
                 <td></td>
                 <td></td>
                 <td></td>

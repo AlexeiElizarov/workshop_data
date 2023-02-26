@@ -37,9 +37,9 @@ class CategoryDetailAllList(LoginRequiredMixin, ListView):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
         context['categories_details'] = CategoryDetail.objects.all()
-        if 'category' in self.kwargs:
-            category = CategoryDetail.objects.get(name=self.kwargs.get('category'))
-            context['categories_details'] = Detail.objects.filter(category=category)
+        # if 'category' in self.kwargs:
+        #     category = CategoryDetail.objects.get(name=self.kwargs.get('category'))
+        #     context['categories_details'] = Detail.objects.filter(category=category)
         return context
 
 

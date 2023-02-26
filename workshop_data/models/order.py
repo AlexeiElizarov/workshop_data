@@ -17,7 +17,12 @@ class Order(models.Model):
                               default=1, null=True,
                               on_delete=models.SET_NULL,
                               verbose_name='Партия')
-    operations = models.TextField(verbose_name='Операции')
+    operations = models.TextField(verbose_name='Операции', blank=True)
+    stage = models.ForeignKey("workshop_data.StageManufacturingDetail",
+                              null=True, blank=True,
+                              on_delete=models.PROTECT,
+                              verbose_name="Этап",
+                              related_name="stage_in_order")
     quantity = models.PositiveSmallIntegerField(default=0, blank=False, verbose_name='Количество')
     normalized_time = models.FloatField(default=0, blank=False, verbose_name='Нормированное время')
     price = models.FloatField(default=0, blank=False, verbose_name='Расценка')

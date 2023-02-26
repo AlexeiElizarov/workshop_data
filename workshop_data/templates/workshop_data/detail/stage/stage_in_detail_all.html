@@ -6,13 +6,10 @@
 
 {% block content %}
     {% include 'workshop_data/detail/stage/includes/stage_in_detail_all_template.html' %}
-    {% if detail %}
+    {% if request.user.position == 'MSR' or  request.user.position == 'EPB'%}
         <a class="btn  btn-outline-success btn-sm" type="button" href="{% url 'add_stage_in_detail' detail.id %}">
             Добавить этап в Деталь
         </a>
-    {% elif node %}
-        <a class="btn  btn-outline-success btn-sm" type="button" href="{% url 'add_stage_in_node' node.id %}">
-            Добавить этап в Узел
-        </a>
     {% endif %}
+
 {% endblock content %}

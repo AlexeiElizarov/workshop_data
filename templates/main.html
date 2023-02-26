@@ -59,6 +59,7 @@
                                             <li><a class="dropdown-item" href="{% url 'workers_LSM_all' %}">Слесари</a></li>
                                             <li><a class="dropdown-item" href="{% url 'workers_TRN_all' %}">Токари</a></li>
                                             <li><a class="dropdown-item" href="{% url 'workers_MLR_all' %}">Фрезеровщики</a></li>
+                                            <li><a class="dropdown-item" href="{% url 'all_orders_list_for_all_workers' %}">Все наряды</a></li>
                                         {% elif request.user.profile %}
                                             <li><a class="dropdown-item" href="">Profile</a></li>
                                             <li><a class="dropdown-item" href="">Update profile</a></li>
@@ -103,9 +104,14 @@
                                     </ul>
                                 </li>
                             {% else %}
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{% url 'order_user_create' username=user.username %}">Добавить наряд</a>
-                                </li>
+
+                            {% comment %}
+                            *************** убрать если не понадобится ******************
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'order_user_create' username=user.username %}">Добавить
+                                    наряд</a>
+                            </li>
+                            {% endcomment %}
 
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -114,7 +120,7 @@
                                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                         <li><a class="dropdown-item" href="{% url 'product_list_all' %}">Все Изделия</a></li>
                                         <li><a class="dropdown-item" href="{% url 'detail_list_all' %}">Все Детали</a></li>
-                                        <li><a class="dropdown-item" href="{% url 'create_new_category' %}">Все Категории</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'category_detail_all_list' %}">Все Категории</a></li>
                                     </ul>
                                 </li>
                                 <li class="nav-item">

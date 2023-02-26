@@ -36,7 +36,7 @@ def get_current_user(request):
 
 
 def get_stage_in_work(order: Order) -> Union[StageManufacturingDetailInWork or None]:
-    """Возвращает id StageManufacturingDetailInWork по username, batch, operations"""
+    """Возвращает StageManufacturingDetailInWork по username, batch, operations"""
     try:
         batch = BatchDetailInPlan.objects.get(id=order.batch).select_related('workshopplan_detail')
         stage_in_batch_id = StageManufacturingDetail.objects.get(
@@ -128,6 +128,7 @@ def get_batch_by_id(batch_id):
     """Получает объект Партия по id"""
     return get_object_or_404(BatchDetailInPlan, id=batch_id)
 
+
 def get_dict_worker_quantity_detail(product, detail, workers) -> dict:
     """
     Получает количество определенных деталей у всех работников из списка.
@@ -182,13 +183,17 @@ def get_cost_per_hour(order: Order) -> float:
     """Получает стоимость часа при изготовлении детали"""
     time = order.time_of_work_order
     if time != 0:
-        return order.quantity * order.price / time
+        if order.price:
+            return round(order.quantity * order.price / time, 2)
+        elif order.stage.price:
+            return round(order.quantity * order.stage.price / time, 2)
     else:
         return 0
 
 
-def get_average_cost_per_hour(orders):
+def get_average_cost_per_hour(worker):
     """Получает средний заработок работника по нарядам в час за все время"""
+    orders = Order.objects.filter(user=worker)
     try:
         return round(mean([get_cost_per_hour(order) for order in orders]), 2)
     except:
@@ -233,7 +238,7 @@ def get_all_orders_per_detail_per_worker_unigue_batch(product, detail, user):
     """Получает количество деталей определенного работника по определенной детали учитывая уникальность партии"""
     try:
         orders = Order.objects.filter(user=user.id). \
-            filter(product_id=product.id).filter(detail_id=detail.id).\
+            filter(product_id=product.id).filter(detail_id=detail.id). \
             order_by('date')
         quantity = 0
         batch = []
@@ -277,7 +282,7 @@ def get_average_time_of_work_stage_in_detail_per_worker(worker, product, detail,
 
 def get_time_of_work(order: Order):
     """Возвращает время работы(time_of_work) из StageManufacturingDetailInWork или из Order"""
-    try: #Fixme
+    try:  # Fixme
         time = order.time_of_work_order
         return time if time > 0 else '--'
     except:
@@ -294,6 +299,7 @@ def get_all_bonuses_per_month(user, month):
         return '--'
     else:
         return sum
+
 
 def get_not_work_stages_in_batch(batch):
     """Возвращает оставшиеся этапы Партии(не выполненные)"""

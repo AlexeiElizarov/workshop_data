@@ -1,4 +1,7 @@
-from workshop_data.forms.order_form import OrderForm
+from workshop_data.forms.order_form import (
+    OrderForm,
+    OrderEditMonthForm,
+)
 from workshop_data.forms.product_form import (
     ProductCreateForm,
     ProductAddDetailForm,

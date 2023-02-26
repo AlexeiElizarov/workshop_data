@@ -21,4 +21,10 @@ class StageManufacturingDetail(models.Model):
     def __str__(self):
         return f'{self.operations} {self.get_name_display()}'
 
+    def get_operations(self):
+        return self.operations
+
+    def get_name_work(self):
+        return f'{self.get_name_display()}'
+
 

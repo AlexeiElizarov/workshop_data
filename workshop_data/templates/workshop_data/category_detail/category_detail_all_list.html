@@ -8,10 +8,12 @@
 {% block content %}
     <link rel="stylesheet" href="{% static 'css/categories_details/categoies_details.css' %}" type="text/css">
     <div class="wrapper-button">
+    {% if request.user.position == 'MSR' or  request.user.position == 'EPB'%}
         <a class="btn btn-outline-success btn-sm" type="button" href="{% url 'create_new_category' %}">
             Добавить категорию
         </a>
     </div>
+    {% endif %}
     <div>
         <table class="table table-success table-striped">
             <thead>
@@ -25,9 +27,11 @@
             {% for category in categories_details %}
             <tr>
                 <th scope="row">{{ forloop.counter }}</th>
-                <td><a href="{% url 'category_detail_list' category=category.name %}">{{ category.name }}</a></td>
+                <td><a href="{% url 'category_detail_list_all' category=category.name %}">{{ category.name }}</a></td>
                 <td>
+                    {% if request.user.position == 'MSR' or  request.user.position == 'EPB'%}
                     {% include 'workshop_data/category_detail/includes/button_dropdown_menu_category_detail.html' %}
+                    {% endif %}
                 </td>
             </tr>
             {% endfor %}
