@@ -6,6 +6,7 @@ from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, DeleteView, UpdateView, ListView, DetailView, RedirectView, TemplateView
 
+from workshop_data.filters import OrdersFilter
 from workshop_data.forms.order_form import TimeOfWorkInStageForm, OrderEditMonthForm
 from workshop_data.models.order import Order
 from workshop_data.models.product import Product
@@ -63,6 +64,7 @@ class AllOrderForAllWorker(LoginRequiredMixin, ListView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['filter_date'] = OrdersFilter(self.request.GET)
         orders = Order.objects.all().order_by('-date').\
             select_related('batch', 'detail__category', 'product', 'user', 'stage')
         context['average_price'] = get_average_price_orders(orders)
@@ -86,6 +88,7 @@ class AllOrderForAllWorker(LoginRequiredMixin, ListView):
         else:
             context['orders'] = orders
         return context
+
 
 class OrderUserParametrListView(LoginRequiredMixin, ListView):
     """Отображает наряды пользователя фильтруя их в зависимости от переданного параметра"""

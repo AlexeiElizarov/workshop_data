@@ -1,8 +1,11 @@
+
 import django_filters
 from django import forms
-from django_filters import FilterSet
 
-from workshop_data.models import Bonus
+from django_filters import FilterSet
+from django_filters.widgets import RangeWidget
+
+from workshop_data.models import Bonus, Order
 from workshop_data.models.product import Product
 from workshop_data.models.detail import Detail
 from workshop_data.models.workshop_plan import WorkshopPlan
@@ -49,10 +52,6 @@ class WorkshopPlanFilter(FilterSet):
         choices=Month.choices,
         widget=forms.CheckboxSelectMultiple()
     )
-    # node = django_filters.ModelChoiceFilter(
-    #     queryset=Node.objects.all(),
-    #     widget=autocomplete.Select2(url='data_autocomplete_node')
-    # )
 
     class Meta:
         model = WorkshopPlan
@@ -86,4 +85,16 @@ class BonusFilter(FilterSet):
     class Meta:
         model = Bonus
         fields = ['month']
+
+
+class OrdersFilter(FilterSet):
+    """Фильтр поиска наряда по дате"""
+    date = django_filters.DateFilter(
+        'date', label=('Дата'),
+        widget=forms.DateInput()
+    )
+
+    class Meta:
+        model = Order
+        fields = ['date']
 

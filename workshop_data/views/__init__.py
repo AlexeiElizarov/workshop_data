@@ -51,3 +51,5 @@ from workshop_data.views.complite_view import *
 from workshop_data.views.test_views import *
 from workshop_data.views.bonus_view import *
 from workshop_data.views.services_view import *
+
+from workshop_data.views.any_view import ShiftTask

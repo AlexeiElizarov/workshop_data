@@ -1,0 +1,40 @@
+{% extends 'main.html' %}
+
+{% block title %}
+    Сменное задание
+{% endblock title %}
+
+{% block content %}
+    <hr>
+    <table class="table table-success table-striped">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Работник</th>
+            <th scope="col">Изделие</th>
+            <th scope="col">Деталь</th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+            <th scope="col">Примчание</th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ order.user.get_full_name }}</td>
+                    <td>{{ order.product }}</td>
+                    <td>{{ order.detail }}</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>{{ order.stage.get_name_display }}</td>
+                    <td>
+                        {% include 'workshop_data/master/any_template/includes/button_dropdown_menu.html' %}
+                    </td>
+
+                </tr>
+            {% endfor %}
+{% endblock content %}

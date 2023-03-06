@@ -71,6 +71,7 @@ from workshop_data.views.category_detail_views import (
     CategoryDetailAllList,
     CategoryDetailUpdateView, CategoryDetailDeleteView,
 )
+from workshop_data.views.any_view import ShiftTask
 from workshop_data.services.general_services import batch_ready, batch_cancel_ready
 
 urlpatterns = [
@@ -154,6 +155,8 @@ urlpatterns = [
     path('master/average_time_of_work_stage_in_detail/', EnteringDetailToViewAverageTimeOfWorkView.as_view(), name='average_time_of_work_stage_in_detail' ),
     path('master/batchs-in-plan/<object>/', AllBatchDetailProductInPlan.as_view(), name='batchs_in_plan'),
     # path('master/delete-batch/<id>', DeleteBatchDetailInPlanView.as_view(), name='delete_batch'),
+
+    path('master/task_list/', ShiftTask.as_view(), name='task_list'),
 
     path('master/create-new-bonus/', CreateNewBonusView.as_view(), name='create_new_bonus'),
     path('master/create-bonus-complete/', create_bonus_complete, name='create_bonus_complete'),

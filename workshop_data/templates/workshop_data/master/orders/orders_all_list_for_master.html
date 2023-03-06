@@ -11,6 +11,13 @@
 
 {% block content %}
     <link rel="stylesheet" href="{% static 'css/worker_css/orders_table.css' %}">
+    <form method="GET">
+        {% csrf_token %}
+        {{ filter_date.form }}
+        {{ filter_date.form.media }}
+        <input type="submit" value="Найти">
+    </form>
+    <hr>
     <table class="table table-success table-striped">
         <thead>
             <tr>
@@ -28,10 +35,16 @@
                 {% comment %}
                 <th scope="col">Выполнено</th>
                 {% endcomment %}
+                {% comment %}
+
                 <th scope="col">Время работы</th>
+                {% endcomment %}
                 <th scope="col">Колличество</th>
                 <th scope="col">Расценка</th>
+                {% comment %}
+
                 <th scope="col">Заработок в час</th>
+                {% endcomment %}
                 <th scope="col">Действия</th>
             </tr>
         </thead>
@@ -120,14 +133,17 @@
             {% endif %}
             {% endcomment %}
 
+            {% comment %}
+
             <td>
                 <div class="time_of_work_form">
                     {{ order.time_of_work_order }}
                     {% if request.user.position != 'MSR' %}
-                        {% include 'workshop_data/worker/includes/time_of_work_form.html' %}
+                    {% include 'workshop_data/worker/includes/time_of_work_form.html' %}
                     {% endif %}
                 </div>
             </td>
+            {% endcomment %}
             <td>
                 {% if order.quantity %}
                     {{ order.quantity }}
@@ -144,10 +160,13 @@
                 {% elif order.stage %}
                     {{ order.stage.price }}
                 {% endif %}
-                </td>
+            </td>
+            {% comment %}
+
             <td>
                 {% get_cost_per_hour_tag order %} руб.
             </td>
+            {% endcomment %}
             <td>{% include 'workshop_data/worker/includes/button_dropdown_menu.html' %}</td>
         </tr>
     {% endfor %}
@@ -165,20 +184,23 @@
             <td></td>
             <td></td>
             <td></td>
+            {% comment %}
+
             <td>
                 {% if average_price_per_month %}
-                    {{ average_price_per_month }}
+                {{ average_price_per_month }}
                 {% elif average_price %}
-                    {{ average_price }}
+                {{ average_price }}
                 {% endif %}
             </td>
             <td>
                 {% if average_cost_per_hour_per_month >= 0 %}
-                    {{ average_cost_per_hour_per_month }}
+                {{ average_cost_per_hour_per_month }}
                 {% elif average_cost_per_hour %}
-                    {{ average_cost_per_hour }}
+                {{ average_cost_per_hour }}
                 {% endif %}
             </td>
+            {% endcomment %}
             <td></td>
         </tr>
         </tbody>

@@ -191,9 +191,9 @@ def get_cost_per_hour(order: Order) -> float:
         return 0
 
 
-def get_average_cost_per_hour(worker):
+def get_average_cost_per_hour(orders):
     """Получает средний заработок работника по нарядам в час за все время"""
-    orders = Order.objects.filter(user=worker)
+    # orders = Order.objects.filter(user=worker)
     try:
         return round(mean([get_cost_per_hour(order) for order in orders]), 2)
     except:
