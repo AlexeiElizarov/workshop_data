@@ -75,7 +75,7 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('order', models.PositiveSmallIntegerField(verbose_name='Порядок')),
                 ('description', models.CharField(max_length=150)),
-                ('name', models.CharField(choices=[('', 'Выберите вид работы'), ('LSM', 'Слесарый'), ('TRN', 'Токарный'), ('MLR', 'Фрезеровальный'), ('GRN', 'Шлифовальный'), ('SLD', 'Пайка'), ('PRS', 'Пресс'), ('WLD', 'Сварка'), ('PRM', 'Програмный'), ('BRN', 'Прожиг'), ('HRM', 'Герметичка'), ('CTL', 'Контроль')], max_length=3, verbose_name='Вид работы')),
+                ('name', models.CharField(choices=[('', 'Выберите вид работы'), ('LSM', 'Слесарый'), ('TRN', 'Токарный'), ('MLR', 'Фрезеровочный'), ('GRN', 'Шлифовальный'), ('SLD', 'Пайка'), ('PRS', 'Пресс'), ('WLD', 'Сварка'), ('PRM', 'Програмный'), ('BRN', 'Прожиг'), ('HRM', 'Герметичка'), ('CTL', 'Контроль')], max_length=3, verbose_name='Вид работы')),
                 ('operations', models.CharField(max_length=300, verbose_name='Операции')),
                 ('normalized_time', models.FloatField(default=0, verbose_name='Нормированное время')),
                 ('price', models.FloatField(default=0, verbose_name='Расценка')),

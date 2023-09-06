@@ -10,7 +10,7 @@ class ProductCreateForm(forms.ModelForm):
 
     class Meta:
         model = Product
-        fields = ('name',)
+        fields = ('name', 'order_number_commercial', 'order_number_state')
 
     def clean(self):
         name = self.cleaned_data.get('name')
@@ -21,18 +21,18 @@ class ProductCreateForm(forms.ModelForm):
 class ProductAddDetailForm(forms.ModelForm):
     """Отображает форму добавления новой Детали в Изделие"""
     name = forms.CharField(label="Изделие")
-    # detail = forms.ModelMultipleChoiceField(
-    #     label="Деталь",
-    #     widget=autocomplete.ModelSelect2Multiple(url='data_autocomplete_detail'),
-    #     queryset=Detail.objects.all()
-    # )
+    detail = forms.ModelMultipleChoiceField(
+        label="Деталь",
+        widget=autocomplete.ModelSelect2Multiple(url='data_autocomplete_detail'),
+        queryset=Detail.objects.all()
+    )
 
     class Meta:
         model = Product
         fields = ['name', 'detail']
-        widgets = {
-            'detail': autocomplete.ModelSelect2Multiple(url='data_autocomplete_detail'),
-        }
+        # widgets = {
+        #     'detail': autocomplete.ModelSelect2Multiple(url='data_autocomplete_detail'),
+        # }
 
     def clean(self):
         cleaned_data = super(ProductAddDetailForm, self).clean()

@@ -1,0 +1,20 @@
+<div class="dropdown">
+    <button class="btn btn-success btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        Инструменты
+    </button>
+    <ul class="dropdown-menu">
+
+        {% if request.user.position == 'MSR' or  request.user.position == 'EPB'%}
+                <li><a class="dropdown-item" href="{% url 'delete_detail_from_product' product detail %}">
+                    Удалить Деталь из {{ product }}</a>
+            </li>
+                <li><a class="dropdown-item" href="{% url 'detail_delete' id=detail.id %}">Удалить</a></li>
+                <li><a class="dropdown-item" href="{% url 'edit_detail' name=detail.name %}">Редактировать</a></li>
+                <li><a class="dropdown-item" href="{% url 'add_stage_in_detail' detail_id=detail.id %}">Добавить этап в Деталь</a></li>
+                <li><a class="dropdown-item" href="{% url 'all_stage_in_detail' pk=detail.id detail=detail %}">Просмотр всех Этапов</a></li>
+                <li><a class="dropdown-item" href="{% url 'add_image_in_detail' detail %}">Добавить изображение</a></li>
+                <li><a class="dropdown-item" href="{% url 'detail_add_detail' detail %}">Добавить Деталь</a></li>
+                <li><a class="dropdown-item" href="{% url 'all_stage_in_detail' pk=detail.id detail=detail %}">Просмотр всех Этапов</a></li>
+        {% endif %}
+    </ul>
+</div>

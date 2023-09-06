@@ -1,15 +1,21 @@
 from dal import autocomplete
 from django import forms
 
-from sign.models import User, LIST_POSITION_WORKER
-from workshop_data.models import StageManufacturingDetailInWork, StageManufacturingDetail, Detail
+from sign.models import User
+from workshop_data.models import StageManufacturingDetail, Detail, Product
 from workshop_data.models.order import Order
-from workshop_data.services import get_stage_in_work
 from workshop_data.forms.stage_in_work_form import InitialsModelChoiceField
 
 
 class OrderForm(forms.ModelForm):
     """Отображает форму добавления нового Наряда"""
+    product = forms.ModelChoiceField(
+        label="Изделие",
+        queryset=Product.objects.all(),
+        widget=autocomplete.ModelSelect2(url='data_autocomplete_product',
+                                         forward=('detail',))
+    )
+
     detail = forms.ModelChoiceField(
         queryset=Detail.objects.all(),
         label="Деталь",
@@ -17,6 +23,7 @@ class OrderForm(forms.ModelForm):
                                          forward=('product',))
     )
     stage = forms.ModelChoiceField(
+        label='Этап',
         required=False,
         queryset=StageManufacturingDetail.objects.all(),
         widget=autocomplete.ModelSelect2(url='data_autocomplete_stage_in_detail',
@@ -36,8 +43,8 @@ class OrderForm(forms.ModelForm):
                   'normalized_time',
                   'price',)
         widgets = {
-            'product': autocomplete.ModelSelect2(url='data_autocomplete_product'),
-            # 'detail': autocomplete.ModelSelect2(url='data_autocomplete_detail'),
+            # 'product': autocomplete.ModelSelect2(url='data_autocomplete_product'),
+             'detail': autocomplete.ModelSelect2(url='data_autocomplete_detail'),
         }
         # help_texts = {
         #     'surname': "",

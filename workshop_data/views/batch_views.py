@@ -19,20 +19,12 @@ class CreateBatchDetailInPlan(LoginRequiredMixin, CreateView):
 
     def get_object(self, queryset=None):
         name = self.kwargs.get('object')
-        if name[-2:] == 'уз':
-            product = name.split('_')[0]
-            node = name.split('_')[1][:-2]
-            obj = WorkshopPlan.objects.filter(
-                product__name=product,
-                node__name=node).select_related('product', 'detail')[0]
-            return obj
-        else:
-            product = name.split('_')[0]
-            detail = name.split('_')[1]
-            obj = WorkshopPlan.objects.filter(
-                product__name=product,
-                detail__name=detail,).select_related('product', 'detail')[0]
-            return obj
+        product = name.split('_')[0]
+        detail = name.split('_')[1].split('.')[1]
+        obj = WorkshopPlan.objects.filter(
+            product__name=product,
+            detail__name=detail,).select_related('product', 'detail')[0]
+        return obj
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

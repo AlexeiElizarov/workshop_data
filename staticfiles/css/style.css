@@ -1,0 +1,40 @@
+#button-back {
+    margin: 10px;
+}
+
+ost-create-title {
+    margin: 20px;
+}
+
+.navbar-user {
+    margin-right: 10px;
+}
+
+.white_letter {
+    color: white;
+}
+
+.card {
+    margin-bottom: 5px;
+}
+
+.main-block-content{
+    margin: 10px;
+}
+
+.orders_user_salary {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.order_operations_choices {
+    max-width: 50%;
+}
+
+.plan-table-body-sos {
+    background-color: "red";
+}
+
+.all-stage-batch-in-work {
+    width: 1000px;
+}

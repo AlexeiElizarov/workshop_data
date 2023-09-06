@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}
-
+фыв
 {% endblock title %}
 
 {% block content %}
@@ -12,10 +12,11 @@
             <a class="btn  btn-outline-success btn-sm" type="button" href="{% url 'master_workers_average_price_list' %}">
                 По средней расценке
             </a>
+            <a class="btn  btn-outline-success btn-sm" type="button" href="{% url 'workers_salary_all' %}">
+                Зарплата
+            </a>
         </div>
-
     </div>
-
 
         <h5>master/workers_parametr_list.html</h5>
         <hr>
@@ -60,7 +61,7 @@
 
                 <td>
                     <a href="{% url 'workers_list_position' position=worker.position %}">
-                        {{ worker.get_position_display }}
+                        {{ worker.get_position_display }} {{ worker.position }}
                     </a>
                 </td>
 

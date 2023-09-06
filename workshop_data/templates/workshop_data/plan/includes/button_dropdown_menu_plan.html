@@ -23,6 +23,12 @@
                     Удалить
                 </a>
             </li>
+            <li>
+                <a class="dropdown-item"
+                   href="{% url 'add_quantity_in_warehouse' object %}">
+                    В кладовой {{ object }}
+                </a>
+            </li>
         {% elif request.user.position == 'PDB' %}
             <li>
                 <a class="dropdown-item"

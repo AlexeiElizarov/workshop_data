@@ -1,4 +1,5 @@
 from django.db import models
+from sign.models import User
 
 
 def product_image_directory(instance, filename):
@@ -13,7 +14,7 @@ class Detail(models.Model):
         unique=True,
         verbose_name='Деталь',
         db_index=True)
-    prefix = models.ForeignKey("workshop_data.Prefix", on_delete=models.PROTECT, null=True)
+    prefix = models.ForeignKey("workshop_data.Prefix", on_delete=models.PROTECT, blank=True,null=True)
     secondary_detail = models.ManyToManyField(
         "workshop_data.Detail",
         through='workshop_data.DetailDetail',
@@ -30,11 +31,17 @@ class Detail(models.Model):
         null=True,
         blank=True,
         verbose_name='Категория')
-
+    in_warehouse = models.ForeignKey("workshop_data.Warehouse",
+                                     on_delete=models.PROTECT,
+                                     verbose_name='в кладовой',
+                                     blank=True, null=True)
+    parameters_for_spu = models.ForeignKey("workshop_data.ParametersDetailForSPU",
+                                           on_delete=models.SET_NULL, blank=True, null=True,
+                                           )
     objects = models.Manager()
 
     def __str__(self):
-        return f'{self.name}'
+        return f'{self.prefix}.{self.name}' if self.prefix else self.name
 
     def get_name_detail(self):
         if self.secondary_detail.all():
@@ -50,3 +57,50 @@ class Prefix(models.Model):
 
     def __str__(self):
         return f'{self.name}'
+
+
+class ParametersDetailForSPU(models.Model):
+    """Класс описывает параметры Детали на участке СПУ"""
+    operations_first_side = models.TextField(
+        verbose_name='Операции 1й стороны',
+        blank=True, null=True)
+    operations_second_side = models.TextField(
+        verbose_name='Операции 2й стороны',
+        blank=True, null=True)
+    first_side_time = models.FloatField(
+        default=1, blank=True, null=True,
+        verbose_name='Время 1я сторона')
+    coefficient_first_side = models.FloatField(
+        default=1, blank=True, null=True, verbose_name='Коэффициент 1'
+    )
+    second_side_time = models.FloatField(
+        default=1, blank=True, null=True,
+        verbose_name='Время 2я сторона')
+    coefficient_second_side = models.FloatField(
+        default=1, blank=True, null=True, verbose_name='Коэффициент 2'
+    )
+    price = models.FloatField(
+        default=0, blank=True, null=True,
+        verbose_name='Расценка')
+    norm = models.FloatField(
+        default=0, blank=True, null=True,
+        verbose_name='Норма времени'
+    )
+
+    author = models.ForeignKey(
+        User, on_delete=models.CASCADE,
+        related_name='user_parameter_detail_cpu')
+
+    objects = models.Manager()
+
+    def return_salary_per_minute(self):
+        """Возвращает зарплату в минуту"""
+        return self.price / (self.first_side_time + self.second_side_time)
+
+    def return_salary_per_first_side(self):
+        """Возвращает зарплату по 1-й стороне"""
+        return round((self.first_side_time * self.coefficient_first_side * self.return_salary_per_minute()), 2)
+
+    def return_salary_per_second_side(self):
+        """Возвращает зарплату по 1-й стороне"""
+        return round((self.second_side_time * self.coefficient_second_side * self.return_salary_per_minute()), 2)

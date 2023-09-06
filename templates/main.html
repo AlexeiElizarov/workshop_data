@@ -1,0 +1,194 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>{% block title %} {% endblock title %}</title>
+        <script src="{% static 'css/bootstrap-5.2.2-dist/js/jquery.min.js' %}"></script>
+        <script src="{% static 'js/jquery3.5.1.min.js' %}"></script>
+        <link rel="stylesheet" href="{% static 'css/bootstrap-5.2.2-dist/css/bootstrap.min.css' %}" type="text/css">
+        <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css">
+
+    </head>
+    <body>
+        <!-- Responsive navbar-->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+            <div class="container-fluid">
+                {% if request.user.is_authenticated %}
+                    <a class="navbar-brand" href="/">Страница {{ user.surname }}</a>
+                {% else %}
+                    <a class="navbar-brand" href="{% url 'login' %}">Авторизируйтесь</a>
+                {% endif %}
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        {% if request.user.is_authenticated %}
+                            {% now "Y" as current_year %}
+                            {% now "M" as current_month %}
+                            {% if request.user.position == 'MSR' or  request.user.position == 'EPB'%}
+                                {% comment %}
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        План
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        <li><a class="dropdown-item" href="{% url 'plan' %}">План</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'product_add_plan' %}">Добавить в План</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'all_batch_in_plan' %}">Все партии</a></li>
+                                    </ul>
+                                </li>
+
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Сотрудники
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        {% if not request.user.profile %}
+                                            <li><a class="dropdown-item" href="{% url 'workers_list_all' %}">Все</a></li>
+                                            <li><a class="dropdown-item" href="{% url 'workers_LSM_all' %}">Слесари</a></li>
+                                            <li><a class="dropdown-item" href="{% url 'workers_TRN_all' %}">Токари</a></li>
+                                            <li><a class="dropdown-item" href="{% url 'workers_MLR_all' %}">Фрезеровщики</a></li>
+                                            <li><a class="dropdown-item" href="{% url 'all_orders_list_for_all_workers' %}">Все наряды</a></li>
+                                            <li><a class="dropdown-item" href="{% url 'task_list' %}">Сменное задание</a></li>
+                                        {% elif request.user.profile %}
+                                            <li><a class="dropdown-item" href="">Profile</a></li>
+                                            <li><a class="dropdown-item" href="">Update profile</a></li>
+                                        {% endif %}
+                                    </ul>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'order_user_create' username=user.username %}">Выписать наряд</a>
+                                </li>
+
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Просмотр
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        <li><a class="dropdown-item" href="{% url 'product_list_all' %}">Все Изделия</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'detail_list_all' %}">Все Детали</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'category_detail_all_list' %}">Все Категории</a></li>
+                                    </ul>
+                                </li>
+
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Добавить
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        <li><a class="dropdown-item" href="{% url 'create_new_product' %}">Изделие</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'create_new_detail' %}">Деталь</a></li>
+                                    </ul>
+                                </li>
+
+
+
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                       aria-expanded="false">
+                                        Разное
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        <li><a class="dropdown-item" href="{% url 'create_new_bonus' %}">Добавить премию</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'list_bonuses_all_worker' %}">Все бонусы</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'list_all_worker_here_bonuses' %}">Рабочии и премия</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'list_all_resolution_or_not_detail' username=user.username %}">Заявки                                    на Детали</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'average_time_of_work_stage_in_detail' %}">Среднее
+                                            время работы</a></li>
+                                    </ul>
+                                </li>
+                                {% endcomment %}
+
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'record_job_create' %}">
+                                        Новая запись
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'all_record_job' %}">
+                                        Все записи
+                                    </a>
+                                </li>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Просмотр
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        <li><a class="dropdown-item" href="{% url 'product_list_all' %}">Все Изделия</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'detail_list_all' %}">Все Детали</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'category_detail_all_list' %}">Все Категории</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'all_record_job_diagram' %}">Диаграмма</a></li>
+                                    </ul>
+                                </li>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Добавить
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        <li><a class="dropdown-item" href="{% url 'create_new_product' %}">Изделие</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'create_new_detail' %}">Деталь</a></li>
+                                    </ul>
+                                </li>
+
+                            {% else %}
+
+
+                            *************** убрать если не понадобится ******************
+
+
+
+
+                                <li class="nav-item">
+                                    <a class="nav-link" aria-current="page" href="{% url 'orders_user_list_all' username=user.username %}">Мои наряды</a>
+                                </li>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Детали
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        <li><a class="dropdown-item" href="{% url 'statement_for_detail' user.username %}">Заявка на работу над Деталью</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'list_all_resolution_or_not_detail' user.username %}">Все Детали</a></li>
+                                    </ul>
+                                </li>
+                            {% endif %}
+                        {% endif %}
+
+
+                    </ul>
+                    {% if request.user.is_authenticated %}
+                        <li class="navbar-user white_letter"> {{ user.username }} | <a class="white_letter" href="{% url 'logout' %}">Выйти</a></li>
+                    {% else %}
+                        <li class="navbar-user white_letter"><a class="white_letter" href="{% url 'signup' %}">Регистрация</a> | <a class="white_letter" href="{% url 'login' %}">Войти</a></li>
+                    {% endif %}
+                    <form class="d-flex">
+                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-outline-success" type="submit">Search</button>
+                    </form>
+                </div>
+            </div>
+        </nav>
+        <!-- Page content-->
+        {% include 'workshop_data/includes/button_back.html' %}
+        {{  user }}
+        <hr>
+        <div class="main-block-content">
+
+
+            {% block content %}
+
+            {% endblock content%}
+        </div>
+        <!-- Bootstrap core JS-->
+<!--        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>-->
+    <script src="{% static 'css/bootstrap-5.2.2-dist/js/1/bootstrap.bundle.min.js' %}" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+        <!-- Core theme JS-->
+
+    </body>
+</html>

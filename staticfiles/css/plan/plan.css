@@ -1,0 +1,11 @@
+.filter {
+    margin-bottom: 5px;
+}
+
+
+
+#id_month {
+    display: flex;
+    flex-direction: row;
+
+}

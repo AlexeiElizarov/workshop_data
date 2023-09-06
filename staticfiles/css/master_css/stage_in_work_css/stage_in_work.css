@@ -1,0 +1,19 @@
+.wrapper {
+    display: flex;
+    margin: 5px;
+}
+
+.stage-data-block {
+    margin-right: 15px;
+}
+
+.workers-data-block {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.worker-list {
+    width: 100%;
+    margin: 2px;
+}

@@ -106,22 +106,29 @@ def get_user_by_username(username):
 
 def get_list_all_workers():
     """Получает список всех работников(username)"""
-    return User.objects.filter(position__in=['LSM', 'TRN', 'MLR'])
+    return User.objects.filter(position__in=['866', '914', '944', '916', '892', '961', '773', '601'])
 
 
 def get_list_locksmith():
     """Получает список всех слесарей"""
-    return User.objects.filter(position='LSM')
+    return User.objects.filter(position='866') | User.objects.filter(employee_number__in=[130, 400])
 
 
 def get_list_turner():
     """Получает список всех токарей"""
-    return User.objects.filter(position='TRN')
+    miller_list = User.objects.none()
+    miller_list = miller_list | User.objects.filter(position='914')
+    return miller_list
 
 
 def get_list_miller():
     """Получает список всех фрезеровщиков"""
-    return User.objects.filter(position='MLR')
+    return User.objects.filter(position='944') | User.objects.filter(employee_number__in=[21, 252])
+
+
+def get_list_operator():
+    """Получает список всех операторов"""
+    return User.objects.filter(position='773')
 
 
 def get_batch_by_id(batch_id):
@@ -184,9 +191,9 @@ def get_cost_per_hour(order: Order) -> float:
     time = order.time_of_work_order
     if time != 0:
         if order.price:
-            return round(order.quantity * order.price / time, 2)
+            return round(order.quantity * order.price / time, 2) / 100
         elif order.stage.price:
-            return round(order.quantity * order.stage.price / time, 2)
+            return round(order.quantity * order.stage.price / time, 2) / 100
     else:
         return 0
 
@@ -309,3 +316,27 @@ def get_not_work_stages_in_batch(batch):
     for i in range(len(stages_in_work), len(stages_all)):
         not_work_stages.append(stages_all[i])
     return not_work_stages
+
+
+def return_salary_for_completed_detail(record):
+    """Возвращает зарплату за сделанные детали. Данные берутся из RecordJob"""
+    try:
+        if record.quantity == 0:
+            time_1 = record.detail.parameters_for_spu.first_side_time
+            time_2 = record.detail.parameters_for_spu.second_side_time
+            time = time_1 + time_2
+            quantity_1 = 0 if record.quantity_1 is None else record.quantity_1
+            quantity_2 = 0 if record.quantity_2 is None else record.quantity_2
+            price = record.detail.parameters_for_spu.price
+            salary_per_minute = price / time
+            coefficient_1 = record.detail.parameters_for_spu.coefficient_first_side
+            coefficient_2 = record.detail.parameters_for_spu.coefficient_second_side
+            salary = quantity_1 * time_1 / time * price * coefficient_1 +\
+                     quantity_2 * time_2 / time * price * coefficient_2
+            salary = salary  * 1.4
+            return round(salary, 2)
+        elif record.quantity > 0:
+            salary = record.quantity * record.detail.parameters_for_spu.price * 1.4
+            return salary
+    except:
+        return '???'

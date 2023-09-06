@@ -1,0 +1,8 @@
+#id_month {
+    display: flex;
+    flex-direction: row;
+}
+
+.filter-wrapper {
+    margin-bottom: 10px;
+}

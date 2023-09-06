@@ -9,7 +9,8 @@ from workshop_data.forms.product_form import (
 from workshop_data.forms.detail_form import (
     DetailCreateForm,
     AddImageInDetailForm,
-    DetailAddDetailForm,)
+    DetailAddDetailForm,
+    DetailEditForm,)
 from workshop_data.forms.stage_in_detail_form import (
     AddStageInDetailForm,
     EditStageInDetailForm)
@@ -27,6 +28,8 @@ from workshop_data.forms.batch_form import CreateBatchDetailInPlanForm
 from workshop_data.forms.stage_in_work_form import (
     CreateNewStageManufacturingInWorkForm,
     EnteringDetailToViewAverageTimeOfWorkForm)
+from workshop_data.forms.warehouse_form import WarehouseCreateForm
+from workshop_data.forms.comment_form import CommentEditForm
 
 
 

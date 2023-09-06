@@ -31,29 +31,35 @@ class OrderUserCreateView(LoginRequiredMixin, CreateView):
             order_object = Order(
                 date=datetime.datetime.now(),
                 month=form.cleaned_data['month'],
-                # workshop=form.cleaned_data['workshop'],
-                # section=form.cleaned_data['section'],
+                # # workshop=form.cleaned_data['workshop'],
+                # # section=form.cleaned_data['section'],
                 user=self.object.user,
                 employee_number=self.object.user.employee_number,
-                product=form.cleaned_data['product'],
-                detail=form.cleaned_data['detail'],
+                product=self.object.product,
+                detail=self.object.detail,
+                batch=None,
                 operations=form.cleaned_data['operations'],
-                stage=form.cleaned_data['stage'],
+                stage=self.object.stage,
                 quantity=form.cleaned_data['quantity'],
                 normalized_time=form.cleaned_data['normalized_time'],
                 price=form.cleaned_data['price'],
                 author_id=self.request.user.id,
             )
-        args = {}
-        args['order'] = order_object
-        if 'view' in self.request.POST:
-            return render(self.request, 'workshop_data/order_template_for_print.html', args)
-        elif 'save' in self.request.POST:
-            order_object.author = self.request.user
-            order_object.save()
-            # self.object.author = self.request.user
-            # self.object.save()
-            return HttpResponseRedirect(reverse_lazy('start_new_stage_in_work_complete'))
+            args = {'order': order_object}
+            if 'view' in self.request.POST:
+                if self.object.quantity:
+                    return render(self.request, 'workshop_data/order_template_for_print_2_list.html', args)
+                else:
+                    #return render(self.request, 'workshop_data/order_template_for_print.html', args)
+                    return render(self.request, 'workshop_data/order_.html', args)
+            elif 'state' in self.request.POST:
+                return render(self.request, 'workshop_data/order_state.html', args)
+            elif 'save' in self.request.POST:
+                order_object.author = self.request.user
+                order_object.save()
+                # self.object.author = self.request.user
+                # self.object.save()
+                return HttpResponseRedirect(reverse_lazy('start_new_stage_in_work_complete'))
 
 
 class AllOrderForAllWorker(LoginRequiredMixin, ListView):

@@ -28,7 +28,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                        {% for worker, quantity in workers_quantity_lsm.items|dictsort:1 %}
+                        {% for worker, quantity in workers_quantity_lsm.items|dictsortreversed:1 %}
                             {% include 'workshop_data/master/list_workers_details/table_body_list_workers_details.html' %}
                         {% endfor %}
                     </tbody>
@@ -45,7 +45,7 @@
                     </thead>
                     <tbody>
                         <tr class="table-light">
-                            {% for worker, quantity in workers_quantity_trn.items|dictsort:1  %}
+                            {% for worker, quantity in workers_quantity_trn.items|dictsortreversed:1 %}
                                 {% include 'workshop_data/master/list_workers_details/table_body_list_workers_details.html' %}
                             {% endfor %}
                         </tr>
@@ -63,7 +63,25 @@
                     </thead>
                     <tbody>
                         <tr class="table-light">
-                            {% for worker, quantity in workers_quantity_mlr.items|dictsort:1  %}
+                            {% for worker, quantity in workers_quantity_mlr.items|dictsortreversed:1  %}
+                                {% include 'workshop_data/master/list_workers_details/table_body_list_workers_details.html' %}
+                            {% endfor %}
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="worker-list">
+                <table class="table table-primary">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Оператор</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="table-light">
+                            {% for worker, quantity in workers_quantity_prm.items|dictsortreversed:1  %}
                                 {% include 'workshop_data/master/list_workers_details/table_body_list_workers_details.html' %}
                             {% endfor %}
                         </tr>

@@ -2,6 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.views.generic import ListView
 from sign.models import User, LIST_POSITION_WORKER
+from workshop_data.filters import WorkersFilter
 from workshop_data.models.order import Order
 from workshop_data.services import get_average_price_orders, get_average_price_orders_per_month
 
@@ -18,13 +19,17 @@ class WorkerListView(LoginRequiredMixin, ListView):
         if not 'position' in self.kwargs:
             context['workers'] = User.objects.filter(~Q(position='MSR') & ~Q(position='EPB'))
         elif self.kwargs['position'] == 'LSM':
-            context['workers'] = User.objects.filter(position='LSM')
+            context['workers'] = User.objects.filter(position='866')
         elif self.kwargs['position'] == 'TRN':
-            context['workers'] = User.objects.filter(position='TRN')
+            context['workers'] = User.objects.filter(position='914')
         elif self.kwargs['position'] == 'MLR':
-            context['workers'] = User.objects.filter(position='MLR')
+            context['workers'] = User.objects.filter(position='944')
         return context
 
+
+class WorkerSalaryListView(LoginRequiredMixin, ListView):
+    """Отображает страницу с зарплатой всех работников(или выборка по специальности)"""
+    template_name = 'workshop_data/master/workers/workers_salary_list.html'
 
 # class WorkerOrdersListForMaster(LoginRequiredMixin, ListView):
 #     """Показывает наряды работников(все, по месяцам)"""

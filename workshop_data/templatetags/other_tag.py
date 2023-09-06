@@ -1,4 +1,7 @@
 from django import template
+
+from workshop_data.models import DetailDetail
+
 register = template.Library()
 
 
@@ -11,3 +14,7 @@ def total_count(initial=None, _count=[0]):  # noqa
     # increment counter
     _count[0] += 1
     return _count[0]
+
+@register.filter
+def detail_in(var, detail):
+    return DetailDetail.objects.filter(main_detail=detail)

@@ -28,80 +28,101 @@
                     <th scope="col"></th>
                 </tr>
                 </thead>
-                {% for detail in product.detail.all %}
-                <tr>
-                    <th scope="row">{% total_count %}</th>
-                    <td>{{ detail.prefix }}.{{ detail.get_name_detail }}</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    {% if detail.category == None %}
-                    <td></td>
-                    {% else %}
-                    <td>{{ detail.category }}</td>
-                    {% endif %}
-                    <td><a class="link-image" href="{% url 'image_detail' detail %}">Изображение</a></td>
-                    <td>
-                        {% include 'workshop_data/detail/includes/button_dropdown_menu.html' %}
-                    </td>
-                </tr>
-                {% if detail.secondary_detail.all %}
-                {% for detail in detail.secondary_detail.all %}
-                <tr>
-                    <th scope="row">{% total_count %}</th>
-                    <td></td>
-                    <td>{{ detail.prefix }}.{{ detail.get_name_detail }}</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    {% if detail.category == None %}
-                    <td></td>
-                    {% else %}
-                    <td>{{ detail.category }}</td>
-                    {% endif %}
-                    <td><a href="">Изображение</a></td>
-                    <td>
-                        {% include 'workshop_data/detail/includes/button_dropdown_menu.html' %}
-                    </td>
-                </tr>
-                {% if detail.secondary_detail.all %}
-                {% for detail in detail.secondary_detail.all %}
-                <tr>
-                    <th scope="row">{% total_count %}</th>
-                    <td></td>
-                    <td></td>
-                    <td>{{ detail.prefix }}.{{ detail.get_name_detail }}</td>
-                    <td></td>
-                    <td></td>
-                    {% if detail.category == None %}
-                    <td></td>
-                    {% else %}
-                    <td>{{ detail.category }}</td>
-                    {% endif %}
-                    <td><a href="">Изображение</a></td>
-                    <td>
-                        {% include 'workshop_data/detail/includes/button_dropdown_menu.html' %}
-                    </td>
-                </tr>
-                {% for detail in detail.secondary_detail.all %}
-                <tr>
-                    <th scope="row">{% total_count %}</th>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>{{ detail.prefix }}.{{ detail.get_name_detail }}</td>
-                    <td></td>
-                    {% if detail.category == None %}
-                    <td></td>
-                    {% else %}
-                    <td>{{ detail.category }}</td>
-                    {% endif %}
-                    <td><a href="">Изображение</a></td>
-                    <td>
-                        {% include 'workshop_data/detail/includes/button_dropdown_menu.html' %}
-                    </td>
-                </tr>
+
+                {% for detail1 in product.detail.all %}
+                    <tr>
+                        <th scope="row">{% total_count %}</th>
+                        <td>{% if detail1.prefix %} {{ detail1.prefix }}. {% endif %} {{ detail1.get_name_detail }}
+                            {% if detail1.productdetail_set.all.first.quantity > 1 %}
+                            <strong><i>{{ detail1.productdetail_set.all.first.quantity }}шт.</i></strong>
+                            {% endif %}
+                        </td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                            {% if detail1.category == None %}
+                                <td></td>
+                            {% else %}
+                                <td>{{ detail1.category }}</td>
+                            {% endif %}
+                        <td><a class="link-image" href="{% url 'image_detail' detail1 %}">Изображение</a></td>
+                        {% with detail1 as detail %}
+                        <td>
+                            {% include 'workshop_data/product/includes/button_dropdown_in_product.html' with detail=detail1 %}
+                        </td>
+                        {% endwith %}
+                    </tr>
+                    {% if detail1.secondary_detail.all %}
+                        {% for detail2 in detail1.secondary_detail.all %}
+                            <tr>
+                                <th scope="row">{% total_count %}</th>
+                                <td></td>
+                                <td>{% if detail2.prefix %} {{ detail2.prefix }}. {% endif %} {{ detail2.get_name_detail }}
+                                    {% for i in detail1.detaildetail_set.all %}
+                                    {% if i.secondary_detail == detail2 and i.quantity > 1 %}
+                                        <strong><i>{{ detail1.detaildetail_set.all.first.quantity }}шт.</i></strong>
+                                    {% endif %}
+
+                                    {% endfor %}
+
+                                </td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                {% if detail2.category == None %}
+                                <td></td>
+                                {% else %}
+                                <td>{{ detail2.category }}</td>
+                                {% endif %}
+                                <td><a href="">Изображение</a></td>
+                                {% with detail2 as detail %}
+                                <td>
+                                    {% include 'workshop_data/product/includes/button_dropdown_in_product.html' with detail=detail2 %}
+                                </td>
+                                {% endwith %}
+                            </tr>
+                            {% if detail2.secondary_detail.all %}
+                                {% for detail3 in detail2.secondary_detail.all %}
+                                <tr>
+                                    <th scope="row">{% total_count %}</th>
+                                    <td></td>
+                                    <td></td>
+                                    <td>{{ detail3.prefix }}.{{ detail3.get_name_detail }}</td>
+                                    <td></td>
+                                    <td></td>
+                                    {% if detail3.category == None %}
+                                    <td></td>
+                                    {% else %}
+                                    <td>{{ detail3.category }}</td>
+                                    {% endif %}
+                                    <td><a href="">Изображение</a></td>
+                                    {% with detail3 as detail %}
+                                    <td>
+                                        {% include 'workshop_data/product/includes/button_dropdown_in_product.html' with detail=detail2 %}
+                                    </td>
+                                    {% endwith %}
+                                </tr>
+                                    {% for detail4 in detail3.secondary_detail.all %}
+                                    <tr>
+                                        <th scope="row">{% total_count %}</th>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>{{ detail4.prefix }}.{{ detail4.get_name_detail }}</td>
+                                        <td></td>
+                                        {% if detail4.category == None %}
+                                        <td></td>
+                                        {% else %}
+                                        <td>{{ detail4.category }}</td>
+                                        {% endif %}
+                                        <td><a href="">Изображение</a></td>
+                                        {% with detail4 as detail %}
+                                        <td>
+                                            {% include 'workshop_data/product/includes/button_dropdown_in_product.html' with detail=detail2 %}
+                                        </td>
+                                        {% endwith %}
+                                    </tr>
                 {% endfor %}
                 {% endfor %}
                 {% endif %}

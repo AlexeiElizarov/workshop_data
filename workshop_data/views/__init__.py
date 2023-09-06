@@ -38,7 +38,8 @@ from workshop_data.views.product_view import (
 )
 from workshop_data.views.detail_view import (
     DetailAllView,
-    DetailCreateView
+    DetailCreateView,
+    DetailEditView
 )
 from workshop_data.views.category_detail_views import (
     CreateCategoryDetailView,
@@ -46,6 +47,9 @@ from workshop_data.views.category_detail_views import (
 from workshop_data.views.statement_about_job_over_detail_view import (
     StatementAboutJobOverDetailView
 )
+from workshop_data.views.warehouse_view import (
+    WarehouseCreateView,
+    WarehouseUpdateView)
 
 from workshop_data.views.complite_view import *
 from workshop_data.views.test_views import *
@@ -53,3 +57,12 @@ from workshop_data.views.bonus_view import *
 from workshop_data.views.services_view import *
 
 from workshop_data.views.any_view import ShiftTask
+
+from workshop_data.views.record_job_view import (
+    RecordJobCreateView,
+    AllRecordJobForAllWorker,
+    DiagramWorkSPUView,
+    ParametersDetailForSPUCreateView,
+    ParametersDetailForSPEditeView,
+    parameters_detail_for_spu_create_or_edit_redirect,
+)

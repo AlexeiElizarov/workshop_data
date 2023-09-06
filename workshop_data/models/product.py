@@ -8,6 +8,9 @@ class Product(models.Model):
         unique=True,
         blank=False,
         verbose_name='Изделие')
+        
+    order_number_commercial = models.SmallIntegerField(blank=True, verbose_name='Коммерция')
+    order_number_state = models.SmallIntegerField(blank=True, verbose_name='Г/з')
 
     detail = models.ManyToManyField(
         "workshop_data.Detail",
@@ -15,26 +18,10 @@ class Product(models.Model):
         related_name="detail_in_product",
         through_fields=('product', 'detail'),)
 
-
-    # node = models.ManyToManyField(
-    #     "workshop_data.Node",
-    #     through='workshop_data.ProductNode',
-    #     related_name="node_in_product",
-    #     through_fields=('product', 'node'),)
-
-    # node = models.ManyToManyField(
-    #     'workshop_data.Node',
-    #     blank=True,
-    #     related_name='product',
-    #     verbose_name='Узел'
-    # )
-    # detail = models.ManyToManyField(
-    #     'workshop_data.Detail',
-    #     blank=True,
-    #     related_name='product',
-    #     verbose_name='Деталь')
-
     objects = models.Manager()
+
+    class Meta:
+        ordering = ['name']
 
     def __str__(self):
         return f'{self.name}'
@@ -58,29 +45,3 @@ class DetailDetail(models.Model):
                                          on_delete=models.PROTECT,
                                          related_name="secondary_detail_in_main")
     quantity = models.SmallIntegerField(default=1)
-
-
-# class ProductNode(models.Model):
-#     """Таблица связи Изделия и Узла"""
-#     product = models.ForeignKey("workshop_data.Product", on_delete=models.PROTECT)
-#     node = models.ForeignKey("workshop_data.Node", on_delete=models.PROTECT)
-#     quantity = models.SmallIntegerField(default=1)
-
-# class NodeDetail(models.Model):
-#     """Таблица связи Узла и Детали"""
-#     node = models.ForeignKey("workshop_data.Node", on_delete=models.PROTECT)
-#     detail = models.ForeignKey("workshop_data.Detail", on_delete=models.PROTECT)
-#     quantity = models.SmallIntegerField(default=1)
-
-
-# class NodeNode(models.Model):
-#     """Таблица связи Узла и Детали"""
-#     node = models.ForeignKey(
-#         "workshop_data.Node",
-#         on_delete=models.PROTECT,
-#         related_name="nodes")
-#     node2 = models.ForeignKey(
-#         "workshop_data.Node",
-#         on_delete=models.PROTECT,
-#         related_name="nodes2")
-#     quantity = models.SmallIntegerField(default=1)

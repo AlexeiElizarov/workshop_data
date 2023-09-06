@@ -1,0 +1,485 @@
+<style>
+@page {
+  
+  margin: 0;
+}
+@media print {
+html,body{
+    height:2480px;
+    width:3508px;
+}
+}
+
+.main-wrapper {
+    display: flex;
+    flex-direction: row;
+    max-width:3508px;
+    width: 100%;
+}
+
+#form {
+    max-width: 1170;
+    text-align: end;
+}
+
+.wrapper-table-1 {
+    height:2480px;
+    width:992;
+}
+
+.table{
+    padding:0px;
+    border-spacing: 1;
+    border-collapse: collapse;
+    line-height: 0.9;
+    font-size: 16px;
+
+}
+
+
+
+#table-2 {
+    height:155px;
+}
+
+#table-3 {
+    height:89px;
+}
+
+td {
+    vertical-align: middle;
+    text-align: center;
+}
+
+.flex-1 {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.flex-2 {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+
+.line-1:after{
+    content: "подпись, дата";
+    font-size: .8em;
+    text-align: center;
+    display: block;
+}
+
+.line-2:after{
+    content: "инициалы, фамилия";
+    font-size: .8em;
+    text-align: center;
+    display: block;
+}
+
+.bottom-wrapper {
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+    border-bottom: 1px solid black;
+    padding-left: 1px;
+    padding-right: 1px;
+    padding-top: 1px;
+    padding-bottom: 1px;
+    height: 154px;
+}
+
+.bottom-1 {
+    display: flex;
+    flex-direction: row;
+    padding-left: 1px;
+    padding-right: 1px;
+    padding-top: 1px;
+    padding-bottom: 1px;
+}
+
+.bottom-1-1 {
+    display: flex;
+    flex-direction: row;
+    padding-left: 10px;
+    padding-right: 1px;
+    padding-top: 31px;
+    padding-bottom: 1px;
+    font-size: 18px;
+}
+
+.bottom-1-1-1 {
+    padding-left: 00px;
+    padding-right: 0px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+.bottom-1-1-2 {
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+.bottom-1-1-3 {
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+.bottom-1-2 {
+    display: flex;
+    flex-direction: row;
+    padding-left: 145px;
+    padding-right: 1px;
+    padding-top: 33px;
+    padding-bottom: 1px;
+    font-size: 18px;
+}
+
+.bottom-1-2-1 {
+    padding-left: 5px;
+    padding-right: 0px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+.bottom-1-2-2 {
+    padding-left: 22px;
+    padding-right: 0px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+.bottom-2 {
+    display: flex;
+    flex-direction: row;
+    padding-left: 7px;
+    padding-right: 1px;
+    padding-top: 16px;
+    padding-bottom: 1px;
+}
+
+.bottom-2-1 {
+    font-size: 18px;
+    padding-left: 1px;
+    padding-right: 1px;
+    padding-top: 1px;
+    padding-bottom: 1px;
+}
+
+.bottom-2-2 {
+    padding-left: 12px;
+    padding-right: 1px;
+    padding-top: 1px;
+    padding-bottom: 1px;
+}
+
+.bottom-2-3 {
+    padding-left: 75px;
+    padding-right: 1px;
+    padding-top: 1px;
+    padding-bottom: 1px;
+}
+
+#table-6 td {
+    border: 0px;
+}
+
+.margin-left {
+    margin-left: 15px;
+}
+
+.margin-right {
+    margin-right: 15px;
+}
+
+.valign-top {
+    vertical-align: top;
+}
+
+.text {
+    display: flex;
+    justify-content: center;
+    align-content: start;
+    flex-direction: column;
+}
+
+</style>
+<div id="form">
+    <p>Ф.7443</p>
+</div>
+
+<div class="main-wrapper">
+    <div class="wrapper-table-1">
+        <table class="table valign-top" id="table-1" border=1 cellpadding=0 cellspacing=0>
+            <tr>
+                <th rowspan="2" style="height:62px; width:178px">&laquo;ООО СЭПО-ЗЭМ&raquo;</th>
+                <th rowspan="2" colspan="3" style="height:55px; width:494px;"><h2>Сдельный наряд №</h2></th>
+                <td style="height:27px; width:114px">Дата</td>
+                <td style="height:22px; width:101px">Цех</td>
+                <td style="height:22px; width:101px">Участок</td>
+            </tr>
+            <tr>
+                <td><strong><i>{{ order.date|date:"d.m.y"}}</i></strong></td>
+                <td><strong><i>464</i></strong></td>
+                <td><strong><i>{{ order.user.region }}</i></strong></td>
+            </tr>
+        </table>
+
+        <table class="table" id="table-2" border=1 cellpadding=0 cellspacing=0 style="border-top: none;">
+            <tr>
+                <td colspan="2" style="height:42px; width:369px">Фамилия, инициалы</td>
+                <td style="height:40px; width:108px">Табельный №</td>
+                <td style="height:40px; width:107px">Категория</td>
+                <td style="height:40px; width:87px">Код профессии</td>
+                <td style="height:40px; width:94px">Разряд рабочего</td>
+                <td style="height:40px; width:69px">Вид оплаты</td>
+                <td style="height:40px; width:153px">Заказ</td>
+            </tr>
+            <tr>
+                <td colspan="2" style="height:49px; width:320px"><strong><i>{{ order.user.get_full_name }}</i></strong></td>
+                <td style="height:43px; width:94px"><strong><i>{{ order.user.employee_number }}</i></strong></td>
+                <td style="height:43px; width:94px"><strong><i>1</i></strong></td>
+                <td style="height:43px; width:75px"><strong><i>{{ order.user.position }}</i></strong></td>
+                <td style="height:43px; width:81px"><strong><i>{{ order.user.employee_rank }}</i></strong></td>
+                <td style="height:43px; width:59px"><strong><i>01</i></strong></td>
+                <td style="height:43px; width:130px"><strong><i>{{ order.product.order_number_commercial }}</i></strong></td>
+            </tr>
+            <tr>
+                <td style="height:82px; width:320px" colspan="2">Содержание работы</td>
+                <td colspan="6"><strong><i>{{ order.stage.get_name_display }}</i></strong></td>
+            </tr>
+            <tr>
+                <td style="height:30px;" colspan="8" >Выдано в работу</td>
+            </tr>
+        </table>
+
+        <table class="table" id="table-3" border=1 cellpadding=0 cellspacing=0 style="border-top: none;">
+            <tr>
+                <td style="height:38px; width:137px">Наименование изделия</td>
+                <td style="height:36px; width:217px">
+                    <p style="margin-top: -1px; margin-bottom: -10px; padding-top: 5px; padding-bottom: 5px;">Обозначение детали,</p>
+                    <p style="margin-top: 1px; margin-bottom: 1px; padding-top: 5px; padding-bottom: 2px;">сборочной еденицы</p>
+                </td>
+                <td style="height:36px; width:381px">№ операции</td>
+                <td style="height:36px; width:99px">Колличество, шт</td>
+                <td style="height:36px; width:154px">Подпись мастера</td>
+            </tr>
+            <tr>
+                <td style="height:61px"><strong><i>{{ order.product }}</i></strong></td>
+                <td><strong><i>
+					{% if order.detail.prefix != None %}
+						{{ order.detail.prefix }}.
+					{% endif %}
+					{{ order.detail }}</i></strong></td>
+                <td>
+                    {% if order.operations %}
+                        <strong><i>{{ order.operations }}</i></strong>
+                    {% elif order.stage %}
+                        <strong><i>{{ order.stage.get_operations }}</i></strong>
+                    {% endif %}
+                </td>
+                {% if order.quantity == 0 %}
+					<td></td>
+				{% elif order.quantity > 0 %}
+					<td><strong><i>{{ order.quantity }}</i></strong></td>
+				{% endif %}
+				
+                <td></td>
+            </tr>
+        </table>
+
+        <table class="table" id="table-4" border=1 cellpadding=0 cellspacing=0 style="border-top: none;">
+            <tr>
+                <td colspan="4" style="height:29px; width:511px">Норма труда</td>
+                <td colspan="3" style="height:26px; width:354px">Доплаты, %</td>
+                <td rowspan="2" style="height:26px; width:125px">Премия, %</td>
+            </tr>
+            <tr>
+                <td style="height:44px; width:75px;">
+                    <p style="margin-top: 5px; margin-bottom: -10px; padding-top: 5px; padding-bottom: 5px;">Код ед.</p>
+                    <p style="margin-top: 1px; margin-bottom: 1px; padding-top: 5px; padding-bottom: 5px;">изм.</p>
+                </td>
+                <td style="height:15px; width:75px">Разряд работы</td>
+                <td style="height:15px; width:106px">Нормированное время</td>
+                <td style="height:15px; width:189px">Расценка</td>
+                <td style="height:15px; width:96px">
+                    <p style="margin-top: 5px; margin-bottom: -10px; padding-top: 5px; padding-bottom: 5px;">за условия</p>
+                    <p style="margin-top: 1px; margin-bottom: 1px; padding-top: 5px; padding-bottom: 5px;">труда</p>
+                </td>
+                <td style="height:15px; width:98px">за ТОН</td>
+                <td style="height:15px; width:98px">
+                    <p style="margin-top: 5px; margin-bottom: -10px; padding-top: 5px; padding-bottom: 5px;">за</p>
+                    <p style="margin-top: 1px; margin-bottom: 1px; padding-top: 5px; padding-bottom: 5px;">интенсивность</p>
+                </td>
+            </tr>
+            <tr>
+                <td style="height:64px"></td>
+                <td><strong><i>{{ order.stage.class_work }}</i></strong></td>
+                <td>
+                    {% if order.normalized_time %}
+                        <strong><i>{{ order.normalized_time }}</i></strong>
+                    {% elif order.stage %}
+                        <strong><i>{{ order.stage.normalized_time }}</i></strong>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if order.price %}
+                        <strong><i>{{ order.price }}</i></strong>
+                    {% elif order.stage %}
+                        <strong><i>{{ order.stage.price }}</i></strong>
+                    {% endif %}
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </table>
+
+        <table class="table" id="table-5" border=1 cellpadding=0 cellspacing=0 style="border-top: none;">
+            <tr>
+                <td colspan="8" style="height:33px">Приемка БТК</td>
+            </tr>
+            <tr>
+                <td style="height:34px; width:116px">
+                    <p style="margin-top: -1px; margin-bottom: -10px; padding-top: 5px; padding-bottom: 5px;">Принято</p>
+                    <p style="margin-top: 1px; margin-bottom: 1px; padding-top: 5px; padding-bottom: 5px;">годных, штук</p>
+                </td>
+                <td style="height:34px; width:223px">Прописью</td>
+                <td style="height:34px; width:107px">Брак</td>
+                <td style="height:34px; width:125px">оплачиваемый</td>
+                <td style="height:34px; width:73px">% оплаты</td>
+                <td style="height:34px; width:125px">неоплачиваемый</td>
+                <td style="height:34px; width:95px">
+                    <p style="margin-top: -1px; margin-bottom: -10px; padding-top: 5px; padding-bottom: 5px;">№ акта</p>
+                    <p style="margin-top: 1px; margin-bottom: 1px; padding-top: 5px; padding-bottom: 5px;">на брак</p>
+                </td>
+                <td style="height:34px; width:121px">
+                    <p style="margin-top: -1px; margin-bottom: -10px; padding-top: 5px; padding-bottom: 5px;">Подпись и</p>
+                    <p style="margin-top: 1px; margin-bottom: 1px; padding-top: 5px; padding-bottom: 5px;">клеймо БТК</p>
+                </td>
+            </tr>
+            <tr>
+                <td style="height:53px"></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </table>
+        <div class="bottom-wrapper">
+            <div class="bottom-1">
+                <div class="bottom-1-1">
+                    <div class="bottom-1-1-1">Мастер</div>
+                    <div class="line-1 bottom-1-1-2">__________________</div>
+                    <div class="line-2 bottom-1-1-3">____________________</div>
+                </div>
+                <div class="bottom-1-2">
+                    <div>Начальник БТЗ</div>
+                    <div class="line-1 bottom-1-2-1"> _______________</div>
+                    <div class="line-2 bottom-1-2-2"> ________________</div>
+                </div>
+            </div>
+            <div class="bottom-2">
+                <div class="bottom-2-1">Инженер по подготовке производства</div>
+                <div class="line-1 bottom-2-2">_________________</div>
+                <div class="line-2 bottom-2-3">__________________</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="wrapper-table-2">
+        <table class="table" border=1 cellpadding=0 cellspacing=0  style="border-left: none; border-right: none;">
+            <tr style="height:790px; width:15px">
+                <td style="height:676px; width:15px;"></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="wrapper-table-3">
+        <table class="table" border=1 cellpadding=0 cellspacing=0>
+            <tr style="height:105px; width:181px">
+                <td colspan="2" style="height:91px; width:181px; font-size: 18px;">
+                    <p style="margin-top: -1px; margin-bottom: -10px; padding-top: 5px; padding-bottom: 5px;">ТАЛОН</p>
+                    <p style="margin-top: 1px; margin-bottom: 1px; padding-top: 5px; padding-bottom: 5px;">к сдельному</p>
+                    <p style="margin-top: 1px; margin-bottom: 1px; padding-top: 5px; padding-bottom: 5px;">наряду №____</p>
+                </td>
+            </tr>
+            <tr>
+                <td style="height:28px">Дата</td>
+                <td>Цех</td>
+            </tr>
+            <tr>
+                <td style="height:21px"></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td style="height:37px">
+					<p style="margin-top: -1px; margin-bottom: -10px; padding-top: 5px; padding-bottom: 5px;">Фамилия,</p>
+					<p style="margin-top: 1px; margin-bottom: 1px; padding-top: 5px; padding-bottom: 5px;">инициалы</p>
+				</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td style="height:42px"></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td style="height:30px"></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td style="height:38px">
+                    <p style="margin-top: -1px; margin-bottom: -10px; padding-top: 5px; padding-bottom: 5px;">Обозначение</p>
+                    <p style="margin-top: 1px; margin-bottom: 1px; padding-top: 5px; padding-bottom: 5px;">детали</p>
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td style="height:43px; width:94px;">№ операции</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td style="height:43px; width:83px;vertical-align:top;text-align:start;padding-left:5px;padding-top:5px;">Расценка</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td style="height:42px; width:83px;vertical-align:top;text-align:start;padding-left:5px;padding-top:5px;">Премия, %</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td style="height:47px"></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td style="height:40px; width:83px;vertical-align:top;text-align:start;padding-left:5px;padding-top:5px;">
+                    <p style="margin-top: -1px; margin-bottom: -10px; padding-top: 5px; padding-bottom: 5px;">Принято</p>
+                    <p style="margin-top: 1px; margin-bottom: 1px; padding-top: 5px; padding-bottom: 5px;">годных</p>
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td style="height:46px;width:83px;vertical-align:top;text-align:start;padding-left:5px;padding-top:5px;">Брак</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td style="height:47px; width:83px;vertical-align:top;text-align:start;padding-left:5px;padding-top:5px;">Утеря</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td style="height:171px;width:83px;vertical-align:top;text-align:start;padding-left:5px;padding-top:5px;">
+                    <p style="margin-top: -1px; margin-bottom: -10px; padding-top: 5px; padding-bottom: 5px;">Подпись</p>
+                    <p style="margin-top: 1px; margin-bottom: 1px; padding-top: 5px; padding-bottom: 5px;">БТК</p>
+                </td>
+                <td></td>
+            </tr>
+        </table>
+    </div>
+</div>
+<!--<a class="btn btn-success btn" href="javascript:window.print()">Распечатать наряд</a>-->

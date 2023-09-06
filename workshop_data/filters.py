@@ -5,6 +5,7 @@ from django import forms
 from django_filters import FilterSet
 from django_filters.widgets import RangeWidget
 
+from sign.models import User
 from workshop_data.models import Bonus, Order
 from workshop_data.models.product import Product
 from workshop_data.models.detail import Detail
@@ -45,7 +46,7 @@ class WorkshopPlanFilter(FilterSet):
         widget=autocomplete.Select2(url='data_autocomplete_product')
     )
     detail = django_filters.ModelChoiceFilter(
-        queryset=Detail.objects.all(),
+        queryset=Detail.objects.all().select_related('prefix', ),
         widget=autocomplete.Select2(url='data_autocomplete_detail')
     )
     month = django_filters.MultipleChoiceFilter(
@@ -90,11 +91,46 @@ class BonusFilter(FilterSet):
 class OrdersFilter(FilterSet):
     """Фильтр поиска наряда по дате"""
     date = django_filters.DateFilter(
-        'date', label=('Дата'),
-        widget=forms.DateInput()
+        field_name='date',
+        label=('Дата'),
+        input_formats=["%d.%m.%Y"],
+        lookup_expr='contains',
+        widget= forms.DateInput(attrs={'class': 'form-control'}),
     )
 
     class Meta:
         model = Order
-        fields = ['date']
+        fields = ('date', )
+
+
+class WorkersFilter(FilterSet):
+    """Фильтр поиска Детали"""
+    surname = django_filters.ModelChoiceFilter(
+        queryset=User.objects.all(),
+        widget=autocomplete.Select2(url='data_autocomplete_worker')
+    )
+
+    class Meta:
+        model = User
+        fields = ['surname']
+
+
+class RecordJobFilter(FilterSet):
+    """Фильтр поиска записи выполненных работ на участке СПУ"""
+    product = django_filters.ModelChoiceFilter(
+        queryset=Product.objects.all(),
+        widget=autocomplete.Select2(url='data_autocomplete_product')
+    )
+    detail = django_filters.ModelChoiceFilter(
+        queryset=Detail.objects.all().select_related('prefix', ),
+        widget=autocomplete.Select2(url='data_autocomplete_detail')
+    )
+    month = django_filters.MultipleChoiceFilter(
+        choices=Month.choices,
+        widget=forms.CheckboxSelectMultiple()
+    )
+    user = django_filters.MultipleChoiceFilter(
+        choices=User.objects.all(),
+        widget=autocomplete.Select2(url='data_autocomplete_worker')
+    )
 

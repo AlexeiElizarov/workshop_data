@@ -7,7 +7,6 @@ from sign.models import User
 
 
 class WorkshopPlan(models.Model):
-    # FIXME
     """Класс описывает Детали входящие в План цеха"""
     product = models.ForeignKey("workshop_data.Product",
                                 on_delete=models.PROTECT,
@@ -17,18 +16,18 @@ class WorkshopPlan(models.Model):
                                verbose_name="Деталь",
                                blank=True,
                                null=True)
-    # node = models.ForeignKey("workshop_data.Node",
-    #                          on_delete=models.PROTECT,
-    #                          verbose_name="Узел",
-    #                          blank=True,
-    #                          null=True)
     quantity_state_order = models.PositiveSmallIntegerField(default=0, verbose_name='Госзаказ')
     quantity_commercial_order = models.PositiveSmallIntegerField(default=0, verbose_name='Коммерция')
     in_work = models.PositiveSmallIntegerField(default=0, verbose_name='Количество в работе')
-    month = models.PositiveSmallIntegerField(choices=Month.choices, default=Month.NOT_SPECIFIED, verbose_name='Месяц')
+    month = models.PositiveSmallIntegerField(choices=Month.choices,
+                                             default=Month.NOT_SPECIFIED,
+                                             verbose_name='Месяц')
     sos = models.BooleanField(default=False)
     year = models.PositiveIntegerField(
         default=current_year(), validators=[MinValueValidator(2022), max_value_current_year])
+    comment = models.ForeignKey("workshop_data.Comment",
+                                on_delete=models.PROTECT,
+                                verbose_name='Заметки')
     author = models.ForeignKey(User, on_delete=models.PROTECT, related_name='user_workshopplan')
 
     objects = models.Manager()

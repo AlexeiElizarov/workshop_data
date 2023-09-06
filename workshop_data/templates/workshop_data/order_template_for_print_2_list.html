@@ -1,0 +1,1251 @@
+{% load static %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+<!--<link rel="stylesheet" href="{% static 'css/order_template_for_print.css' %}" type="text/css">-->
+<style type="text/css">
+
+
+
+@page {
+  size: A4;
+  size: landscape;
+  margin: 0;
+}
+
+@media print {
+    html, body {
+        width: 297mm;
+        height: 210mm;
+        height: 98%;
+    }
+}
+#form {
+    margin-left: 271mm;
+    margin-bottom: -3mm;
+
+}
+.main-wrapper {
+    width: 100%;
+    height: 201.5mm;
+    display: flex;
+	page-break-after: always;
+	zoom: 98%;
+}
+.left-wrapper {
+    width: 246mm;
+    height: 201.5mm;
+    border: 1px solid black;
+}
+
+.head-wrapper {
+    width: 246.1mm;
+    height: 16mm;
+    display: flex;
+    border-bottom: 1px solid black;
+}
+
+.ooo {
+    width: 44.5mm;
+    height: 16mm;
+    border-right: 1px solid black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.order {
+    width: 122.5mm;
+    border-right: 1px solid black;
+
+    font-weight: bold;
+}
+
+.order-text {
+    font-size: 24px;
+    padding-right: 59px;
+}
+
+.head-wrapper-right {
+    display: flex;
+}
+
+.head-wrapper-right-1 {
+    width: 28mm;
+    border-right: 1px solid black;
+}
+
+.head-wrapper-right-1-top {
+    height: 7mm;
+    border-bottom: 1px solid black;
+}
+
+.head-wrapper-right-1-bottom,
+.head-wrapper-right-2-bottom,
+.head-wrapper-right-3-bottom {
+    height: 9mm;
+}
+
+.head-wrapper-right-2 {
+    width: 25mm;
+    border-right: 1px solid black;
+}
+
+.head-wrapper-right-2-top {
+    height: 7mm;
+    border-bottom: 1px solid black;
+}
+
+.head-wrapper-right-3 {
+    width: 25mm;
+}
+
+.head-wrapper-right-3-top {
+    height: 7mm;
+    border-bottom: 1px solid black;
+}
+
+.worker-wrapper {
+    width: 246.1mm;
+    height: 23mm;
+    display: flex;
+    border-bottom: 1px solid black;
+}
+
+.name-wrapper {
+    width: 93mm;
+    border-right: 1px solid black;
+}
+
+.worker-head {
+    height: 10.5mm;
+    width: 100%;
+    border-bottom: 1px solid black;
+}
+
+.worker-data {
+    height: 12.5mm;
+}
+
+.order-number {
+    width: 26.5mm;
+    border-right: 1px solid black;
+}
+
+.category {
+    width: 27mm;
+    border-right: 1px solid black;
+}
+
+.profession {
+    width: 21.2mm;
+    border-right: 1px solid black;
+}
+
+.rank {
+    width: 24mm;
+    border-right: 1px solid black;
+}
+
+.view {
+    width: 17mm;
+    border-right: 1px solid black;
+}
+
+.order-state {
+    width: 37.5mm;
+}
+
+.flex {
+    display: flex;
+    flex-direction: column;
+}
+
+.work-wrapper {
+    display: flex;
+    border-bottom: 1px solid black;
+}
+
+.work {
+    height:20mm;
+    width: 93.9mm;
+    border-right: 1px solid black;
+}
+
+.work-data {
+    width: 156mm;
+}
+
+.out-in-work {
+    height:7mm;
+
+    border-bottom: 1px solid black;
+}
+
+.product-wrapper {
+    height:25mm;
+    width: 35mm;
+    border-right: 1px solid black;
+}
+
+.product {
+    height:9.5mm;
+    width: 36mm;
+    border-bottom: 1px solid black;
+}
+
+.product-data {
+    height:15mm;
+}
+
+.detail-wrapper {
+    height:25mm;
+    width: 54mm;
+    border-right: 1px solid black;
+}
+
+.detail {
+    height:9.5mm;
+    border-bottom: 1px solid black;
+}
+
+.detail-data {
+    height:15mm;
+}
+
+.operation-wrapper {
+    height:25mm;
+    width: 95mm;
+    border-right: 1px solid black;
+}
+
+.operation {
+    height:9.5mm;
+    border-bottom: 1px solid black;
+}
+
+.operation-data {
+    height:15mm;
+}
+
+.quantity-wrapper {
+    height:25mm;
+    width: 25mm;
+    border-right: 1px solid black;
+}
+
+.quantity {
+    height:9.5mm;
+    border-bottom: 1px solid black;
+}
+
+.quantity-data {
+    height:15mm;
+}
+
+.sign-wrapper {
+    width: 38.5mm;
+}
+
+.sign {
+    height:9.5mm;
+    border-bottom: 1px solid black;
+}
+
+.sign-data {
+    height:15mm;
+}
+
+.norma {
+    height: 7.3mm;
+    width: 84.8mm;
+    border-right: 1px solid black;
+    padding-left: 44mm;
+    display: flex;
+    align-items: center;
+}
+
+.doplata {
+    width: 85.2mm;
+    display: flex;
+    align-items: center;
+	border-right: 1px solid black;
+}
+
+.code-wrapper {
+    height: 11.5mm;
+    width: 22mm;
+    border-right: 1px solid black;
+}
+
+.work-rank {
+    width: 22mm;
+    border-right: 1px solid black;
+}
+
+.norm-time {
+    width: 30mm;
+    border-right: 1px solid black;
+}
+
+.price {
+    width: 56.6mm;
+    border-right: 1px solid black;
+}
+
+.conditions {
+    width: 29mm;
+    border-right: 1px solid black;
+}
+
+.ton {
+    width: 29mm;
+    border-right: 1px solid black;
+}
+
+.inten {
+    width: 28mm;
+    border-right: 1px solid black;
+}
+
+.prize {
+    width: 33mm;
+	border-top: 0px solid black;
+	padding-bottom: 7mm;
+}
+
+.bottom-wrapper {
+
+    padding-left: 1px;
+    padding-right: 1px;
+    padding-top: 1px;
+    padding-bottom: 1px;
+    height: 151px;
+}
+
+.bottom-1 {
+    display: flex;
+    display: flex;
+    flex-direction: row;
+    padding-left: 1px;
+    padding-right: 1px;
+    padding-top: 1px;
+    padding-bottom: 1px;
+}
+
+.bottom-1-1 {
+    display: flex;
+    flex-direction: row;
+    padding-left: 10px;
+    padding-right: 1px;
+    padding-top: 31px;
+    padding-bottom: 1px;
+    font-size: 18px;
+}
+
+.bottom-1-1-1 {
+    padding-left: 00px;
+    padding-right: 0px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+.bottom-1-1-2 {
+    padding-left: 5px;
+    padding-right: 0px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+.bottom-1-1-3 {
+    padding-left: 20px;
+    padding-right: 0px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+.bottom-1-2 {
+    display: flex;
+    flex-direction: row;
+    padding-left: 101px;
+    padding-right: 1px;
+    padding-top: 33px;
+    padding-bottom: 1px;
+    font-size: 18px;
+}
+
+.bottom-1-2-1 {
+    padding-left: 5px;
+    padding-right: 0px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+.bottom-1-2-2 {
+    padding-left: 22px;
+    padding-right: 0px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+.bottom-2 {
+    display: flex;
+    flex-direction: row;
+    padding-left: 7px;
+    padding-right: 1px;
+    padding-top: 14px;
+    padding-bottom: 1px;
+}
+
+.bottom-2-1 {
+    font-size: 18px;
+    padding-left: 1px;
+    padding-right: 1px;
+    padding-top: 1px;
+    padding-bottom: 1px;
+}
+
+.bottom-2-2 {
+    padding-left: 12px;
+    padding-right: 1px;
+    padding-top: 1px;
+    padding-bottom: 1px;
+}
+
+.bottom-2-3 {
+    padding-left: 75px;
+    padding-right: 1px;
+    padding-top: 1px;
+    padding-bottom: 1px;
+}
+
+.line-1:after{
+    content: "подпись, дата";
+    font-size: .7em;
+    text-align: center;
+    display: block;
+}
+
+.line-2:after{
+    content: "инициалы, фамилия";
+    font-size: .7em;
+    text-align: center;
+    display: block;
+}
+
+
+
+.center-wrapper {
+    width: 4mm;
+    height: 201.4mm;
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+    border-right: 1px solid black;
+}
+
+.right-wrapper {
+    width: 45mm;
+    height: 201.4mm;
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+    border-right: 1px solid black;
+}
+
+.text-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.text-16 {
+	font-size: 14px;
+}
+
+.i-n {
+	font-weight: bold;
+	font-style: oblique;
+}
+
+
+</style>
+<script type="text/javascript">
+
+</script>
+</head>
+<body>
+<div id="form" class="text-16">
+    <p>Ф.7443</p>
+</div>
+<div class="main-wrapper">
+    <div class="left-wrapper">
+        <div class="head-wrapper">
+            <div class="ooo text-center">
+                ООО &laquo;СЭПО-ЗЭМ&raquo;
+            </div>
+            <div class="order text-center">
+                <p class="order-text">Сдельный наряд №</p>
+            </div>
+            <div class="head-wrapper-right">
+                <div class="head-wrapper-right-1">
+                    <div class="head-wrapper-right-1-top text-center text-16">Дата</div>
+                    <div class="head-wrapper-right-1-bottom text-center">
+                        <strong><i>{{ order.date|date:"d.m.y"}}</i></strong>
+                    </div>
+                </div>
+                <div class="head-wrapper-right-2">
+                    <div class="head-wrapper-right-2-top text-center text-16">Цех</div>
+                    <div class="head-wrapper-right-2-bottom text-center">
+                        <strong><i>464</i></strong>
+                    </div>
+                </div>
+                <div class="head-wrapper-right-3">
+                    <div class="head-wrapper-right-3-top text-center text-16">Участок</div>
+                    <div class="head-wrapper-right-3-bottom text-center">
+                        <strong><i>{{ order.user.region }}</i></strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="worker-wrapper">
+            <div class="name-wrapper">
+                <div class="worker-head text-center text-16">Фамилия, инициалы</div>
+                <div class="worker-data text-center">
+                    <strong><i>{{ order.user.get_full_name }}</i></strong>
+                </div>
+            </div>
+            <div class="order-number">
+                <div class="worker-head flex text-center text-16">
+					<p style="margin: 0;">Табельный</p>
+                    <p style="margin: 0;">№</</p>
+				</div>
+                <div class="worker-data text-center">
+                    <strong><i>{{ order.user.employee_number }}</i></strong>
+                </div>
+            </div>
+            <div class="category">
+                <div class="worker-head  text-16" style="padding-left: 20px;">Категория</div>
+                <div class="worker-data text-center">
+                    <strong><i>1</i></strong>
+                </div>
+            </div>
+            <div class="profession">
+                <div class="worker-head text-center flex text-16">
+                    <p style="margin: 0;">Код</p>
+                    <p style="margin: 0;">профессии</p>
+                </div>
+                <div class="worker-data text-center">
+                    <strong><i>{{ order.user.position }}</i></strong>
+                </div>
+            </div>
+            <div class="rank">
+                <div class="worker-head text-center flex ">
+                    <p style="margin: 0;">Разряд</p>
+                    <p style="margin: 0;">рабочего</p>
+                </div>
+                <div class="worker-data text-center ">
+                    <strong><i>{{ order.user.employee_rank }}</i></strong>
+                </div>
+            </div>
+            <div class="view">
+                <div class="worker-head text-center flex text-16">
+                    <p style="margin: 0;">Вид</p>
+                    <p style="margin: 0;">оплаты</p>
+                </div>
+                <div class="worker-data text-center text-16"><strong><i>01</i></strong></div>
+            </div>
+            <div class="order-state">
+                <div class="worker-head text-center text-16">Заказ</div>
+                <div class="worker-data text-center i-n">
+					{{ order.product.order_number_commercial }}
+                </div>
+            </div>
+        </div>
+        <div class="work-wrapper">
+            <div class="work text-center text-16">Содержание работы</div>
+            <div class="work-data text-center">
+                <strong><i>{{ order.stage.get_name_display }}, {% if order.stage.devation_card %}к/о {{ order.stage.devation_card }} {% endif %}</i></strong>
+            </div>
+        </div>
+        <div class="out-in-work text-center text-16">
+            Выдано в работу
+        </div>
+
+        <div style="display:flex;border-bottom: 1px solid black;">
+            <div class="product-wrapper">
+                <div class="product text-center flex text-16">
+                    <p style="margin: 0;">Наименование</p>
+                    <p style="margin: 0;">изделия</p>
+                </div>
+                <div class="product-data text-center flex">
+                    <strong><i>{{ order.product }}</i></strong>
+                </div>
+            </div>
+            <div class="detail-wrapper">
+                <div class="detail text-center flex text-16">
+                    <p style="margin: 0;">Обозначение детали,</p>
+                    <p style="margin: 0;">сборочной еденицы</p>
+                </div>
+                <div class="detail-data text-center flex">
+                    <strong><i>
+					{% if order.detail.prefix != None %}
+						{{ order.detail.prefix }}.
+					{% endif %}
+					{{ order.detail }}</i></strong>
+                </div>
+            </div>
+            <div class="operation-wrapper">
+                <div class="operation text-center flex text-16">
+                    № операции
+                </div>
+                <div class="operation-data text-center flex">
+                    {% if order.operations %}
+						{% if order.operations|length < 48 %}
+							<strong><i>{{ order.operations|slice:":48" }}</i></strong>
+						{% else %}
+							<p style="margin:0px;"><strong><i>{{ order.operations|slice:":48" }}</i></strong></p>
+							<p style="margin:0px;"><strong><i>{{ order.operations|slice:"48:" }}</i></strong></p>
+						{% endif %}
+                    {% elif order.stage %}
+						{% if order.stage.get_operations|length < 48 %}
+							<strong><i>{{ order.stage.get_operations|slice:":48" }}</i></strong>
+						{% else %}
+							<p style="margin:0px;"><strong><i>{{ order.stage.get_operations|slice:":48" }}</i></strong></p>
+							<p style="margin:0px;"><strong><i>{{ order.stage.get_operations|slice:"48:" }}</i></strong></p>
+						{% endif %}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="quantity-wrapper">
+                <div class="quantity text-center flex text-16">
+                    <p style="margin: 0;">Колличество,</p>
+                    <p style="margin: 0;">штук</p>
+                </div>
+                <div class="quantity-data text-center flex">
+                    {% if order.quantity == 0 %}
+
+                    {% elif order.quantity > 0 %}
+                        <strong><i></i></strong>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="sign-wrapper">
+                <div class="sign text-center flex text-16">
+                    Подпись мастера
+                </div>
+                <div class="sign-data">
+
+                </div>
+            </div>
+        </div>
+        <div style="display:flex;">
+            <div class="norma text-16">Норма труда</div>
+            <div class="doplata text-center text-16">Доплаты, %</div>
+        </div>
+
+        <div style="display:flex;border-bottom: 1px solid black;">
+            <div style="display:flex;">
+                <div class="code-wrapper text-center flex text-16" style="border-top: 1px solid black;">
+                    <p style="margin: 0;">Код ед.</p>
+                    <p style="margin: 0;">изм.</p>
+                </div>
+            </div>
+            <div style="display:flex;">
+                <div class="work-rank text-center flex text-16" style="border-top: 1px solid black;">
+                    <p style="margin: 0;">Разряд</p>
+                    <p style="margin: 0;">работы</p>
+                </div>
+            </div>
+            <div style="display:flex;">
+                <div class="norm-time text-center flex text-16" style="border-top: 1px solid black;">
+                    <p style="margin: 0;">Нормированное</p>
+                    <p style="margin: 0;">время</p>
+                </div>
+            </div>
+            <div class="price text-center flex text-16" style="border-top: 1px solid black;">
+                    Расценка
+            </div>
+            <div style="display:flex;">
+                <div class="conditions text-center flex text-16" style="border-top: 1px solid black;">
+                    <p style="margin: 0;">за условия</p>
+                    <p style="margin: 0;">труда</p>
+                </div>
+            </div>
+            <div class="ton text-center flex text-16" style="border-top: 1px solid black;">
+                    за ТОН
+            </div>
+            <div style="display:flex;">
+                <div class="inten text-center flex text-16" style="border-top: 1px solid black;">
+                    <p style="margin: 0;">за</p>
+                    <p style="margin: 0;">интенсивность</p>
+                </div>
+            </div>
+            <div class="prize text-center flex text-16">
+                    Премия, %
+            </div>
+        </div>
+        <div style="display:flex;border-bottom: 1px solid black;">
+            <div style="height:16mm;width:22mm;border-right: 1px solid black;">
+                <strong><i></i></strong>
+            </div>
+            <div style="width:22mm;border-right: 1px solid black;">
+                <p class="text-center flex">
+                    <strong><i>{{ order.stage.class_work }}</i></strong>
+                </p>
+            </div>
+            <div style="width:30mm;border-right: 1px solid black;">
+                <p class="text-center flex">
+                    {% if order.normalized_time %}
+                    <strong><i>{{ order.normalized_time|floatformat:2 }}</i></strong>
+                    {% elif order.stage %}
+                    <strong><i>{{ order.stage.normalized_time|floatformat:2 }}</i></strong>
+                    {% endif %}
+                </p>
+            </div>
+            <div style="width:54mm;border-right: 1px solid black;">
+                <p class="text-center flex">
+                    {% if order.price %}
+                    <strong><i>{{ order.price|floatformat:2 }}</i></strong>
+                    {% elif order.stage %}
+                    <strong><i>{{ order.stage.price|floatformat:2 }}</i></strong>
+                    {% endif %}
+                </p>
+            </div>
+            <div style="width:28.9mm;border-right: 1px solid black;"></div>
+            <div style="width:27.8mm;border-right: 1px solid black;"></div>
+            <div style="width:10mm;"></div>
+        </div>
+        <div class="text-center " style="height:9mm;border-bottom: 1px solid black;">Приемка БТК</div>
+        <div style="display:flex;border-bottom: 1px solid black;">
+            <div style="height:10mm;width:29mm;border-right: 1px solid black;">
+                <div class="text-center flex text-16">
+                    <p style="margin: 0;">Принято</p>
+                    <p style="margin: 0;">годных, штук</p>
+                </div>
+            </div>
+            <div class="text-center text-16" style="width:55mm;border-right: 1px solid black;">
+                Прописью
+            </div>
+            <div class="text-center text-16" style="width:27mm;border-right: 1px solid black;">
+                Брак
+            </div>
+            <div class="text-center text-16" style="width:31mm;border-right: 1px solid black;">
+                оплачиваемый
+            </div>
+            <div class="text-center text-16" style="width:18mm;border-right: 1px solid black;">
+                % оплаты
+            </div>
+            <div class="text-center text-16" style="width:31mm;border-right: 1px solid black;">
+                неоплачиваемый
+            </div>
+            <div style="width:24mm;border-right: 1px solid black;">
+                <div class="text-center flex text-16">
+                    <p style="margin: 0;">№ акта</p>
+                    <p style="margin: 0;">на брак</p>
+                </div>
+            </div>
+            <div style="">
+                <div class="text-center flex text-16" style="width:29mm;">
+                    <p style="margin: 0;">Подпись и</p>
+                    <p style="margin: 0;">клеймо БТК</p>
+                </div>
+            </div>
+        </div>
+        <div style="display:flex;border-bottom: 1px solid black;">
+            <div style="height:13mm;width:29mm;border-right: 1px solid black;"></div>
+            <div style="width:55mm;border-right: 1px solid black;"></div>
+            <div style="width:27mm;border-right: 1px solid black;"></div>
+            <div style="width:31mm;border-right: 1px solid black;"></div>
+            <div style="width:18mm;border-right: 1px solid black;"></div>
+            <div style="width:31mm;border-right: 1px solid black;"></div>
+            <div style="width:23.9mm;border-right: 1px solid black;"></div>
+        </div>
+        <div class="bottom-wrapper">
+            <div class="bottom-1">
+                <div class="bottom-1-1">
+                    <div class="bottom-1-1-1">Мастер</div>
+                    <div class="line-1 bottom-1-1-2">________________  </div>
+                    <div class="line-2 bottom-1-1-3">__________________</div>
+                </div>
+                <div class="bottom-1-2">
+                    <div>Начальник БТЗ</div>
+                    <div class="line-1 bottom-1-2-1"> _______________</div>
+                    <div class="line-2 bottom-1-2-2"> ________________</div>
+                </div>
+            </div>
+            <div class="bottom-2">
+                <div class="bottom-2-1">Инженер по подготовке производства</div>
+                <div class="line-1 bottom-2-2">_________________</div>
+                <div class="line-2 bottom-2-3">__________________</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="center-wrapper">
+    </div>
+
+    <div class="right-wrapper">
+         <div class="text-center flex" style="height:26mm;width:45mm;border-bottom: 1px solid black;font-size: 20px;">
+            <p style="margin: 0;">ТАЛОН</p>
+            <p style="margin: 0;">к сдельному</p>
+            <p style="margin: 0;">наряду №____</p>
+        </div>
+        <div style="display:flex;">
+            <div class="text-center text-16" style="height:7mm;width:23mm;border-right: 1px solid black;border-bottom: 1px solid black;display:flex;">
+                Дата
+            </div>
+            <div class="text-center text-16" style="width:22mm;border-bottom: 1px solid black;display:flex;">
+                Цех
+            </div>
+        </div>
+        <div style="height:7mm;width:45mm;border-bottom: 1px solid black;"></div>
+        <div class="text-center text-16" style="height:9.5mm;width:45mm;border-bottom: 1px solid black;">
+            Фамилия, инициалы
+        </div>
+        <div style="height:10.5mm;width:45mm;border-bottom: 1px solid black;"></div>
+        <div style="height:7.5mm;width:45mm;border-bottom: 1px solid black;"></div>
+        <div style="display:flex;height:10mm;width:45mm;border-bottom: 1px solid black;">
+            <div class="text-center flex text-16" style="height:10mm;width:25mm;border-right: 1px solid black;">
+                <p style="margin: 0;">Обозначение</p>
+                <p style="margin: 0;">детали</p>
+            </div>
+            <div style="width:22mm;"></div>
+        </div>
+        <div style="display:flex;width:45mm;border-bottom: 1px solid black;">
+            <div class="text-center flex text-16" style="height:10.8mm;width:25mm;border-right: 1px solid black;">
+                № операции
+            </div>
+            <div style="width:22mm;"></div>
+        </div>
+        <div style="display:flex;width:45mm;border-bottom: 1px solid black;">
+            <div class="flex text-16" style="height:10.5mm;width:25mm;border-right: 1px solid black;">
+                <p style="margin-top: 4px;margin-left: 6px; ">Расценка</p>
+            </div>
+            <div style="width:22mm;"></div>
+        </div>
+        <div style="display:flex;width:45mm;border-bottom: 1px solid black;">
+            <div class="flex text-16" style="height:10.5mm;width:25mm;border-right: 1px solid black;">
+                <p style="margin-top: 4px;margin-left: 6px;">Премия, %</p>
+            </div>
+            <div style="width:22mm;"></div>
+        </div>
+        <div style="height:11.5mm;width:45mm;border-bottom: 1px solid black;"></div>
+        <div style="display:flex;width:45mm;border-bottom: 1px solid black;">
+            <div class="flex text-16" style="height:11mm;width:25mm;border-right: 1px solid black;">
+                <p style="margin: 0;margin-top: 2px;margin-left: 6px;">Принято</p>
+                <p style="margin: 0;margin-left: 6px;">годных</p>
+            </div>
+            <div style="width:22mm;"></div>
+        </div>
+        <div style="display:flex;width:45mm;border-bottom: 1px solid black;">
+            <div class="flex text-16" style="height:11mm;width:25mm;border-right: 1px solid black;">
+                <p style="margin-top: 4px;margin-left: 6px;">Брак</p>
+            </div>
+            <div style="width:22mm;"></div>
+        </div>
+        <div style="display:flex;width:45mm;border-bottom: 1px solid black;">
+            <div class="flex text-16" style="height:11.7mm;width:25mm;border-right: 1px solid black;">
+                <p style="margin-top: 4px;margin-left: 6px;">Утеря</p>
+            </div>
+            <div style="width:22mm;"></div>
+        </div>
+        <div style="display:flex;width:45mm;">
+            <div class="flex text-16" style="height:43.5mm;width:25mm;border-right: 1px solid black;">
+                <p style="margin: 0;margin-top: 13px;margin-left: 6px;">Подпись</p>
+                <p style="margin: 0;margin-left: 6px;">БТК</p>
+            </div>
+            <div style="width:22mm;"></div>
+        </div>
+    </div>
+</div>
+
+<div id="form" class="text-16">
+    <p>Ф.7443</p>
+</div>
+<div class="main-wrapper">
+    <div class="left-wrapper">
+        <div class="head-wrapper">
+            <div class="ooo text-center">
+                ООО &laquo;СЭПО-ЗЭМ&raquo;
+            </div>
+            <div class="order text-center">
+                <p class="order-text">Сдельный наряд №</p>
+            </div>
+            <div class="head-wrapper-right">
+                <div class="head-wrapper-right-1">
+                    <div class="head-wrapper-right-1-top text-center text-16">Дата</div>
+                    <div class="head-wrapper-right-1-bottom text-center">
+                        <strong><i>{{ order.date|date:"d.m.y"}}</i></strong>
+                    </div>
+                </div>
+                <div class="head-wrapper-right-2">
+                    <div class="head-wrapper-right-2-top text-center text-16">Цех</div>
+                    <div class="head-wrapper-right-2-bottom text-center">
+                        <strong><i>464</i></strong>
+                    </div>
+                </div>
+                <div class="head-wrapper-right-3">
+                    <div class="head-wrapper-right-3-top text-center text-16">Участок</div>
+                    <div class="head-wrapper-right-3-bottom text-center">
+                        <strong><i>{{ order.user.region }}</i></strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="worker-wrapper">
+            <div class="name-wrapper">
+                <div class="worker-head text-center text-16">Фамилия, инициалы</div>
+                <div class="worker-data text-center">
+                    <strong><i>{{ order.user.get_full_name }}</i></strong>
+                </div>
+            </div>
+            <div class="order-number">
+                <div class="worker-head flex text-center text-16">
+					<p style="margin: 0;">Табельный</p>
+                    <p style="margin: 0;">№</</p>
+				</div>
+                <div class="worker-data text-center">
+                    <strong><i>{{ order.user.employee_number }}</i></strong>
+                </div>
+            </div>
+            <div class="category">
+                <div class="worker-head  text-16" style="padding-left: 20px;">Категория</div>
+                <div class="worker-data text-center">
+                    <strong><i>1</i></strong>
+                </div>
+            </div>
+            <div class="profession">
+                <div class="worker-head text-center flex text-16">
+                    <p style="margin: 0;">Код</p>
+                    <p style="margin: 0;">профессии</p>
+                </div>
+                <div class="worker-data text-center">
+                    <strong><i>{{ order.user.position }}</i></strong>
+                </div>
+            </div>
+            <div class="rank">
+                <div class="worker-head text-center flex ">
+                    <p style="margin: 0;">Разряд</p>
+                    <p style="margin: 0;">рабочего</p>
+                </div>
+                <div class="worker-data text-center ">
+                    <strong><i>{{ order.user.employee_rank }}</i></strong>
+                </div>
+            </div>
+            <div class="view">
+                <div class="worker-head text-center flex text-16">
+                    <p style="margin: 0;">Вид</p>
+                    <p style="margin: 0;">оплаты</p>
+                </div>
+                <div class="worker-data text-center text-16"><strong><i>01</i></strong></div>
+            </div>
+            <div class="order-state">
+                <div class="worker-head text-center text-16">Заказ</div>
+                <div class="worker-data text-center i-n">
+					{{ order.product.order_number_state }}
+                </div>
+            </div>
+        </div>
+        <div class="work-wrapper">
+            <div class="work text-center text-16">Содержание работы</div>
+            <div class="work-data text-center">
+                <strong><i>{{ order.stage.get_name_display }},   {% if order.stage.devation_card %}к/о {{ order.stage.devation_card }} {% endif %}</i></strong>
+            </div>
+        </div>
+        <div class="out-in-work text-center text-16">
+            Выдано в работу
+        </div>
+
+        <div style="display:flex;border-bottom: 1px solid black;">
+            <div class="product-wrapper">
+                <div class="product text-center flex text-16">
+                    <p style="margin: 0;">Наименование</p>
+                    <p style="margin: 0;">изделия</p>
+                </div>
+                <div class="product-data text-center flex">
+                    <strong><i>{{ order.product }}</i></strong>
+                </div>
+            </div>
+            <div class="detail-wrapper">
+                <div class="detail text-center flex text-16">
+                    <p style="margin: 0;">Обозначение детали,</p>
+                    <p style="margin: 0;">сборочной еденицы</p>
+                </div>
+                <div class="detail-data text-center flex">
+                    <strong><i>
+					{% if order.detail.prefix != None %}
+						{{ order.detail.prefix }}.
+					{% endif %}
+					{{ order.detail }}</i></strong>
+                </div>
+            </div>
+            <div class="operation-wrapper">
+                <div class="operation text-center flex text-16">
+                    № операции
+                </div>
+                <div class="operation-data text-center flex">
+                    {% if order.operations %}
+						{% if order.operations|length < 48 %}
+							<strong><i>{{ order.operations|slice:":48" }}</i></strong>
+						{% else %}
+							<p style="margin:0px;"><strong><i>{{ order.operations|slice:":48" }}</i></strong></p>
+							<p style="margin:0px;"><strong><i>{{ order.operations|slice:"48:" }}</i></strong></p>
+						{% endif %}
+                    {% elif order.stage %}
+						{% if order.stage.get_operations|length < 48 %}
+							<strong><i>{{ order.stage.get_operations|slice:":48" }}</i></strong>
+						{% else %}
+							<p style="margin:0px;"><strong><i>{{ order.stage.get_operations|slice:":48" }}</i></strong></p>
+							<p style="margin:0px;"><strong><i>{{ order.stage.get_operations|slice:"48:" }}</i></strong></p>
+						{% endif %}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="quantity-wrapper">
+                <div class="quantity text-center flex text-16">
+                    <p style="margin: 0;">Колличество,</p>
+                    <p style="margin: 0;">штук</p>
+                </div>
+                <div class="quantity-data text-center flex">
+                    {% if order.quantity == 0 %}
+
+                    {% elif order.quantity > 0 %}
+                        <strong><i>{{ order.quantity }}</i></strong>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="sign-wrapper">
+                <div class="sign text-center flex text-16">
+                    Подпись мастера
+                </div>
+                <div class="sign-data">
+
+                </div>
+            </div>
+        </div>
+        <div style="display:flex;">
+            <div class="norma text-16">Норма труда</div>
+            <div class="doplata text-center text-16">Доплаты, %</div>
+        </div>
+
+        <div style="display:flex;border-bottom: 1px solid black;">
+            <div style="display:flex;">
+                <div class="code-wrapper text-center flex text-16" style="border-top: 1px solid black;">
+                    <p style="margin: 0;">Код ед.</p>
+                    <p style="margin: 0;">изм.</p>
+                </div>
+            </div>
+            <div style="display:flex;">
+                <div class="work-rank text-center flex text-16" style="border-top: 1px solid black;">
+                    <p style="margin: 0;">Разряд</p>
+                    <p style="margin: 0;">работы</p>
+                </div>
+            </div>
+            <div style="display:flex;">
+                <div class="norm-time text-center flex text-16" style="border-top: 1px solid black;">
+                    <p style="margin: 0;">Нормированное</p>
+                    <p style="margin: 0;">время</p>
+                </div>
+            </div>
+            <div class="price text-center flex text-16" style="border-top: 1px solid black;">
+                    Расценка
+            </div>
+            <div style="display:flex;">
+                <div class="conditions text-center flex text-16" style="border-top: 1px solid black;">
+                    <p style="margin: 0;">за условия</p>
+                    <p style="margin: 0;">труда</p>
+                </div>
+            </div>
+            <div class="ton text-center flex text-16" style="border-top: 1px solid black;">
+                    за ТОН
+            </div>
+            <div style="display:flex;">
+                <div class="inten text-center flex text-16" style="border-top: 1px solid black;">
+                    <p style="margin: 0;">за</p>
+                    <p style="margin: 0;">интенсивность</p>
+                </div>
+            </div>
+            <div class="prize text-center flex text-16">
+                    Премия, %
+            </div>
+        </div>
+        <div style="display:flex;border-bottom: 1px solid black;">
+            <div style="height:16mm;width:22mm;border-right: 1px solid black;">
+                <strong><i></i></strong>
+            </div>
+            <div style="width:22mm;border-right: 1px solid black;">
+                <p class="text-center flex">
+                    <strong><i>{{ order.stage.class_work }}</i></strong>
+                </p>
+            </div>
+            <div style="width:30mm;border-right: 1px solid black;">
+                <p class="text-center flex">
+                    {% if order.normalized_time %}
+                    <strong><i>{{ order.normalized_time|floatformat:2 }}</i></strong>
+                    {% elif order.stage %}
+                    <strong><i>{{ order.stage.normalized_time|floatformat:2 }}</i></strong>
+                    {% endif %}
+                </p>
+            </div>
+            <div style="width:54mm;border-right: 1px solid black;">
+                <p class="text-center flex">
+                    {% if order.price %}
+                    <strong><i>{{ order.price|floatformat:2 }}</i></strong>
+                    {% elif order.stage %}
+                    <strong><i>{{ order.stage.price|floatformat:2 }}</i></strong>
+                    {% endif %}
+                </p>
+            </div>
+            <div style="width:28.9mm;border-right: 1px solid black;"></div>
+            <div style="width:27.8mm;border-right: 1px solid black;"></div>
+            <div style="width:10mm;"></div>
+        </div>
+        <div class="text-center " style="height:9mm;border-bottom: 1px solid black;">Приемка БТК</div>
+        <div style="display:flex;border-bottom: 1px solid black;">
+            <div style="height:10mm;width:29mm;border-right: 1px solid black;">
+                <div class="text-center flex text-16">
+                    <p style="margin: 0;">Принято</p>
+                    <p style="margin: 0;">годных, штук</p>
+                </div>
+            </div>
+            <div class="text-center text-16" style="width:55mm;border-right: 1px solid black;">
+                Прописью
+            </div>
+            <div class="text-center text-16" style="width:27mm;border-right: 1px solid black;">
+                Брак
+            </div>
+            <div class="text-center text-16" style="width:31mm;border-right: 1px solid black;">
+                оплачиваемый
+            </div>
+            <div class="text-center text-16" style="width:18mm;border-right: 1px solid black;">
+                % оплаты
+            </div>
+            <div class="text-center text-16" style="width:31mm;border-right: 1px solid black;">
+                неоплачиваемый
+            </div>
+            <div style="width:24mm;border-right: 1px solid black;">
+                <div class="text-center flex text-16">
+                    <p style="margin: 0;">№ акта</p>
+                    <p style="margin: 0;">на брак</p>
+                </div>
+            </div>
+            <div style="">
+                <div class="text-center flex text-16" style="width:29mm;">
+                    <p style="margin: 0;">Подпись и</p>
+                    <p style="margin: 0;">клеймо БТК</p>
+                </div>
+            </div>
+        </div>
+        <div style="display:flex;border-bottom: 1px solid black;">
+            <div style="height:13mm;width:29mm;border-right: 1px solid black;"></div>
+            <div style="width:55mm;border-right: 1px solid black;"></div>
+            <div style="width:27mm;border-right: 1px solid black;"></div>
+            <div style="width:31mm;border-right: 1px solid black;"></div>
+            <div style="width:18mm;border-right: 1px solid black;"></div>
+            <div style="width:31mm;border-right: 1px solid black;"></div>
+            <div style="width:23.9mm;border-right: 1px solid black;"></div>
+        </div>
+        <div class="bottom-wrapper">
+            <div class="bottom-1">
+                <div class="bottom-1-1">
+                    <div class="bottom-1-1-1">Мастер</div>
+                    <div class="line-1 bottom-1-1-2">________________  </div>
+                    <div class="line-2 bottom-1-1-3">__________________</div>
+                </div>
+                <div class="bottom-1-2">
+                    <div>Начальник БТЗ</div>
+                    <div class="line-1 bottom-1-2-1"> _______________</div>
+                    <div class="line-2 bottom-1-2-2"> ________________</div>
+                </div>
+            </div>
+            <div class="bottom-2">
+                <div class="bottom-2-1">Инженер по подготовке производства</div>
+                <div class="line-1 bottom-2-2">_________________</div>
+                <div class="line-2 bottom-2-3">__________________</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="center-wrapper">
+    </div>
+
+    <div class="right-wrapper">
+         <div class="text-center flex" style="height:26mm;width:45mm;border-bottom: 1px solid black;font-size: 20px;">
+            <p style="margin: 0;">ТАЛОН</p>
+            <p style="margin: 0;">к сдельному</p>
+            <p style="margin: 0;">наряду №____</p>
+        </div>
+        <div style="display:flex;">
+            <div class="text-center text-16" style="height:7mm;width:23mm;border-right: 1px solid black;border-bottom: 1px solid black;display:flex;">
+                Дата
+            </div>
+            <div class="text-center text-16" style="width:22mm;border-bottom: 1px solid black;display:flex;">
+                Цех
+            </div>
+        </div>
+        <div style="height:7mm;width:45mm;border-bottom: 1px solid black;"></div>
+        <div class="text-center text-16" style="height:9.5mm;width:45mm;border-bottom: 1px solid black;">
+            Фамилия, инициалы
+        </div>
+        <div style="height:10.5mm;width:45mm;border-bottom: 1px solid black;"></div>
+        <div style="height:7.5mm;width:45mm;border-bottom: 1px solid black;"></div>
+        <div style="display:flex;height:10mm;width:45mm;border-bottom: 1px solid black;">
+            <div class="text-center flex text-16" style="height:10mm;width:25mm;border-right: 1px solid black;">
+                <p style="margin: 0;">Обозначение</p>
+                <p style="margin: 0;">детали</p>
+            </div>
+            <div style="width:22mm;"></div>
+        </div>
+        <div style="display:flex;width:45mm;border-bottom: 1px solid black;">
+            <div class="text-center flex text-16" style="height:10.8mm;width:25mm;border-right: 1px solid black;">
+                № операции
+            </div>
+            <div style="width:22mm;"></div>
+        </div>
+        <div style="display:flex;width:45mm;border-bottom: 1px solid black;">
+            <div class="flex text-16" style="height:10.5mm;width:25mm;border-right: 1px solid black;">
+                <p style="margin-top: 4px;margin-left: 6px; ">Расценка</p>
+            </div>
+            <div style="width:22mm;"></div>
+        </div>
+        <div style="display:flex;width:45mm;border-bottom: 1px solid black;">
+            <div class="flex text-16" style="height:10.5mm;width:25mm;border-right: 1px solid black;">
+                <p style="margin-top: 4px;margin-left: 6px;">Премия, %</p>
+            </div>
+            <div style="width:22mm;"></div>
+        </div>
+        <div style="height:11.5mm;width:45mm;border-bottom: 1px solid black;"></div>
+        <div style="display:flex;width:45mm;border-bottom: 1px solid black;">
+            <div class="flex text-16" style="height:11mm;width:25mm;border-right: 1px solid black;">
+                <p style="margin: 0;margin-top: 2px;margin-left: 6px;">Принято</p>
+                <p style="margin: 0;margin-left: 6px;">годных</p>
+            </div>
+            <div style="width:22mm;"></div>
+        </div>
+        <div style="display:flex;width:45mm;border-bottom: 1px solid black;">
+            <div class="flex text-16" style="height:11mm;width:25mm;border-right: 1px solid black;">
+                <p style="margin-top: 4px;margin-left: 6px;">Брак</p>
+            </div>
+            <div style="width:22mm;"></div>
+        </div>
+        <div style="display:flex;width:45mm;border-bottom: 1px solid black;">
+            <div class="flex text-16" style="height:11.7mm;width:25mm;border-right: 1px solid black;">
+                <p style="margin-top: 4px;margin-left: 6px;">Утеря</p>
+            </div>
+            <div style="width:22mm;"></div>
+        </div>
+        <div style="display:flex;width:45mm;">
+            <div class="flex text-16" style="height:43.5mm;width:25mm;border-right: 1px solid black;">
+                <p style="margin: 0;margin-top: 13px;margin-left: 6px;">Подпись</p>
+                <p style="margin: 0;margin-left: 6px;">БТК</p>
+            </div>
+            <div style="width:22mm;"></div>
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>

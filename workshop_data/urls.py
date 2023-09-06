@@ -20,7 +20,8 @@ from workshop_data.views.services_view import (
     CategoryDetailAutocomplete,
     BatchlAutocomplete,
     StageForDetaillAutocomplete,
-    DetaillForProductAutocomplete, )
+    DetaillForProductAutocomplete,
+    WorkerSPUAutocomplete)
 from workshop_data.views.stage_views import (
     StageManufacturingDetailInWorkInPlanView,
     StageManufacturingDetailInWorkView,
@@ -35,7 +36,9 @@ from workshop_data.views.detail_view import (
     DetailCreateView,
     DetailDeleteView,
     AddImageInDetailView,
-    DetailImageView, DetailAddDetailView)
+    DetailImageView,
+    DetailAddDetailView,
+    DetailEditView,)
 from workshop_data.views.product_view import (
     ProductAllView,
     ProductCreateView,
@@ -54,12 +57,18 @@ from workshop_data.views.order_views import (
 )
 from workshop_data.views.master_views import (
     # WorkerOrdersListForMaster,
-    WorkerListView, WorkerAveragePriceListForMaster)
+    WorkerListView,
+    WorkerAveragePriceListForMaster,
+    WorkerSalaryListView)
 from workshop_data.views.batch_views import (
     CreateBatchDetailInPlan,
     AllBatchDetailInPlanView,
     # DeleteBatchDetailInPlanView,
     AllBatchDetailProductInPlan)
+from workshop_data.views.warehouse_view import (
+    WarehouseCreateView,
+    WarehouseUpdateView,
+)
 from workshop_data.views.workshopplan_views import (
     WorkshopPlanUpdateView,
     WorkshopPlanDeleteView,
@@ -73,11 +82,24 @@ from workshop_data.views.category_detail_views import (
 )
 from workshop_data.views.any_view import ShiftTask
 from workshop_data.services.general_services import batch_ready, batch_cancel_ready
+from workshop_data.views.comment_view import CommentUpdateView
+from workshop_data.views.record_job_view import (
+    RecordJobCreateView,
+    RecordJobEditView,
+    AllRecordJobForAllWorker,
+    DiagramWorkSPUView,
+    ParametersDetailForSPUCreateView,
+    ParametersDetailForSPEditeView,
+    parameters_detail_for_spu_create_or_edit_redirect,
+)
+
+
 
 urlpatterns = [
     path('data_autocomplete_product/', ProductAutocomplete.as_view(), name='data_autocomplete_product'),
     path('data_autocomplete_detail/', DetailAutocomplete.as_view(), name='data_autocomplete_detail'),
     path('data_autocomplete_worker/', WorkerAutocomplete.as_view(), name='data_autocomplete_worker'),
+    path('data_autocomplete_worker_spu/', WorkerSPUAutocomplete.as_view(), name='data_autocomplete_worker_cpu'),
     path('data_autocomplete_categorydetail/', CategoryDetailAutocomplete.as_view(), name='data_autocomplete_category_detail'),
     path('data_autocomplete_batch/', BatchlAutocomplete.as_view(), name='data_autocomplete_batch'),
     path('data_autocomplete_satage_in_detail/', StageForDetaillAutocomplete.as_view(), name='data_autocomplete_stage_in_detail'),
@@ -94,6 +116,7 @@ urlpatterns = [
     path('<detail>/add-detail-in-detail/', DetailAddDetailView.as_view(), name='detail_add_detail'),
 
     path('new-detail/', DetailCreateView.as_view(), name='create_new_detail'),
+    path('edit-detail/<name>/', DetailEditView.as_view(), name='edit_detail'),
     path('detail/all/', DetailAllView.as_view(), name='detail_list_all'),
     path('detail-delete/<id>/', DetailDeleteView.as_view(), name='detail_delete'),
     path('add-image-in-<detail>/', AddImageInDetailView.as_view(), name='add_image_in_detail'),
@@ -135,6 +158,7 @@ urlpatterns = [
     path('master/workers-LSM-list/', WorkerListView.as_view(), {'LSM': True},  name='workers_LSM_all'),
     path('master/workers-TRN-list/', WorkerListView.as_view(), {'TRN': True},  name='workers_TRN_all'),
     path('master/workers-MLR-list/', WorkerListView.as_view(), {'MLR': True},  name='workers_MLR_all'),
+    path('master/workers-salary-list/', WorkerSalaryListView.as_view(),  name='workers_salary_all'),
     path('master/orders-<username>/', OrderUserParametrListView.as_view(), name='orders-worker-for-master'),
     path('master/orders-<username>/month_<month>/', OrderUserParametrListView.as_view(), name='orders-worker-month-for-master'),
     path('master/orders-<username>/product_<str:product>/', OrderUserParametrListView.as_view(), name='orders_user_product_list'),
@@ -156,7 +180,9 @@ urlpatterns = [
     path('master/batchs-in-plan/<object>/', AllBatchDetailProductInPlan.as_view(), name='batchs_in_plan'),
     # path('master/delete-batch/<id>', DeleteBatchDetailInPlanView.as_view(), name='delete_batch'),
 
+
     path('master/task_list/', ShiftTask.as_view(), name='task_list'),
+    path('master/commentupdate/', CommentUpdateView.as_view(), name='update_comment'),
 
     path('master/create-new-bonus/', CreateNewBonusView.as_view(), name='create_new_bonus'),
     path('master/create-bonus-complete/', create_bonus_complete, name='create_bonus_complete'),
@@ -164,10 +190,24 @@ urlpatterns = [
     path('master/update-bonus/<id>/',UpdateBonusView.as_view(), name='update-bonus'),
     path('master/list-all-worker-and-here-bonus/', ListAllWorkersAndBonuses.as_view(), name='list_all_worker_here_bonuses'),
 
+
+    path('record-job-create/', RecordJobCreateView.as_view(),name='record_job_create'),
+    path('record-job-edit/<id>/', RecordJobEditView.as_view(),name='record_job_edit'),
+    path('all-record-job/', AllRecordJobForAllWorker.as_view(), name='all_record_job'),
+    path('all-record-job/mon_<month>/', AllRecordJobForAllWorker.as_view(), name='all_record_job_per_month'),
+    path('all-record-job/product_<product>/', AllRecordJobForAllWorker.as_view(), name='all_record_job_per_product'),
+    path('all-record-job/detail_<detail>/', AllRecordJobForAllWorker.as_view(), name='all_record_job_per_detail'),
+    path('all-record-job/username_<username>/', AllRecordJobForAllWorker.as_view(), name='all_record_job_username'),
+    path('all-record-job/diagram/', DiagramWorkSPUView.as_view(), name='all_record_job_diagram'),
+
+    path('create-parameter-detail-spu-<product>-<detail>/', ParametersDetailForSPUCreateView.as_view(), name='create_parameter_detail_spu'),
+    path('edit-parameter-detail-spu-<product>-<detail>/', ParametersDetailForSPEditeView.as_view(), name='edit_parameter_detail_spu'),
+    path('parameter-detail-spu-<product>-<detail>/', parameters_detail_for_spu_create_or_edit_redirect, name='parameter_detail_spu'),
+
     path('plan/product-add-in-plan-complete/', product_add_in_plan_complite, name='product_add_plan_complete'),
     path('plan/product-add-in-plan/', WorkshopPlanCreateView.as_view(), name='product_add_plan'),
     path('plan/add-existing-batch-in-<object>/', WorkshopPlanAddExistingBatchView.as_view(), name='add_existing_batch_in_plan'),
-    path('plan/<year>-<month>/', WorkshopPlanView.as_view(), name='plan'),
+    path('plan/', WorkshopPlanView.as_view(), name='plan'),
     path('plan/<year>-<month>/delete-<object>/', WorkshopPlanDeleteView.as_view(), name='delete_object_from_workshopplan'),
     path('plan/<year>-<month>/update-<object>/', WorkshopPlanUpdateView.as_view(), name='update_object_from_workshopplan'),
 
@@ -175,6 +215,11 @@ urlpatterns = [
     path('plan/<year>-<month>/batch-<id>/ready_cancel/', batch_cancel_ready, name='batch_cancel_ready_in_plan'),
     path('plan/<year>-<month>/batch-<id>/ready_complete/', batch_ready_comlite, name='batch_ready_complete'),
 
-    path('test_view/<username>/<id>/', TimeOfWorkInStage.as_view(), name='order_user_edit_test')
+    path('plan/warehouse/add-<object>/', WarehouseCreateView.as_view(), name='add_quantity_in_warehouse'),
+    path('plan/warehouse/edit-<object_id>/', WarehouseUpdateView.as_view(), name='edit_object_in_warehouse'),
+
+    path('test_view/<username>/<id>/', TimeOfWorkInStage.as_view(), name='order_user_edit_test'),
+
+
 
 ]

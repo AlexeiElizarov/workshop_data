@@ -1,6 +1,4 @@
 import datetime
-from time import sleep
-
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
@@ -11,8 +9,7 @@ from workshop_data.forms import (
     EditWorkshopPlanForm,
     WorkshopPlanAddExistingBatchForm)
 from ..filters import WorkshopPlanFilter
-from workshop_data.services.general_services import current_month
-from ..models import BatchDetailInPlan
+from ..models import BatchDetailInPlan, Product, Month
 
 
 class WorkshopPlanView(LoginRequiredMixin, ListView):
@@ -23,16 +20,23 @@ class WorkshopPlanView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
-        # context['list_product'] = WorkshopPlan.objects.filter(month=current_month()).order_by('product')
         context['filter'] = WorkshopPlanFilter(
             self.request.GET,
-            queryset=self.get_queryset().select_related('detail').select_related('product').
-            prefetch_related('batchs').order_by('product', 'detail'))
+            queryset=self.get_queryset().
+            order_by('product', 'detail'))
+        wps = context['filter'].qs.select_related('product', 'detail__prefix')
+        products = Product.objects.filter(workshopplan__in=wps).distinct()
+        context['products'] = products.prefetch_related(
+            'detail',
+            'detail__prefix',
+            'detail__secondary_detail',
+            'detail__in_warehouse'
+            )
         return context
 
 
 class WorkshopPlanCreateView(LoginRequiredMixin, CreateView):
-    """Отображает страницу создания новой Детали/Узла в Плане"""
+    """Отображает страницу создания новой Детали в Плане"""
     model = WorkshopPlan
     form_class = WorkshopPlanCreateForm
     template_name = 'workshop_data/plan/plan_create.html'
@@ -52,7 +56,7 @@ class WorkshopPlanDeleteView(LoginRequiredMixin, DeleteView):
                                                'year': datetime.datetime.now().strftime('%Y')})
 
     def get_object(self, queryset=None):
-        dt = datetime.datetime.now()
+        # dt = datetime.datetime.now()
         object = self.kwargs.pop('object')
         product = object.split('_')[0]
         detail = object.split('_')[1]
@@ -84,7 +88,7 @@ class WorkshopPlanAddExistingBatchView(LoginRequiredMixin, UpdateView):
     def get_object(self, **kwargs):
         object = self.kwargs.get('object')
         product = object.split('_')[0]
-        detail = object.split('_')[1]
+        detail = object.split('_')[1].split('.')[1]
         obj = WorkshopPlan.objects.get(product__name=product, detail__name=detail)
         return obj
 

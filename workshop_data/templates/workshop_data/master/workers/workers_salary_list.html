@@ -1,0 +1,68 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block title %}
+    Зарплата
+{% endblock title %}
+
+{% block content %}
+    <link rel="stylesheet" href="{% static 'css/master_css/workers_average_price_cost.css' %}" type="text/css">
+    <div class="master-all-workers-data">
+        <div id="master-worker-price-cost-buttons">
+            <a class="btn  btn-outline-success btn-sm" type="button" href="{% url 'master_workers_average_price_list' %}">
+                По средней расценке
+            </a>
+        </div>
+    </div>
+        <h5>master/workers_parametr_list.html</h5>
+        <hr>
+        <table class="table table-success table-striped">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Фамилия</th>
+                <th scope="col">Имя</th>
+                <th scope="col">Отчество</th>
+                <th scope="col">Табельный номер</th>
+                <th scope="col">Разряд</th>
+                <th scope="col">Должность</th>
+                <th scope="col">Наряды</th>
+
+            </tr>
+            </thead>
+
+            <tbody>
+            {% for worker in workers %}
+            <tr>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>{{ worker.surname }}</td>
+
+                <td>
+                    <a href="">
+                        {{ worker.name }}
+                    </a>
+                </td>
+
+                <td>{{ worker.patronymic }}</td>
+                <td>{{ worker.employee_number }}</td>
+
+                <td>
+                    <a href="">
+                        {{ worker.employee_rank }}
+                    </a>
+                </td>
+
+                <td>
+                    <a href="{% url 'workers_list_position' position=worker.position %}">
+                        {{ worker.get_position_display }} {{ worker.position }}
+                    </a>
+                </td>
+
+                <td>
+                    <a href="{% url 'orders-worker-for-master' username=worker.username %}"></a>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+{% endblock content %}

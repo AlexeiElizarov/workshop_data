@@ -8,7 +8,7 @@ class AddStageInDetailForm(forms.ModelForm):
     """Отображает форму добавления нового Этапа в Детали"""
     class Meta:
         model = StageManufacturingDetail
-        fields = ('detail', 'order', 'description', 'name', 'operations', 'normalized_time', 'price')
+        fields = ('detail', 'order', 'description', 'name', 'devation_card', 'operations', 'class_work', 'normalized_time', 'price')
 
 # автозаполнение поля по переданному из CreateView pk
     def __init__(self, *args, **kwargs):

@@ -9,7 +9,8 @@ from django.views.generic import ListView, CreateView, DeleteView, UpdateView, D
 from workshop_data.forms import (
     AddImageInDetailForm,
     DetailCreateForm,
-    DetailAddDetailForm,)
+    DetailAddDetailForm,
+    DetailEditForm, )
 from workshop_data.models import Detail
 from ..filters import DetailFilter
 
@@ -45,6 +46,17 @@ class DetailCreateView(LoginRequiredMixin, CreateView):
             time.sleep(0.3)
         return new_detail
 
+
+class DetailEditView(LoginRequiredMixin, UpdateView):
+    """Вьюха редактирования детали"""
+    model = Detail
+    form_class = DetailEditForm
+    template_name = 'workshop_data/detail/detail_create.html'
+    success_url = reverse_lazy('detail_list_all')
+
+    def get_object(self, **kwargs):
+        obj = Detail.objects.filter(name=self.kwargs.get('name'))
+        return obj.first()
 
 class DetailDeleteView(LoginRequiredMixin, DeleteView):
     """Вьюха удаления Детали"""

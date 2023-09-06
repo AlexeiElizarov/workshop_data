@@ -1,3 +1,1 @@
-from statistics import mean
-
-print(round(mean([3/96,2/100])/8, 6))
+print((18.45 - 1.2 * 3 * 3.69) / (2 * 3.69))

@@ -22,8 +22,12 @@ from workshop_data.services import (
     get_list_locksmith,
     get_list_turner,
     get_list_miller,
+    get_list_operator,
     get_dict_worker_quantity_detail,
-    get_average_time_of_work_stage_in_detail, get_not_work_stages_in_batch, get_batch_by_id)
+    get_average_time_of_work_stage_in_detail,
+    get_not_work_stages_in_batch,
+    get_batch_by_id,
+)
 
 
 class StageManufacturingDetailInWorkInPlanView(LoginRequiredMixin, DetailView):
@@ -83,6 +87,8 @@ class StageManufacturingDetailInWorkView(LoginRequiredMixin, CreateView):
             get_dict_worker_quantity_detail(wp_obj.product, wp_obj.detail, get_list_turner())
         context['workers_quantity_mlr'] = \
             get_dict_worker_quantity_detail(wp_obj.product, wp_obj.detail, get_list_miller())
+        context['workers_quantity_prm'] = \
+            get_dict_worker_quantity_detail(wp_obj.product, wp_obj.detail, get_list_operator())
         context['stages'] = get_not_work_stages_in_batch(batch)
         return context
 
@@ -95,7 +101,7 @@ class StageManufacturingDetailInWorkView(LoginRequiredMixin, CreateView):
             batch=self.get_batch(),
             product=self.object.batch.workshopplan_detail.product,
             detail=self.object.batch.workshopplan_detail.detail,
-            operations=self.object.stage_in_batch,
+            operations=self.object.stage_in_batch.get_operations,
             quantity=self.object.batch.quantity_in_batch,
             normalized_time=self.object.stage_in_batch.normalized_time,
             price=self.object.stage_in_batch.price,
@@ -103,7 +109,7 @@ class StageManufacturingDetailInWorkView(LoginRequiredMixin, CreateView):
         )
         args = {'order': order_object}
         if 'view' in self.request.POST:
-            return render(self.request, 'workshop_data/order_template_for_print.html', args)
+            return render(self.request, 'workshop_data/order_.html', args)
         elif 'save' in self.request.POST:
             order_object.author = self.request.user
             order_object.save()

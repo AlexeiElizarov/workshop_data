@@ -21,8 +21,8 @@
                     <td><a href="">{{ stage.get_name_display }}</a></td>
                     <td><a href="">{{ stage.description }}</a></td>
                     <td><a href="">{{ stage.operations }}</a></td>
-                    <td><a href="">{{ stage.normalized_time }}</a></td>
-                    <td><a href="">{{ stage.price }}</a></td>
+                    <td><a href="">{{ stage.normalized_time|floatformat:2 }}</a></td>
+                    <td><a href="">{{ stage.price|floatformat:2 }}</a></td>
                 <td>
                     {% include 'workshop_data/detail/stage/includes/button_dropdown_menu.html' %}
                 </td>

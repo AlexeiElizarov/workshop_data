@@ -1,11 +1,14 @@
 {% extends 'main.html' %}
 {% load static %}
+{% load other_tag %}
+{% load workshopplan_tag %}
 
 {% block title %}
     План цеха
 {% endblock title %}
 
 {% block content %}
+{% total_count 0 %}
     <link rel="stylesheet" href="{% static 'css/plan/plan.css' %}" type="text/css">
     <div class="filter-wrapper">
         <form method="GET">
@@ -33,62 +36,210 @@
 
     <table class="table table-primary">
         <thead>
-        <tr>
-            <th scope="col">#</th>
-            <th scope="col"></th>
-            <th scope="col">Месяц</th>
-
-            <th scope="col">Узел</th>
-            <th scope="col">Деталь</th>
-            <th scope="col">Всего - Гос/Ком</th>
-            <th scope="col">В работе</th>
-            <th scope="col">SOS</th>
-            <th scope="col"></th>
-        </tr>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col"></th>
+                <th scope="col">Месяц</th>
+                <th scope="col" style="width: 136px;">Деталь</th>
+                <th scope="col" style="width: 135px;">Входящие</th>
+                <th scope="col" style="width: 135px;">Входящие</th>
+                <th scope="col" style="width: 135px;">Входящие</th>
+                <th scope="col">Всего - Гос/Ком</th>
+                <th scope="col" style="width: 93px;">заготовки</th>
+                <th scope="col" style="width: 70px;">п/ф</th>
+                <th scope="col" style="width: 87px;">ед.изм</th>
+                <th scope="col">В работе</th>
+                <th scope="col"></th>
+            </tr>
         </thead>
-{{ plan }}
-            {% for object in filter.qs %}
-                <tbody>
-                {% ifchanged object.product %}
-                <tr class="table-light">
-                    <td></td>
-                    <td>    <h5>{{ object.product }}</h5></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
 
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                {% endifchanged %}
-                <tr class="{% if object.sos == True %}table-danger
-                           {% else %}{% endif %}">
-                    <th scope="row">{{ forloop.counter }}</th>
-                    <td></td>
-                    <td>{{ object.get_month_display }}</td>
+        {% for product in products %}
 
-                    <td>
-                        {% if  object.node %}
-                            {{ object.node }}
-                        {% endif %}
-                    </td>
-                    <td>{% if object.detail %}
-                           <a href="">{{ object.detail }}</a>
-                        {% endif %}
-                    </td>
-                    <td>
-                        <a href="">{{ object.get_quantity }}</a> -
-                        <a href="">{{ object.quantity_state_order }}/{{ object.quantity_commercial_order }}</a>
-                    </td>
-                    <td><a href="{% url 'batchs_in_plan' object %}">{{ object.get_quantity_for_all_batch }}</a></td>
-                    <td><a href="">{{ object.sos }}</a></td>
-                    <td>
-                        {% include 'workshop_data/plan/includes/button_dropdown_menu_plan.html' %}
-                    </td>
-                </tr>
-                </tbody>
+        <tbody>
+        {% ifchanged product %}
+        <tr class="table-light">
+            <td></td>
+            <td><h5>{{ product }}</h5></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        {% endifchanged %}
+            {% for month in filter.form.month.value %}
+
+            {% for detail1 in product.detail.all %}
+                {% object_workshopplan product=product detail=detail1 month=month as object %}
+                {% if object %}
+                    <tr class="{% if object.sos == True %}table-danger
+                                           {% else %}{% endif %}"
+                        style="{% if object %}color:#E32636{% endif %}">
+                        <th scope="row">{% total_count %}</th>
+                        <td></td>
+                        <td>{{ object.get_month_display }}</td>
+                        <td>{% if detail1.prefix %} {{ detail1.prefix }}. {% endif %} {{ detail1.get_name_detail }}
+                            <a title="{{ object.comment.body }}" href="">&#9776;</a>
+
+                        </td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>{{ object.get_quantity }} -
+                            {{ object.quantity_state_order }}гз/
+                            {{ object.quantity_commercial_order }}ком
+                        </td>
+                        <td title="{{ detail1.in_warehouse.comment.body }}">
+                            {% if detail1.in_warehouse %}
+                            <a href="{% url 'edit_object_in_warehouse' object_id=detail1.in_warehouse.id %}">
+                                {{ detail1.in_warehouse.semis }}заг
+                            </a>
+                            {% else %}
+                                {{ detail1.in_warehouse.semis }}заг
+                            {% endif %}
+                        </td>
+                        <td>{{ detail1.in_warehouse.intermediate_detail }}п/ф</td>
+                        <td>{{ detail1.in_warehouse.get_unit_display }}</td>
+                        <td></td>
+                        <td>{% include 'workshop_data/plan/includes/button_dropdown_menu_plan.html' %}</td>
+                    </tr>
+
+                    {% if detail1.secondary_detail.all %}
+                        {% for detail2 in detail1.secondary_detail.all %}
+                        {% with detail2 as object %}
+                                <tr class="{% if object.sos == True %}table-danger
+                                           {% else %}{% endif %}">
+                                <th scope="row">{% total_count %}</th>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td> {{ detail2 }}</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td title="{{ detail2.in_warehouse.comment.body }}">
+                                    {% if detail2.in_warehouse %}
+                                    <a href="{% url 'edit_object_in_warehouse' object_id=detail2.in_warehouse.id %}">
+                                        {{ detail2.in_warehouse.semis }}заг
+                                    </a>
+                                    {% else %}
+                                        {{ detail2.in_warehouse.semis }}заг
+                                    {% endif %}
+                                </td>
+                                <td>{{ detail2.in_warehouse.intermediate_detail }}п/ф</td>
+                                <td>{{ detail2.in_warehouse.get_unit_display }}</td>
+                                <td></td>
+                                <td>{% include 'workshop_data/plan/includes/button_dropdown_menu_plan.html' %}</td>
+                            </tr>
+                        {% endwith %}
+                                {% if detail2.secondary_detail.all %}
+                                    {% for detail3 in detail2.secondary_detail.all %}
+                                    {% with detail3 as object %}
+                                            <tr class="{% if object.sos == True %}table-danger
+                                                       {% else %}{% endif %}">
+                                            <th scope="row">{% total_count %}</th>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td>{{ detail3 }}</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td title="{{ detail3.in_warehouse.comment }}">{{ detail2.in_warehouse.semis }}заг</td>
+                                            <td>{{ detail2.in_warehouse.intermediate_detail }}п/ф</td>
+                                            <td>{{ detail2.in_warehouse.get_unit_display }}</td>
+                                            <td></td>
+                                            <td>{% include 'workshop_data/plan/includes/button_dropdown_menu_plan.html' %}</td>
+                                        </tr>
+                                    {% endwith %}
+                                            {% if detail3.secondary_detail.all %}
+                                                {% for detail4 in detail3.secondary_detail.all %}
+                                                {% with detail4 as object %}
+
+                                                        <tr class="{% if object.sos == True %}table-danger
+                                                                   {% else %}{% endif %}">
+                                                        <th scope="row">{% total_count %}</th>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td>{{ detail4 }}</td>
+                                                        <td></td>
+                                                        <td>{{ detail2.in_warehouse.semis }}заг,</td>
+                                                        <td>{{ detail2.in_warehouse.intermediate_detail }}п/ф</td>
+                                                        <td>{{ detail2.in_warehouse.get_unit_display }}</td>
+                                                        <td></td>
+                                                        <td>{% include 'workshop_data/plan/includes/button_dropdown_menu_plan.html' %}</td>
+                                                        </tr>
+                                                {% endwith %}
+                                                {% endfor %}
+                                            {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                {% endif %}
             {% endfor %}
+            {% endfor %}
+            </tbody>
+
+
+
+        {% endfor %}
+
+
+        {% comment %}
+        {% for object in filter.qs %}
+        <tbody>
+        {% ifchanged object.product %}
+        <tr class="table-light">
+            <td></td>
+            <td><h5>{{ object.product }}</h5></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        {% endifchanged %}
+        <tr class="{% if object.sos == True %}table-danger
+                                       {% else %}{% endif %}">
+            <th scope="row">{{ forloop.counter }}</th>
+            <td></td>
+            <td>{{ object.get_month_display }}</td>
+
+
+            <td>{% if object.detail %}
+                <a href="">{{ object.detail }}</a>
+                {% endif %}
+            </td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>
+                <a href="">{{ object.get_quantity }}</a> -
+                <a href="">{{ object.quantity_state_order }}/{{ object.quantity_commercial_order }}</a>
+            </td>
+            <td><a href="{% url 'batchs_in_plan' object %}">{{ object.get_quantity_for_all_batch }}</a></td>
+            <td><a href="">{{ object.sos }}</a></td>
+            <td>
+                {% include 'workshop_data/plan/includes/button_dropdown_menu_plan.html' %}
+            </td>
+        </tr>
+        </tbody>
+        {% endfor %}
+        {% endcomment %}
     </table>
 {% endblock content %}

@@ -1,0 +1,15 @@
+{% extends 'main.html' %}
+
+{% block title %}
+
+{% endblock title %}
+
+{% block content %}
+    {{ object }}
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        {{ form.media }}
+        <input type="submit" value="Отправить" class="btn btn-primary">
+    </form>
+{% endblock content %}

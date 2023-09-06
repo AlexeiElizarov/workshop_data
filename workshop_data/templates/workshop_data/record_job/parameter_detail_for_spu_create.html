@@ -1,0 +1,95 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block title %}
+    Ввести параметры
+{% endblock title %}
+
+{% block content %}
+    <style>
+        .side-wrapper {
+            padding: 20px;
+        }
+        .form-group {
+            padding-bottom: 20px;
+        }
+    </style>
+    <div class="main-wrapper" style="display:flex">
+        <div class="wrapper-form">
+            <form method="POST">
+                {% csrf_token %}
+                <div style="display: flex">
+                    <div class="side-wrapper">
+                        <div class="form-group">
+                            {{ form.operations_first_side.errors }}
+                            <label>{{ form.operations_first_side.label }} </label>
+                            {{ form.operations_first_side|safe }}
+                        </div>
+                        <div class="form-group">
+                            {{ form.first_side_time.errors }}
+                            <label>{{ form.first_side_time.label }} </label>
+                            {{ form.first_side_time }}
+                        </div>
+                        <div class="form-group">
+                            {{ form.coefficient_first_side.errors }}
+                            <label>{{ form.coefficient_first_side.label }} </label>
+                            {{ form.coefficient_first_side }}
+                        </div>
+                        <div class="form-group">
+                            {{ form.salary_per_first_side.errors }}
+                            <label>{{ form.salary_per_first_side.label }} </label>
+                            {{ form.salary_per_first_side }}
+                        </div>
+                    </div>
+                    <div class="side-wrapper">
+                        <div class="form-group">
+                            {{ form.operations_second_side.errors }}
+                            <label>{{ form.operations_second_side.label }} </label>
+                            {{ form.operations_second_side }}
+                        </div>
+                        <div class="form-group">
+                            {{ form.second_side_time.errors }}
+                            <label>{{ form.second_side_time.label }} </label>
+                            {{ form.second_side_time }}
+                        </div>
+                        <div class="form-group">
+                            {{ form.coefficient_second_side.errors }}
+                            <label>{{ form.coefficient_second_side.label }} </label>
+                            {{ form.coefficient_second_side }}
+                        </div>
+                        <div class="form-group">
+                            {{ form.salary_per_second_side.errors }}
+                            <label>{{ form.salary_per_second_side.label }} </label>
+                            {{ form.salary_per_second_side }}
+                        </div>
+                    </div>
+                    <div class="side-wrapper">
+                        <div class="form-group">
+                            {{ form.price.errors }}
+                            <label>{{ form.price.label }} </label>
+                            {{ form.price }}
+                        </div>
+                        <div class="form-group">
+
+                            <label>{{ form.norm.label }} </label>
+                            {{ form.norm }}
+                        </div>
+                    </div>
+                </div>
+<!--                {{ form.as_p }}-->
+<!--                {{ form.media }}-->
+                <input type="submit" value="Сохранить" class="btn btn-primary" style="margin: 20px;">
+
+            </form>
+        </div>
+        <div></div>
+    </div>
+
+   <script>
+        $('.add').click(function() {
+            $(this).parent().after($('<h3>', {
+                'text': 'Изделие сохранено'
+            }));
+        });
+    </script>
+{% endblock content %}
