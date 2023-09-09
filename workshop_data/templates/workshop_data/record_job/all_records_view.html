@@ -23,12 +23,12 @@
             <th scope="col">Исполнитель</th>
             <th scope="col">Изделие.Деталь</th>
             <th scope="col">Количество 1</th>
-            <th scope="col">Время 1</th>
-            <th scope="col">Коэффициент 1</th>
+<!--            <th scope="col">Время 1</th>-->
+<!--            <th scope="col">Коэффициент 1</th>-->
             <th scope="col">Стоимость 1</th>
             <th scope="col">Количество 2</th>
-            <th scope="col">Время 2</th>
-            <th scope="col">Коэффициент 2</th>
+<!--            <th scope="col">Время 2</th>-->
+<!--            <th scope="col">Коэффициент 2</th>-->
             <th scope="col">Стоимость 2</th>
             <th scope="col">Количество 1+2</th>
             <th scope="col">Расценка</th>
@@ -63,16 +63,16 @@
                             {% else %}
                                 0
                             {% endif %}</td>
-                        <td>{{ record.detail.parameters_for_spu.first_side_time }}</td>
-                        <td>{{ record.detail.parameters_for_spu.coefficient_first_side }}</td>
+<!--                        <td>{{ record.detail.parameters_for_spu.first_side_time }}</td>-->
+<!--                        <td>{{ record.detail.parameters_for_spu.coefficient_first_side }}</td>-->
                         <td>{{ record.detail.parameters_for_spu.return_salary_per_first_side }}</td>
                         <td>{% if record.quantity_2 > 0 %}
                                 <strong>{{ record.quantity_2 }}</strong>
                             {% else %}
                                 0
                             {% endif %}</td>
-                        <td>{{ record.detail.parameters_for_spu.second_side_time }}</td>
-                        <td>{{ record.detail.parameters_for_spu.coefficient_second_side }}</td>
+<!--                        <td>{{ record.detail.parameters_for_spu.second_side_time }}</td>-->
+<!--                        <td>{{ record.detail.parameters_for_spu.coefficient_second_side }}</td>-->
                         <td>{{ record.detail.parameters_for_spu.return_salary_per_second_side }}</td>
                         <td>{% if record.quantity > 0  %}
                                 <strong>{{ record.quantity }}</strong>

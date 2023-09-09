@@ -115,8 +115,8 @@ DATABASES = {
     # },
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        # 'NAME': "d:\db.sqlite3",
+        # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'NAME': "D:\Alexei\!!!DATABASE!!!\db.sqlite3",
     }
 }
 
