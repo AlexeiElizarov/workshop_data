@@ -33,6 +33,7 @@
             <th scope="col">Количество 1+2</th>
             <th scope="col">Расценка</th>
             <th scope="col">Зарплата(1.4)</th>
+            <th scope="col"></th>
         </tr>
         </thead>
         <tbody>
@@ -81,6 +82,15 @@
                             {% endif %}</td>
                         <td>{{ record.detail.parameters_for_spu.price }}</td>
                         <td><a href="{% url 'record_job_edit' id=record.id %}"><strong>{% returns_salary_for_completed_detail_tag record %}</strong></a></td>
+                        <td>
+                            <button class="btn btn-outline-primary dropdown-toggle btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Действия
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="">Исправить</a></li>
+                                <li><a class="dropdown-item" href="">Удалить</a></li>
+                            </ul>
+                        </td>
                 </tr>
             {% endfor %}
 
