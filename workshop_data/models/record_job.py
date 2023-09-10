@@ -31,7 +31,11 @@ class RecordJob(models.Model):
         verbose_name='Количество по 2й стороне')
     quantity = models.PositiveSmallIntegerField(
         default=0, blank=True, null=True,
-        verbose_name='Количество по двум сторонам')
+         verbose_name='Количество по двум сторонам')
+    order_yes = models.BooleanField(default=False,
+                                    verbose_name='Наряд выписан')
+    order_at_master = models.BooleanField(default=False,
+                                    verbose_name='Наряд сдан')
 
     author = models.ForeignKey(User, on_delete=models.PROTECT, related_name='record_job_spy')
     objects = models.Manager()

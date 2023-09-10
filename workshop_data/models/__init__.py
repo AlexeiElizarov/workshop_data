@@ -10,7 +10,6 @@ from workshop_data.models.month import Month
 from workshop_data.models.batch_detail_in_plan import BatchDetailInPlan
 from workshop_data.models.stage_manufacturing_detail_in_work import StageManufacturingDetailInWork
 from workshop_data.models.category_detail import CategoryDetail
-# from workshop_data.models.node import Node
 from workshop_data.models.comment import Comment
 from workshop_data.models.workshop_plan import WorkshopPlan
 from workshop_data.models.bonus import Bonus

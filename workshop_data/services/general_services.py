@@ -2,7 +2,7 @@ import datetime
 from typing import Union
 
 from django.core.validators import MaxValueValidator
-from django.db.models import Sum
+from django.db.models import Sum, F
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
@@ -334,13 +334,19 @@ def return_salary_for_completed_detail(record):
             salary = quantity_1 * time_1 / time * price * coefficient_1 +\
                      quantity_2 * time_2 / time * price * coefficient_2
             salary = salary  * 1.4
-            print()
-            print(record.datail)
-            print(salary)
-            print()
             return round(salary, 2)
         elif record.quantity > 0:
             salary = record.quantity * record.detail.parameters_for_spu.price * 1.4
             return round(salary, 2)
+    except:
+        return '???'
+
+def return_salary_per_month(records):
+    """Возвращает зарплату оператора за месяц"""
+    salary = []
+    try:
+        for record in records:
+            salary.append(return_salary_for_completed_detail(record))
+        return round(sum(salary), 2)
     except:
         return '???'

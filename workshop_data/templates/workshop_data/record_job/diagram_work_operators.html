@@ -21,30 +21,20 @@
 
     <script>
         const ctx = document.getElementById('myChart').getContext('2d');
-        function loadJson(selector) {
-            return JSON.parse(document.querySelector(selector).getAttribute('data-json'));
-        }
+<!--        function loadJson(selector) {-->
+<!--            return JSON.parse(document.querySelector(selector).getAttribute('data-json'));-->
+<!--        }-->
         window.onload = function () {
             ctx.canvas.parentNode.style.height = '500px';
             ctx.canvas.parentNode.style.width = '500px';
-            var jsonData = loadJson('#jsonData');
-
-
-            var names = jsonData.map((item) => item.name);
-
-            var norms = jsonData.map((item) => item.norm);
-
-
-            console.log(names);
-            console.log(norms);
 
             new Chart(ctx, {
                 type: 'bar',
                 data: {
-                labels: names,
+                labels: [{% for i in data %}'{{ i.name }}',{% endfor %}],
                 datasets: [{
                     label: 'Операторы',
-                    data: norms[detail__parameters_for_spu__norm__sum],
+                    data: [{% for i in data %}{{ i.norm.detail__parameters_for_spu__norm__sum }},{% endfor %}],
                     borderWidth: 1
                 }]
                 },

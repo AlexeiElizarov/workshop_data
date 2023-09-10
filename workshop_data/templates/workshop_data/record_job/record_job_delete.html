@@ -1,0 +1,13 @@
+{% extends 'main.html' %}
+
+{% block title %}
+    Удаление Записи
+{% endblock title %}
+
+{% block content %}
+    <h2>Вы действительно хотите удалить Запись</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <input type="submit" value="подтвердить">
+    </form>
+{% endblock content %}
