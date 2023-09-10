@@ -88,7 +88,7 @@
                                     <th scope="row">{% total_count %}</th>
                                     <td></td>
                                     <td></td>
-                                    <td>{{ detail3.prefix }}.{{ detail3.get_name_detail }}</td>
+                                    <td>{% if detail3.prefix %} {{ detail3.prefix }}. {% endif %} {{ detail3.get_name_detail }}</td>
                                     <td></td>
                                     <td></td>
                                     {% if detail3.category == None %}
@@ -99,7 +99,7 @@
                                     <td><a href="">Изображение</a></td>
                                     {% with detail3 as detail %}
                                     <td>
-                                        {% include 'workshop_data/product/includes/button_dropdown_in_product.html' with detail=detail2 %}
+                                        {% include 'workshop_data/product/includes/button_dropdown_in_product.html' with detail=detail3 %}
                                     </td>
                                     {% endwith %}
                                 </tr>
@@ -109,7 +109,7 @@
                                         <td></td>
                                         <td></td>
                                         <td></td>
-                                        <td>{{ detail4.prefix }}.{{ detail4.get_name_detail }}</td>
+                                        <td>{% if detail4.prefix %} {{ detail4.prefix }}. {% endif %} {{ detail4.get_name_detail }}</td>
                                         <td></td>
                                         {% if detail4.category == None %}
                                         <td></td>

@@ -65,4 +65,6 @@ from workshop_data.views.record_job_view import (
     ParametersDetailForSPUCreateView,
     ParametersDetailForSPEditeView,
     parameters_detail_for_spu_create_or_edit_redirect,
+    RecordJobDeleteView,
+    AllRecordJobForWorker,
 )

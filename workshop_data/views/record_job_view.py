@@ -2,9 +2,9 @@ import datetime
 import json
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Sum
+from django.db.models import Sum, F
 from django.shortcuts import redirect
-from django.views.generic import ListView, CreateView, UpdateView, TemplateView
+from django.views.generic import ListView, CreateView, UpdateView, TemplateView, DeleteView
 
 from sign.forms import User
 from workshop_data.models import Product
@@ -28,8 +28,10 @@ class RecordJobCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         self.object = form.save(commit=False)
         if form.is_valid():
+
             record_job = RecordJob(
                 date=datetime.datetime.now(),
+                month=self.object.month,
                 user=self.object.user,
                 product=self.object.product,
                 detail=self.object.detail,
@@ -39,7 +41,7 @@ class RecordJobCreateView(LoginRequiredMixin, CreateView):
                 author_id=self.request.user.id
             )
             record_job.save()
-            return HttpResponseRedirect(reverse_lazy('start_new_stage_in_work_complete'))  # FIXME
+            return HttpResponseRedirect(reverse_lazy('all_record_job'))
 
 
 class RecordJobEditView(LoginRequiredMixin, UpdateView):
@@ -59,6 +61,16 @@ class RecordJobEditView(LoginRequiredMixin, UpdateView):
     def get_success_url(self):
         print(self.kwargs)
         return reverse('all_record_job')
+
+
+class RecordJobDeleteView(LoginRequiredMixin, DeleteView):
+    """Удаление записи о сделанных за день деталей"""
+    model = RecordJob
+    template_name = 'workshop_data/record_job/record_job_delete.html'
+    success_url = reverse_lazy('all_record_job')
+
+    def get_object(self, queryset=None):
+        return RecordJob.objects.get(id=self.kwargs.get('id'))
 
 
 class AllRecordJobForAllWorker(LoginRequiredMixin, ListView):
@@ -84,6 +96,37 @@ class AllRecordJobForAllWorker(LoginRequiredMixin, ListView):
             context['records'] = RecordJob.objects.filter(detail=Detail.objects.get(
                 name=self.kwargs.get('detail').split('.')[1]))
         return context
+
+
+class AllRecordJobForWorker(LoginRequiredMixin, ListView):
+    """Отображает все записи рабочего о сделанных за день деталей"""
+    model = RecordJob
+    template_name = 'workshop_data/record_job/all_records_for_worker.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+        worker = User.objects.get(id=self.kwargs.get('id'))
+        context['worker'] = worker
+        context['records'] = RecordJob.objects.filter(user=worker.id)\
+            .select_related('product',
+                            'detail',
+                            'detail__prefix',
+                            'detail__parameters_for_spu',
+                            'user',
+                            )
+        if 'month' in self.kwargs:
+            context['records'] = RecordJob.objects.filter(
+                month=self.kwargs['month'],
+                user=worker).order_by('date')
+            context['salary_per_month'] = 0
+            context['month'] = self.kwargs.get('month')
+        return context
+
+
+class AllRecordJobForWorkerPerMonth(LoginRequiredMixin, ListView):
+    """Отображает все записи рабочего о сделанных за день деталей за месяц"""
+    model = RecordJob
+    template_name = 'workshop_data/record_job/all_records_for_worker.html'
 
 
 class ParametersDetailForSPUCreateView(LoginRequiredMixin, CreateView):
@@ -156,10 +199,14 @@ class DiagramWorkSPUView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['data'] = \
-        json.dumps(
         [
+            # {'name': user.surname,
+            #  'norm': RecordJob.objects.filter(user=user).aggregate(
+            #      Sum('detail__parameters_for_spu__norm' * 'record_job__quantity')  )
+            # } for user in User.objects.filter(id__in=[43, 61, 75, 62, 64, 72])
             {'name': user.surname,
-             'norm': RecordJob.objects.filter(user=user).aggregate(Sum('detail__parameters_for_spu__norm'))
-            } for user in User.objects.filter(id__in=[43, 61, 75, 62, 64, 72])
-        ])
+             'norm': RecordJob.objects.filter(user=user).aggregate(fff=Sum(F('detail__parameters_for_spu__norm') * F('quantity')))
+             } for user in User.objects.filter(id__in=[43, 61, 75, 62, 64, 72])
+        ]
+        context['fff'] = RecordJob.objects.all()
         return context

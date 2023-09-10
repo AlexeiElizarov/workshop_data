@@ -51,10 +51,11 @@ class RecordJobForm(forms.ModelForm):
         widget=forms.TextInput(attrs={"class": "form-control", })
     )
 
+
     class Meta:
         model = RecordJob
         fields = '__all__'
-        exclude = ('author',)
+        exclude = ('author', )
 
     def __init__(self, *args, **kwargs):
         super(RecordJobForm, self).__init__(*args, **kwargs)

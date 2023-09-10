@@ -46,7 +46,7 @@
                                 {{ record.get_month_display }}
                             </a>
                         </td>
-                        <td><a href="{% url 'all_record_job_username' username=record.user.username %}">{{ record.user.get_full_name }}</a></td>
+                        <td><a href="{% url 'all_record_job_for_worker' id=record.user.id %}">{{ record.user.get_full_name }}</a></td>
                         <td><a href="{% url 'all_record_job_per_product' product=record.product %}">
                             {{ record.product }}</a>
                             <a href="{% url 'all_record_job_per_detail' detail=record.detail %}">
@@ -87,8 +87,8 @@
                                 Действия
                             </button>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="">Исправить</a></li>
-                                <li><a class="dropdown-item" href="">Удалить</a></li>
+                                <li><a class="dropdown-item" href="{% url 'record_job_edit' record.id %}">Исправить</a></li>
+                                <li><a class="dropdown-item" href="{% url 'record_job_delete' record.id %}">Удалить</a></li>
                             </ul>
                         </td>
                 </tr>
