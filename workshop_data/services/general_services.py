@@ -321,7 +321,7 @@ def get_not_work_stages_in_batch(batch):
 def return_salary_for_completed_detail(record):
     """Возвращает зарплату за сделанные детали. Данные берутся из RecordJob"""
     try:
-        if record.quantity == 0:
+        if record.quantity == 0 or record.quantity is None:
             time_1 = record.detail.parameters_for_spu.first_side_time
             time_2 = record.detail.parameters_for_spu.second_side_time
             time = time_1 + time_2

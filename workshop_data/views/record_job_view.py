@@ -137,9 +137,12 @@ class ParametersDetailForSPUCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
-        detail = Detail.objects.get(name=self.kwargs.get('detail').split('.')[1],
-                                    prefix=Prefix.objects.get(name=self.kwargs.get('detail').split('.')[0]))
-
+        data = self.kwargs.get('detail').split('.')
+        if len(data) > 1:
+            detail = Detail.objects.get(name=data[1],
+                                        prefix=Prefix.objects.get(name=data[0]))
+        else:
+            detail = Detail.objects.get(name=data[0])
         if form.is_valid():
             if detail.parameters_for_spu:
                 detail.parameters_for_spu.delete()
@@ -169,10 +172,14 @@ class ParametersDetailForSPEditeView(LoginRequiredMixin, UpdateView):
     template_name = 'workshop_data/record_job/parameter_detail_for_spu_create.html'
 
     def get_object(self, queryset=None):
-        obj = ParametersDetailForSPU.objects.get(
-            detail=Detail.objects.get(name=self.kwargs.get('detail').split('.')[1],
-                                      prefix=Prefix.objects.get(name=self.kwargs.get('detail').split('.')[0]))
-        )
+        data = self.kwargs.get('detail').split('.')
+        if len(data) > 1:
+            obj = ParametersDetailForSPU.objects.get(
+                detail=Detail.objects.get(name=data[1],
+                                          prefix=Prefix.objects.get(name=data[0]))
+            )
+        else:
+            obj = ParametersDetailForSPU.objects.get(detail=Detail.objects.get(name=data[0]))
         return obj
 
     def get_success_url(self):

@@ -77,8 +77,10 @@
                         <td>{{ record.detail.parameters_for_spu.return_salary_per_second_side }}</td>
                         <td>{% if record.quantity > 0  %}
                                 <strong>{{ record.quantity }}</strong>
-                            {% else %}
+                            {% elif record.quantity is not None %}
                                 {{ record.quantity }}
+                            {% else %}
+                                0
                             {% endif %}</td>
                         <td>{{ record.detail.parameters_for_spu.price }}</td>
                         <td><a href="{% url 'record_job_edit' id=record.id %}"><strong>{% returns_salary_for_completed_detail_tag record %}</strong></a></td>
