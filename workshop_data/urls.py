@@ -93,6 +93,7 @@ from workshop_data.views.record_job_view import (
     parameters_detail_for_spu_create_or_edit_redirect,
     RecordJobDeleteView,
     AllRecordJobForWorker,
+    AllRecordJobForWorkerPerMonth,
 )
 
 
@@ -200,7 +201,7 @@ urlpatterns = [
     path('record-job-delete/<id>/', RecordJobDeleteView.as_view(),name='record_job_delete'),
     path('all-record-job/', AllRecordJobForAllWorker.as_view(), name='all_record_job'),
     path('all-record-job/worker-<id>/', AllRecordJobForWorker.as_view(), name='all_record_job_for_worker'),
-    path('all-record-job/worker-<id>/month-<month>/', AllRecordJobForWorker.as_view(), name='all_record_job_for_worker_per_month'),
+    path('all-record-job/worker-<id>/month-<month>/', AllRecordJobForWorkerPerMonth.as_view(), name='all_record_job_for_worker_per_month'),
     path('all-record-job/mon_<month>/', AllRecordJobForAllWorker.as_view(), name='all_record_job_per_month'),
     path('all-record-job/product_<product>/', AllRecordJobForAllWorker.as_view(), name='all_record_job_per_product'),
     path('all-record-job/detail_<detail>/', AllRecordJobForAllWorker.as_view(), name='all_record_job_per_detail'),

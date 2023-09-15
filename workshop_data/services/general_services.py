@@ -331,15 +331,16 @@ def return_salary_for_completed_detail(record):
             salary_per_minute = price / time
             coefficient_1 = record.detail.parameters_for_spu.coefficient_first_side
             coefficient_2 = record.detail.parameters_for_spu.coefficient_second_side
-            salary = quantity_1 * time_1 / time * price * coefficient_1 +\
+            salary = quantity_1 * time_1 / time * price * coefficient_1 + \
                      quantity_2 * time_2 / time * price * coefficient_2
-            salary = salary  * 1.4
+            salary = salary * 1.4
             return round(salary, 2)
         elif record.quantity > 0:
             salary = record.quantity * record.detail.parameters_for_spu.price * 1.4
             return round(salary, 2)
     except:
         return '???'
+
 
 def return_salary_per_month(records):
     """Возвращает зарплату оператора за месяц"""
@@ -350,3 +351,27 @@ def return_salary_per_month(records):
         return round(sum(salary), 2)
     except:
         return '???'
+
+
+def return_sum_recordjob_every_detail(records):
+    """Возвращает общее количество деталей по одинаковым записям за месяц"""
+    dict = {}
+    for record in records:
+        detail = f'{record.product} {record.detail}'
+        if detail not in dict:
+            dict[detail] = {
+                'quantity': record.quantity if record.quantity else 0,
+                'quantity_1': record.quantity_1 if record.quantity_1 else 0,
+                'quantity_2': record.quantity_2 if record.quantity_2 else 0,
+                'price': record.detail.parameters_for_spu.price,
+                'price_1': record.detail.parameters_for_spu.return_salary_per_first_side(),
+                'price_2': record.detail.parameters_for_spu.return_salary_per_second_side(),
+            }
+        else:
+            dict[detail]['quantity'] += record.quantity if record.quantity else 0
+            dict[detail]['quantity_1'] += record.quantity_1 if record.quantity_1 else 0
+            dict[detail]['quantity_2'] += record.quantity_2 if record.quantity_2 else 0
+        dict[detail]['salary'] = round(((dict[detail]['quantity'] *  dict[detail]['price'] +\
+                                 dict[detail]['quantity_1'] * dict[detail]['price_1'] +\
+                                 dict[detail]['quantity_2'] * dict[detail]['price_2']) * 1.4), 2)
+    return dict

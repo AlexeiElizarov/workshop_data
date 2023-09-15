@@ -16,6 +16,7 @@ from workshop_data.forms.record_job_form import (
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy, reverse
 from workshop_data.models.detail import ParametersDetailForSPU, Detail, Prefix
+from workshop_data.services import return_sum_recordjob_every_detail
 
 
 class RecordJobCreateView(LoginRequiredMixin, CreateView):
@@ -115,18 +116,32 @@ class AllRecordJobForWorker(LoginRequiredMixin, ListView):
                             'user',
                             )
         if 'month' in self.kwargs:
+            month = self.kwargs.get('month')
             context['records'] = RecordJob.objects.filter(
                 month=self.kwargs['month'],
                 user=worker).order_by('date')
-            context['salary_per_month'] = 0
-            context['month'] = self.kwargs.get('month')
         return context
 
 
 class AllRecordJobForWorkerPerMonth(LoginRequiredMixin, ListView):
-    """Отображает все записи рабочего о сделанных за день деталей за месяц"""
+    """Отображает все записи рабочего о сделанных за день деталей за месяц
+        (и суммирует одинаковые детали)"""
     model = RecordJob
-    template_name = 'workshop_data/record_job/all_records_for_worker.html'
+    template_name = 'workshop_data/record_job/all_records_for_worker_dict.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+        worker = User.objects.get(id=self.kwargs.get('id'))
+        context['worker'] = worker
+        if 'month' in self.kwargs:
+            month = self.kwargs.get('month')
+            context['records'] = RecordJob.objects.filter(
+                month=self.kwargs['month'],
+                user=worker).order_by('date')
+            context['salary_per_month'] = 0
+            context['month'] = month
+            context['qqq'] = return_sum_recordjob_every_detail(RecordJob.objects.filter(user=worker, month=month))
+        return context
 
 
 class ParametersDetailForSPUCreateView(LoginRequiredMixin, CreateView):
@@ -217,3 +232,4 @@ class DiagramWorkSPUView(LoginRequiredMixin, TemplateView):
         ]
         context['fff'] = RecordJob.objects.all()
         return context
+
