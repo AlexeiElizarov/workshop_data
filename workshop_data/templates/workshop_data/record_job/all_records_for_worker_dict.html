@@ -1,0 +1,76 @@
+{% extends 'main.html' %}
+{% load recordjob_tag %}
+
+{% block title %}
+    Все записи
+{% endblock title %}
+
+{% block content %}
+    <h3>Наряды {{ worker.get_full_name }}</h3>
+    <form method="GET">
+        {{ filter.form }}
+        {{ filter.form.media }}
+        <input type="submit" value="Найти">
+    </form>
+    <hr>
+    <table class="table table-success table-striped">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Месяц</th>
+            <th scope="col">Изделие.Деталь</th>
+            <th scope="col">Количество 1</th>
+            <th scope="col">Стоимость 1</th>
+            <th scope="col">Количество 2</th>
+            <th scope="col">Стоимость 2</th>
+            <th scope="col">Количество 1+2</th>
+            <th scope="col">Расценка</th>
+            <th scope="col">Зарплата(1.4)</th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+            {% for record, value in qqq.items %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                        <td>
+                            <a href="">
+                                {{ month }}
+                            </a>
+                        </td>
+                        <td>{{ record }}</td>
+                        <td>{{ value.quantity_1 }}</td>
+                        <td>{{ value.price_1 }}</td>
+                        <td>{{ value.quantity_2 }}</td>
+                        <td>{{ value.price_2 }}</td>
+                        <td>{{ value.quantity }}</td>
+                        <td>{{ value.price }}</td>
+                        <td><a href=""><strong>{{ value.salary }}</strong></a></td>
+                        <td>
+                            <button class="btn btn-outline-primary dropdown-toggle btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Действия
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="">Исправить</a></li>
+                                <li><a class="dropdown-item" href="">Удалить</a></li>
+                            </ul>
+                        </td>
+                </tr>
+            {% endfor %}
+            {% if month %}
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><strong>Итого за {% month_name_tag month %}</strong></td>
+                <td>{% return_salary_per_month_tag records %}</td>
+                <td></td>
+            {% endif %}
+        </tbody>
+    </table>
+
+{% endblock content %}
