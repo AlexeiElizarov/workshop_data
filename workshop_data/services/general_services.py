@@ -366,12 +366,66 @@ def return_sum_recordjob_every_detail(records):
                 'price': record.detail.parameters_for_spu.price,
                 'price_1': record.detail.parameters_for_spu.return_salary_per_first_side(),
                 'price_2': record.detail.parameters_for_spu.return_salary_per_second_side(),
+                'order_yes': 1 if record.order_yes else 0,
+                'order_at_master': 1 if record.order_at_master else 0
             }
         else:
             dict[detail]['quantity'] += record.quantity if record.quantity else 0
             dict[detail]['quantity_1'] += record.quantity_1 if record.quantity_1 else 0
             dict[detail]['quantity_2'] += record.quantity_2 if record.quantity_2 else 0
+            dict[detail]['order_yes'] += record.order_yes
+            dict[detail]['order_at_master'] += record.order_at_master
         dict[detail]['salary'] = round(((dict[detail]['quantity'] *  dict[detail]['price'] +\
                                  dict[detail]['quantity_1'] * dict[detail]['price_1'] +\
                                  dict[detail]['quantity_2'] * dict[detail]['price_2']) * 1.4), 2)
     return dict
+
+
+def get_records_for_str_name(str_record: str, worker: str, month: str):
+    """Ищет все записи модели RecordJob по строковому названию. Возвращает queryset с RecordJob"""
+    from workshop_data.models import RecordJob, Product, Detail
+    if len(str_record.split()[1].split('.')) > 1:
+        records = RecordJob.objects.filter(user=worker,
+                                           month=month,
+                                           product=Product.objects.get(name=str_record.split()[0]),
+                                           detail=Detail.objects.get(name=str_record.split()[1].split('.')[1]))
+    else:
+        records = RecordJob.objects.filter(user=worker,
+                                           month=month,
+                                           product=Product.objects.get(name=str_record.split()[0]),
+                                           detail=Detail.objects.get(name=str_record.split()[1]))
+    return records
+
+def record_job_order_yes_ready(request, worker, month, record):
+    """Меняет значение поля order_yes модели RecordJob"""
+    records = get_records_for_str_name(record, worker, month)
+    records.update(order_yes=True) if records[0].order_yes == False else records.update(order_yes=False)
+    return HttpResponseRedirect(reverse_lazy(
+        'all_record_job_for_worker_per_month',
+        kwargs={'id': records[0].user.id, 'month': records[0].month}))
+
+
+def record_job_order_at_master(request, worker, month, record):
+    """Меняет значение поля order_at_master модели RecordJob"""
+    records = get_records_for_str_name(record, worker, month)
+    records.update(order_at_master=True) if records[0].order_at_master == False else records.update(order_at_master=False)
+    return HttpResponseRedirect(reverse_lazy(
+        'all_record_job_for_worker_per_month',
+        kwargs={'id': records[0].user.id, 'month': records[0].month}))
+
+def return_quantity_for_order(worker, month, record):
+    """Возвращает количество деталей из списка записей RecordJob(для заполнения наряда)"""
+    records = get_records_for_str_name(record, worker, month)
+    count = 0
+
+    for record in records:
+        print()
+        print(type(record))
+        print(record.quantity)
+        print(record.quantity_1)
+        print(record.quantity_2)
+        print()
+        count += record.quantity
+        count += record.quantity_1 / 2
+        count += record.quantity_2 / 2
+    return count

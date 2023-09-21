@@ -55,7 +55,7 @@ class RecordJobForm(forms.ModelForm):
     class Meta:
         model = RecordJob
         fields = '__all__'
-        exclude = ('author', )
+        exclude = ('author', 'order_yes', 'order_at_master')
 
     def __init__(self, *args, **kwargs):
         super(RecordJobForm, self).__init__(*args, **kwargs)

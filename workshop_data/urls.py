@@ -4,7 +4,7 @@ from django.urls import path
 
 from workshop_data.services.general_services import (
     stage_in_work_ready,
-    resolution_statement_about_job_over_detail)
+    resolution_statement_about_job_over_detail, record_job_order_yes_ready, record_job_order_at_master)
 from workshop_data.views.statement_about_job_over_detail_view import (
     AllDetailResolutionOrNotView,
     StatementAboutJobOverDetailView,)
@@ -95,8 +95,6 @@ from workshop_data.views.record_job_view import (
     AllRecordJobForWorker,
     AllRecordJobForWorkerPerMonth,
 )
-
-
 
 
 
@@ -199,6 +197,8 @@ urlpatterns = [
     path('record-job-create/', RecordJobCreateView.as_view(),name='record_job_create'),
     path('record-job-edit/<id>/', RecordJobEditView.as_view(),name='record_job_edit'),
     path('record-job-delete/<id>/', RecordJobDeleteView.as_view(),name='record_job_delete'),
+    path('record_job/order_at_master/<worker>/<month>/<record>/', record_job_order_at_master,name='record_job_order_at_master'),
+    path('record_job/order_yes_ready/<worker>/<month>/<record>/', record_job_order_yes_ready, name='record_job_order_yes_ready'),
     path('all-record-job/', AllRecordJobForAllWorker.as_view(), name='all_record_job'),
     path('all-record-job/worker-<id>/', AllRecordJobForWorker.as_view(), name='all_record_job_for_worker'),
     path('all-record-job/worker-<id>/month-<month>/', AllRecordJobForWorkerPerMonth.as_view(), name='all_record_job_for_worker_per_month'),
@@ -207,6 +207,8 @@ urlpatterns = [
     path('all-record-job/detail_<detail>/', AllRecordJobForAllWorker.as_view(), name='all_record_job_per_detail'),
     path('all-record-job/username_<username>/', AllRecordJobForAllWorker.as_view(), name='all_record_job_username'),
     path('all-record-job/diagram/', DiagramWorkSPUView.as_view(), name='all_record_job_diagram'),
+
+
 
     path('create-parameter-detail-spu-<product>-<detail>/', ParametersDetailForSPUCreateView.as_view(), name='create_parameter_detail_spu'),
     path('edit-parameter-detail-spu-<product>-<detail>/', ParametersDetailForSPEditeView.as_view(), name='edit_parameter_detail_spu'),
@@ -231,4 +233,6 @@ urlpatterns = [
 
 
 ]
+
+
 

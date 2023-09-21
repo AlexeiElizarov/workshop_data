@@ -24,13 +24,13 @@ class RecordJob(models.Model):
         on_delete=models.PROTECT,
         verbose_name='Деталь')
     quantity_1 = models.PositiveSmallIntegerField(
-        default=0, blank=True, null=True,
+        default=0, blank=True,
         verbose_name='Количество по 1й стороне')
     quantity_2 = models.PositiveSmallIntegerField(
-        default=0, blank=True, null=True,
+        default=0, blank=True,
         verbose_name='Количество по 2й стороне')
     quantity = models.PositiveSmallIntegerField(
-        default=0, blank=True, null=True,
+        default=0, blank=True,
          verbose_name='Количество по двум сторонам')
     order_yes = models.BooleanField(default=False,
                                     verbose_name='Наряд выписан')

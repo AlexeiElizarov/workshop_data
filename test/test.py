@@ -1,1 +1,1 @@
-print('safsf'.split()[0])
+print(False + False)

@@ -25,19 +25,17 @@
             <th scope="col">Стоимость 2</th>
             <th scope="col">Количество 1+2</th>
             <th scope="col">Расценка</th>
+            <th scope="col">В наряд</th>
             <th scope="col">Зарплата(1.4)</th>
-            <th scope="col"></th>
+            <th scope="col">Наряд</th>
+            <th scope="col">Наряд сдан</th>
         </tr>
         </thead>
         <tbody>
             {% for record, value in qqq.items %}
                 <tr>
                     <th scope="row">{{ forloop.counter }}</th>
-                        <td>
-                            <a href="">
-                                {{ month }}
-                            </a>
-                        </td>
+                        <td>{% month_name_tag month %}</td>
                         <td>{{ record }}</td>
                         <td>{{ value.quantity_1 }}</td>
                         <td>{{ value.price_1 }}</td>
@@ -45,15 +43,20 @@
                         <td>{{ value.price_2 }}</td>
                         <td>{{ value.quantity }}</td>
                         <td>{{ value.price }}</td>
+                        <td>{% return_quantity_for_order_tag worker=worker.id month=month record=record %}</td>
                         <td><a href=""><strong>{{ value.salary }}</strong></a></td>
-                        <td>
-                            <button class="btn btn-outline-primary dropdown-toggle btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Действия
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="">Исправить</a></li>
-                                <li><a class="dropdown-item" href="">Удалить</a></li>
-                            </ul>
+                        <td>{% if value.order_yes %}
+                            <a style="text-decoration: none;" href="{% url 'record_job_order_yes_ready' worker=worker.id month=month record=record %}"><p>есть</p></a>
+                            {% else %}
+                            <a style="text-decoration: none;" href="{% url 'record_job_order_yes_ready' worker=worker.id month=month record=record %}"><p style="color:red;">нет</p></a>
+                            {% endif %}
+                        </td>
+
+                        <td>{% if value.order_at_master %}
+                                <a style="text-decoration: none;" href="{% url 'record_job_order_at_master' worker=worker.id month=month record=record %}"><p>есть</p></a>
+                            {% else %}
+                            <a style="text-decoration: none;" href="{% url 'record_job_order_at_master' worker=worker.id month=month record=record %}"><p style="color:red;">нет</p></a>
+                            {% endif %}
                         </td>
                 </tr>
             {% endfor %}
@@ -68,6 +71,8 @@
                 <td></td>
                 <td><strong>Итого за {% month_name_tag month %}</strong></td>
                 <td>{% return_salary_per_month_tag records %}</td>
+                <td></td>
+                <td></td>
                 <td></td>
             {% endif %}
         </tbody>

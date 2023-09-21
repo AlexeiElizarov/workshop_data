@@ -36,9 +36,9 @@ class RecordJobCreateView(LoginRequiredMixin, CreateView):
                 user=self.object.user,
                 product=self.object.product,
                 detail=self.object.detail,
-                quantity_1=self.object.quantity_1,
-                quantity_2=self.object.quantity_2,
-                quantity=self.object.quantity,
+                quantity_1=self.object.quantity_1 if self.object.quantity_1 else 0,
+                quantity_2=self.object.quantity_2 if self.object.quantity_2 else 0,
+                quantity=self.object.quantity if self.object.quantity else 0,
                 author_id=self.request.user.id
             )
             record_job.save()
