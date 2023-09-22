@@ -21,7 +21,8 @@ from workshop_data.views.services_view import (
     BatchlAutocomplete,
     StageForDetaillAutocomplete,
     DetaillForProductAutocomplete,
-    WorkerSPUAutocomplete)
+    WorkerSPUAutocomplete,
+)
 from workshop_data.views.stage_views import (
     StageManufacturingDetailInWorkInPlanView,
     StageManufacturingDetailInWorkView,

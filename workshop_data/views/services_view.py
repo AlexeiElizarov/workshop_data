@@ -28,7 +28,7 @@ class WorkerSPUAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
         if not self.request.user.is_authenticated:
             return User.objects.none()
-        qs = User.objects.filter(id__in=[43, 61, 75, 62, 64, 72])
+        qs = User.objects.filter(id__in=[43, 61, 75, 62, 64, 72, 76])
         if self.q:
             qs = qs.filter(surname__iregex=self.q)
         return qs
@@ -94,7 +94,6 @@ class BatchlAutocomplete(autocomplete.Select2QuerySetView):
         if self.q:
             qs = qs.filter(id__istartswith=self.q)
         return qs
-
 
 
 class StageForDetaillAutocomplete(autocomplete.Select2QuerySetView):

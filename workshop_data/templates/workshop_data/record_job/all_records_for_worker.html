@@ -8,6 +8,7 @@
 
 
 {% block content %}
+    {{ ggg }}
     <h3>Наряды {{ worker.get_full_name }}</h3>
     <form method="GET">
         {{ filter.form }}
@@ -81,7 +82,7 @@
                                 {{ record.quantity }}
                             {% endif %}</td>
                         <td>{{ record.detail.parameters_for_spu.price }}</td>
-                        <td><a href="{% url 'record_job_edit' id=record.id %}"><strong>{% returns_salary_for_completed_detail_tag record %}</strong></a></td>
+                        <td><strong>{% returns_salary_for_completed_detail_tag record %}</strong></td>
                         <td>
                             <button class="btn btn-outline-primary dropdown-toggle btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 Действия

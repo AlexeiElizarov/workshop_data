@@ -7,6 +7,7 @@ from django.shortcuts import redirect
 from django.views.generic import ListView, CreateView, UpdateView, TemplateView, DeleteView
 
 from sign.forms import User
+from workshop_data.filters import RecordJobFilter
 from workshop_data.models import Product
 from workshop_data.models.record_job import RecordJob
 from workshop_data.forms.record_job_form import (
@@ -87,6 +88,7 @@ class AllRecordJobForAllWorker(LoginRequiredMixin, ListView):
                                                                     'detail__parameters_for_spu',
                                                                     'user',
                                                                     )
+        context['filter'] = RecordJobFilter(self.request.GET)
         if 'month' in self.kwargs:
             context['records'] = RecordJob.objects.filter(month=self.kwargs['month']).order_by('date')
         elif 'username' in self.kwargs:
@@ -116,10 +118,11 @@ class AllRecordJobForWorker(LoginRequiredMixin, ListView):
                             'user',
                             )
         if 'month' in self.kwargs:
-            month = self.kwargs.get('month')
             context['records'] = RecordJob.objects.filter(
                 month=self.kwargs['month'],
                 user=worker).order_by('date')
+            context['salary_per_month'] = 0
+            context['month'] = self.kwargs.get('month')
         return context
 
 
@@ -232,4 +235,3 @@ class DiagramWorkSPUView(LoginRequiredMixin, TemplateView):
         ]
         context['fff'] = RecordJob.objects.all()
         return context
-

@@ -2,11 +2,11 @@
 import django_filters
 from django import forms
 
-from django_filters import FilterSet
+from django_filters import FilterSet, filters
 from django_filters.widgets import RangeWidget
 
 from sign.models import User
-from workshop_data.models import Bonus, Order
+from workshop_data.models import Bonus, Order, RecordJob
 from workshop_data.models.product import Product
 from workshop_data.models.detail import Detail
 from workshop_data.models.workshop_plan import WorkshopPlan
@@ -125,12 +125,20 @@ class RecordJobFilter(FilterSet):
         queryset=Detail.objects.all().select_related('prefix', ),
         widget=autocomplete.Select2(url='data_autocomplete_detail')
     )
-    month = django_filters.MultipleChoiceFilter(
-        choices=Month.choices,
-        widget=forms.CheckboxSelectMultiple()
+
+    # month = django_filters.MultipleChoiceFilter(
+    #     choices=Month.choices,
+    #     widget=forms.CheckboxSelectMultiple()
+    # )
+    user = django_filters.ModelChoiceFilter(
+        queryset=User.objects.all(),
+        widget=autocomplete.Select2(url='data_autocomplete_worker_cpu')
     )
-    user = django_filters.MultipleChoiceFilter(
-        choices=User.objects.all(),
-        widget=autocomplete.Select2(url='data_autocomplete_worker')
-    )
+    # month = django_filters.MultipleChoiceFilter(
+    #     choices=Month.choices,
+    #     widget=forms.RadioSelect)
+
+    class Meta:
+        model = RecordJob
+        fields = ['product', 'detail', 'month', 'user']
 

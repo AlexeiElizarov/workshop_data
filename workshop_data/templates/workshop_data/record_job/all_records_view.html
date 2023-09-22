@@ -9,6 +9,14 @@
 
 {% block content %}
     <form method="GET">
+<!--        <div>-->
+<!--            {{ filter.form. }}-->
+<!--            {{ filter.form.product }}-->
+<!--            {{ filter.form.media }}-->
+<!--        </div>-->
+<!--        <div></div>-->
+<!--        <div></div>-->
+<!--        <div></div>-->
         {{ filter.form }}
         {{ filter.form.media }}
         <input type="submit" value="Найти">
@@ -37,7 +45,7 @@
         </tr>
         </thead>
         <tbody>
-            {% for record in records %}
+            {% for record in filter.qs %}
                 <tr>
                     <th scope="row">{{ forloop.counter }}</th>
                         <td>{{ record.date }}</td>
@@ -83,7 +91,7 @@
                                 0
                             {% endif %}</td>
                         <td>{{ record.detail.parameters_for_spu.price }}</td>
-                        <td><a href="{% url 'record_job_edit' id=record.id %}"><strong>{% returns_salary_for_completed_detail_tag record %}</strong></a></td>
+                        <td><a href=""><strong>{% returns_salary_for_completed_detail_tag record %}</strong></a></td>
                         <td>
                             <button class="btn btn-outline-primary dropdown-toggle btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 Действия

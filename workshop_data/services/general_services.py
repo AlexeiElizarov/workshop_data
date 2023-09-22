@@ -353,6 +353,22 @@ def return_salary_per_month(records):
         return '???'
 
 
+def return_sum_recordjob_for_every_detail(records):
+    """Возвращает общее колличество деталей по одинаковым записям за месяц"""
+    dict = {}
+    for record in records:
+        q = {'quantity': 0,
+             'quantity_1': 0,
+             'quantity_2': 0}
+
+        dict[record.detail.name] = {'quantity' : record.quantity,
+                                    'quantity_1': record.quantity_1,
+                                    'quantity_2': record.quantity_2}
+        print()
+        print(dict)
+        print()
+
+
 def return_sum_recordjob_every_detail(records):
     """Возвращает общее количество деталей по одинаковым записям за месяц"""
     dict = {}
