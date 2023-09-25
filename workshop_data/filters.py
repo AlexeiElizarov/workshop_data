@@ -114,7 +114,11 @@ class WorkersFilter(FilterSet):
         model = User
         fields = ['surname']
 
-
+FAVORITE_COLORS_CHOICES = [
+    ('blue', 'Blue'),
+    ('green', 'Green'),
+    ('black', 'Black'),
+]
 class RecordJobFilter(FilterSet):
     """Фильтр поиска записи выполненных работ на участке СПУ"""
     product = django_filters.ModelChoiceFilter(
@@ -126,17 +130,14 @@ class RecordJobFilter(FilterSet):
         widget=autocomplete.Select2(url='data_autocomplete_detail')
     )
 
-    # month = django_filters.MultipleChoiceFilter(
-    #     choices=Month.choices,
-    #     widget=forms.CheckboxSelectMultiple()
-    # )
     user = django_filters.ModelChoiceFilter(
         queryset=User.objects.all(),
         widget=autocomplete.Select2(url='data_autocomplete_worker_cpu')
     )
-    # month = django_filters.MultipleChoiceFilter(
-    #     choices=Month.choices,
-    #     widget=forms.RadioSelect)
+    month = django_filters.MultipleChoiceFilter(
+        choices=Month.choices,
+        widget=forms.CheckboxSelectMultiple()
+    )
 
     class Meta:
         model = RecordJob

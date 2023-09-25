@@ -9,19 +9,44 @@
 
 {% block content %}
     <form method="GET">
-<!--        <div>-->
-<!--            {{ filter.form. }}-->
-<!--            {{ filter.form.product }}-->
-<!--            {{ filter.form.media }}-->
-<!--        </div>-->
-<!--        <div></div>-->
-<!--        <div></div>-->
-<!--        <div></div>-->
-        {{ filter.form }}
-        {{ filter.form.media }}
-        <input type="submit" value="Найти">
+        <div style="display: flex;flex-direction: row;">
+            <div>
+                <div style="display: flex;margin:10px;">
+                    <div style="margin-left: 10px;">
+                        {{ filter.form.product.label }}
+                        {{ filter.form.product }}
+                        {{ filter.form.media }}
+                    </div>
+                    <div style="margin-left: 10px;">
+                        {{ filter.form.detail.label }}
+                        {{ filter.form.detail }}
+                        {{ filter.form.media }}
+                    </div>
+                    <div style="margin-left: 10px;">
+                        {{ filter.form.user.label }}
+                        {{ filter.form.user }}
+                        {{ filter.form.media }}
+                    </div>
+                </div>
+                <div class="input-group mb-3">
+                    <div class="input-group-text">
+                        {% for choice in filter.form.month %}
+                        <div class="wrapper-month" style="max-width:100px;margin-right:21.5px;">
+                            {{ choice }}
+                        </div>
+                        {% endfor %}
+
+                    </div>
+                </div>
+            </div>
+            <div class="d-grid col-2" style="margin:10px;">
+                <input class="btn btn btn-outline-info btn-lg" type="submit" value="Поиск">
+            </div>
+        </div>
     </form>
+
     <hr>
+
     <table class="table table-success table-striped">
         <thead>
         <tr>

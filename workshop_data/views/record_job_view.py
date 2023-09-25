@@ -138,12 +138,13 @@ class AllRecordJobForWorkerPerMonth(LoginRequiredMixin, ListView):
         context['worker'] = worker
         if 'month' in self.kwargs:
             month = self.kwargs.get('month')
-            context['records'] = RecordJob.objects.filter(
-                month=self.kwargs['month'],
+            records = RecordJob.objects.filter(
+                month=month,
                 user=worker).order_by('date')
+            context['records'] = records
             context['salary_per_month'] = 0
             context['month'] = month
-            context['qqq'] = return_sum_recordjob_every_detail(RecordJob.objects.filter(user=worker, month=month))
+            context['qqq'] = return_sum_recordjob_every_detail(records)
         return context
 
 
@@ -225,12 +226,8 @@ class DiagramWorkSPUView(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         context['data'] = \
         [
-            # {'name': user.surname,
-            #  'norm': RecordJob.objects.filter(user=user).aggregate(
-            #      Sum('detail__parameters_for_spu__norm' * 'record_job__quantity')  )
-            # } for user in User.objects.filter(id__in=[43, 61, 75, 62, 64, 72])
             {'name': user.surname,
-             'norm': RecordJob.objects.filter(user=user).aggregate(fff=Sum(F('detail__parameters_for_spu__norm') * F('quantity')))
+             'norm': RecordJob.objects.filter(user=user).aggregate(value=Sum(F('detail__parameters_for_spu__norm') * F('quantity')))
              } for user in User.objects.filter(id__in=[43, 61, 75, 62, 64, 72])
         ]
         context['fff'] = RecordJob.objects.all()

@@ -34,7 +34,7 @@
                 labels: [{% for i in data %}'{{ i.name }}',{% endfor %}],
                 datasets: [{
                     label: 'Операторы',
-                    data: [{% for i in data %}{{ i.norm.detail__parameters_for_spu__norm__sum }},{% endfor %}],
+                    data: [{% for i in data %}{{ i.norm.value }},{% endfor %}],
                     borderWidth: 1
                 }]
                 },

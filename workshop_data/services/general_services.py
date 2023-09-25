@@ -412,6 +412,7 @@ def get_records_for_str_name(str_record: str, worker: str, month: str):
                                            detail=Detail.objects.get(name=str_record.split()[1]))
     return records
 
+
 def record_job_order_yes_ready(request, worker, month, record):
     """Меняет значение поля order_yes модели RecordJob"""
     records = get_records_for_str_name(record, worker, month)
@@ -429,19 +430,13 @@ def record_job_order_at_master(request, worker, month, record):
         'all_record_job_for_worker_per_month',
         kwargs={'id': records[0].user.id, 'month': records[0].month}))
 
+
 def return_quantity_for_order(worker, month, record):
     """Возвращает количество деталей из списка записей RecordJob(для заполнения наряда)"""
     records = get_records_for_str_name(record, worker, month)
     count = 0
-
     for record in records:
-        print()
-        print(type(record))
-        print(record.quantity)
-        print(record.quantity_1)
-        print(record.quantity_2)
-        print()
         count += record.quantity
         count += record.quantity_1 / 2
         count += record.quantity_2 / 2
-    return count
+    return int(count)

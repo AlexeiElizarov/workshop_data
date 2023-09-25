@@ -102,5 +102,9 @@ class ParametersDetailForSPU(models.Model):
         return round((self.first_side_time * self.coefficient_first_side * self.return_salary_per_minute()), 2)
 
     def return_salary_per_second_side(self):
-        """Возвращает зарплату по 1-й стороне"""
+        """Возвращает зарплату по 2-й стороне"""
         return round((self.second_side_time * self.coefficient_second_side * self.return_salary_per_minute()), 2)
+
+    def return_salary_per_two_side(self):
+        """Возвращает зарплату по 2-ум сторонам"""
+        return self.return_salary_per_first_side() + self.return_salary_per_second_side()
