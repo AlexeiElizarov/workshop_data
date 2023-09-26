@@ -1,0 +1,18 @@
+
+.time_of_work_form {
+    display: flex;
+    flex-direction: row;
+}
+
+#testForm {
+    margin-top: -3px;
+}
+
+#contact-submit {
+    margin-left: 5px;
+    width: 35px;
+}
+
+.button-input {
+    margin-top: -3px;
+}
