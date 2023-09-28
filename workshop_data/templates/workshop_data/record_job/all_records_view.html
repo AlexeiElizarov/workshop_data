@@ -56,12 +56,8 @@
             <th scope="col">Исполнитель</th>
             <th scope="col">Изделие.Деталь</th>
             <th scope="col">Количество 1</th>
-<!--            <th scope="col">Время 1</th>-->
-<!--            <th scope="col">Коэффициент 1</th>-->
             <th scope="col">Стоимость 1</th>
             <th scope="col">Количество 2</th>
-<!--            <th scope="col">Время 2</th>-->
-<!--            <th scope="col">Коэффициент 2</th>-->
             <th scope="col">Стоимость 2</th>
             <th scope="col">Количество 1+2</th>
             <th scope="col">Расценка</th>
@@ -70,65 +66,15 @@
         </tr>
         </thead>
         <tbody>
-            {% for record in filter.qs %}
-                <tr>
-                    <th scope="row">{{ forloop.counter }}</th>
-                        <td>{{ record.date }}</td>
-                        <td>
-                            <a href="{% url 'all_record_job_per_month' month=record.month %}">
-                                {{ record.get_month_display }}
-                            </a>
-                        </td>
-                        <td><a href="{% url 'all_record_job_for_worker' id=record.user.id %}">{{ record.user.get_full_name }}</a></td>
-                        <td><a href="{% url 'all_record_job_per_product' product=record.product %}">
-                            {{ record.product }}</a>
-                            <a href="{% url 'all_record_job_per_detail' detail=record.detail %}">
-                            {{ record.detail }}</a>
-                            {% if record.detail.parameters_for_spu %}
-                            {% else %}
-                                <a href="{% url 'create_parameter_detail_spu' product=record.product detail=record.detail %}">
-                                &#11015;</a>
-
-                            {% endif %}
-
-                        </td>
-                        <td>{% if record.quantity_1 > 0 %}
-                                <strong>{{ record.quantity_1 }}</strong>
-                            {% else %}
-                                0
-                            {% endif %}</td>
-<!--                        <td>{{ record.detail.parameters_for_spu.first_side_time }}</td>-->
-<!--                        <td>{{ record.detail.parameters_for_spu.coefficient_first_side }}</td>-->
-                        <td>{{ record.detail.parameters_for_spu.return_salary_per_first_side }}</td>
-                        <td>{% if record.quantity_2 > 0 %}
-                                <strong>{{ record.quantity_2 }}</strong>
-                            {% else %}
-                                0
-                            {% endif %}</td>
-<!--                        <td>{{ record.detail.parameters_for_spu.second_side_time }}</td>-->
-<!--                        <td>{{ record.detail.parameters_for_spu.coefficient_second_side }}</td>-->
-                        <td>{{ record.detail.parameters_for_spu.return_salary_per_second_side }}</td>
-                        <td>{% if record.quantity > 0  %}
-                                <strong>{{ record.quantity }}</strong>
-                            {% elif record.quantity is not None %}
-                                {{ record.quantity }}
-                            {% else %}
-                                0
-                            {% endif %}</td>
-                        <td>{{ record.detail.parameters_for_spu.price }}</td>
-                        <td><a href=""><strong>{% returns_salary_for_completed_detail_tag record %}</strong></a></td>
-                        <td>
-                            <button class="btn btn-outline-primary dropdown-toggle btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Действия
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="{% url 'record_job_edit' record.id %}">Исправить</a></li>
-                                <li><a class="dropdown-item" href="{% url 'record_job_delete' record.id %}">Удалить</a></li>
-                            </ul>
-                        </td>
-                </tr>
+        {% if records %}
+            {% for record in records %}
+                {% include 'workshop_data/record_job/includes/record_job_table_body.html' %}
             {% endfor %}
-
+        {% else %}
+            {% for record in filter.qs %}
+                {% include 'workshop_data/record_job/includes/record_job_table_body.html' %}
+            {% endfor %}
+        {% endif %}
         </tbody>
     </table>
 

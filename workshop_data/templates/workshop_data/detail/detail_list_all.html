@@ -21,6 +21,7 @@
         </tr>
         </thead>
         <tbody>
+        {{ filter.qs }}
             {% for detail in filter.qs %}
                  <tr>
                     <th scope="row">{{ forloop.counter }}</th>

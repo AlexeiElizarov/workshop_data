@@ -43,6 +43,9 @@ class Detail(models.Model):
     def __str__(self):
         return f'{self.prefix}.{self.name}' if self.prefix else self.name
 
+    def __unicode__(self):
+        return self.name
+
     def get_name_detail(self):
         if self.secondary_detail.all():
             return f'{self.name}уз'

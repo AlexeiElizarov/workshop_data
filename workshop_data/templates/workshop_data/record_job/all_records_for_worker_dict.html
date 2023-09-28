@@ -20,6 +20,7 @@
             <th scope="col">Стоимость 2</th>
             <th scope="col">Количество 1+2</th>
             <th scope="col">Расценка</th>
+            <th scope="col">Норма</th>
             <th scope="col">В наряд</th>
             <th scope="col">Зарплата(1.4)</th>
             <th scope="col">Наряд</th>
@@ -38,6 +39,7 @@
                         <td>{{ value.price_2 }}</td>
                         <td>{{ value.quantity }}</td>
                         <td>{{ value.price }}</td>
+                        <td>{{ value.norm }}</td>
                         <td>{% return_quantity_for_order_tag worker=worker.id month=month record=record %}</td>
                         <td><a href=""><strong>{{ value.salary }}</strong></a></td>
                         <td>{% if value.order_yes %}
@@ -66,6 +68,7 @@
                 <td></td>
                 <td><strong>Итого за {% month_name_tag month %}</strong></td>
                 <td>{% return_salary_per_month_tag records %}</td>
+                <td></td>
                 <td></td>
                 <td></td>
                 <td></td>

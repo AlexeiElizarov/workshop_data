@@ -48,6 +48,10 @@ class ProductAutocomplete(autocomplete.Select2QuerySetView):
                 for _detail1 in _detail.detail_in_detail.all():
                     if _detail1.detail_in_detail.all():
                         for _detail2 in _detail1.detail_in_detail.all():
+                            if _detail2.detail_in_detail.all():
+                                for _detail3 in _detail2.detail_in_detail.all():
+                                    qs4 = qs.filter(detail=_detail3)
+                                    _details = _details | qs4
                             qs3 = qs.filter(detail=_detail2)
                             _details = _details | qs3
                     qs2 = qs.filter(detail=_detail1)

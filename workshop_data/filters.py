@@ -31,8 +31,15 @@ class DetailFilter(FilterSet):
     """Фильтр поиска Детали"""
     name = django_filters.ModelChoiceFilter(
         queryset=Detail.objects.all(),
-        widget=autocomplete.Select2(url='data_autocomplete_detail')
+        widget=autocomplete.Select2(url='data_autocomplete_detail'),
+        method='name_filter'
     )
+
+    def name_filter(self, qs, name, value):
+        # if value.prefix:
+        #     return qs.filter(**{name: value.name})
+
+        return qs.filter(**{name: value.name})
 
     class Meta:
         model = Detail
@@ -119,6 +126,8 @@ FAVORITE_COLORS_CHOICES = [
     ('green', 'Green'),
     ('black', 'Black'),
 ]
+
+
 class RecordJobFilter(FilterSet):
     """Фильтр поиска записи выполненных работ на участке СПУ"""
     product = django_filters.ModelChoiceFilter(

@@ -82,12 +82,12 @@ class AllRecordJobForAllWorker(LoginRequiredMixin, ListView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['records'] = RecordJob.objects.all().select_related('product',
-                                                                    'detail',
-                                                                    'detail__prefix',
-                                                                    'detail__parameters_for_spu',
-                                                                    'user',
-                                                                    )
+        # context['records'] = RecordJob.objects.all().select_related('product',
+        #                                                             'detail',
+        #                                                             'detail__prefix',
+        #                                                             'detail__parameters_for_spu',
+        #                                                             'user',
+        #                                                             )
         context['filter'] = RecordJobFilter(self.request.GET)
         if 'month' in self.kwargs:
             context['records'] = RecordJob.objects.filter(month=self.kwargs['month']).order_by('date')
@@ -224,11 +224,16 @@ class DiagramWorkSPUView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
+
         context['data'] = \
         [
             {'name': user.surname,
-             'norm': RecordJob.objects.filter(user=user).aggregate(value=Sum(F('detail__parameters_for_spu__norm') * F('quantity')))
-             } for user in User.objects.filter(id__in=[43, 61, 75, 62, 64, 72])
+             'norm': (RecordJob.objects.filter(user=user).aggregate(value=Sum(F('detail__parameters_for_spu__norm') * F('quantity'))))
+             } for user in User.objects.filter(id__in=[62, 64, 75, 76])
         ]
         context['fff'] = RecordJob.objects.all()
+        print()
+        print(context['data'])
+        print()
         return context

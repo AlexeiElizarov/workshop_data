@@ -3,7 +3,7 @@ from typing import Union
 
 from django.core.validators import MaxValueValidator
 from django.db.models import Sum, F
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from sign.models import User
@@ -353,48 +353,53 @@ def return_salary_per_month(records):
         return '???'
 
 
-def return_sum_recordjob_for_every_detail(records):
-    """Возвращает общее колличество деталей по одинаковым записям за месяц"""
-    dict = {}
-    for record in records:
-        q = {'quantity': 0,
-             'quantity_1': 0,
-             'quantity_2': 0}
-
-        dict[record.detail.name] = {'quantity' : record.quantity,
-                                    'quantity_1': record.quantity_1,
-                                    'quantity_2': record.quantity_2}
-        print()
-        print(dict)
-        print()
+# def return_sum_recordjob_for_every_detail(records):
+#     """Возвращает общее колличество деталей по одинаковым записям за месяц"""
+#     dict = {}
+#     for record in records:
+#         q = {'quantity': 0,
+#              'quantity_1': 0,
+#              'quantity_2': 0}
+#
+#         dict[record.detail.name] = {'quantity' : record.quantity,
+#                                     'quantity_1': record.quantity_1,
+#                                     'quantity_2': record.quantity_2}
+#         print()
+#         print(dict)
+#         print()
 
 
 def return_sum_recordjob_every_detail(records):
-    """Возвращает общее количество деталей по одинаковым записям за месяц"""
-    dict = {}
-    for record in records:
-        detail = f'{record.product} {record.detail}'
-        if detail not in dict:
-            dict[detail] = {
-                'quantity': record.quantity if record.quantity else 0,
-                'quantity_1': record.quantity_1 if record.quantity_1 else 0,
-                'quantity_2': record.quantity_2 if record.quantity_2 else 0,
-                'price': record.detail.parameters_for_spu.price,
-                'price_1': record.detail.parameters_for_spu.return_salary_per_first_side(),
-                'price_2': record.detail.parameters_for_spu.return_salary_per_second_side(),
-                'order_yes': 1 if record.order_yes else 0,
-                'order_at_master': 1 if record.order_at_master else 0
-            }
-        else:
-            dict[detail]['quantity'] += record.quantity if record.quantity else 0
-            dict[detail]['quantity_1'] += record.quantity_1 if record.quantity_1 else 0
-            dict[detail]['quantity_2'] += record.quantity_2 if record.quantity_2 else 0
-            dict[detail]['order_yes'] += record.order_yes
-            dict[detail]['order_at_master'] += record.order_at_master
-        dict[detail]['salary'] = round(((dict[detail]['quantity'] *  dict[detail]['price'] +\
-                                 dict[detail]['quantity_1'] * dict[detail]['price_1'] +\
-                                 dict[detail]['quantity_2'] * dict[detail]['price_2']) * 1.4), 2)
-    return dict
+    """Возвращает общее количество деталей по одинаковым записям за месяц(определенного рабочего)"""
+    try:
+        dict = {}
+        for record in records:
+            detail = f'{record.product} {record.detail}'
+            if detail not in dict:
+                dict[detail] = {
+                    'quantity': record.quantity if record.quantity else 0,
+                    'quantity_1': record.quantity_1 if record.quantity_1 else 0,
+                    'quantity_2': record.quantity_2 if record.quantity_2 else 0,
+                    'norm': record.detail.parameters_for_spu.norm,
+                    'price': record.detail.parameters_for_spu.price,
+                    'price_1': record.detail.parameters_for_spu.return_salary_per_first_side(),
+                    'price_2': record.detail.parameters_for_spu.return_salary_per_second_side(),
+                    'order_yes': 1 if record.order_yes else 0,
+                    'order_at_master': 1 if record.order_at_master else 0
+                }
+            else:
+                dict[detail]['quantity'] += record.quantity if record.quantity else 0
+                dict[detail]['quantity_1'] += record.quantity_1 if record.quantity_1 else 0
+                dict[detail]['quantity_2'] += record.quantity_2 if record.quantity_2 else 0
+                dict[detail]['order_yes'] += record.order_yes
+                dict[detail]['order_at_master'] += record.order_at_master
+            dict[detail]['salary'] = round(((dict[detail]['quantity'] *  dict[detail]['price'] +\
+                                     dict[detail]['quantity_1'] * dict[detail]['price_1'] +\
+                                     dict[detail]['quantity_2'] * dict[detail]['price_2']) * 1.4), 2)
+        return dict
+    except AttributeError:
+        return HttpResponse("Exception: Data not found")
+
 
 
 def get_records_for_str_name(str_record: str, worker: str, month: str):
@@ -440,3 +445,8 @@ def return_quantity_for_order(worker, month, record):
         count += record.quantity_1 / 2
         count += record.quantity_2 / 2
     return int(count)
+
+
+# def counter_norm(worker, month):
+#     """Считает норму времени сделанных деталей"""
+#     record
