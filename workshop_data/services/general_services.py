@@ -449,4 +449,4 @@ def return_quantity_for_order(worker, month, record):
 
 # def counter_norm(worker, month):
 #     """Считает норму времени сделанных деталей"""
-#     record
+#     record 6663535
