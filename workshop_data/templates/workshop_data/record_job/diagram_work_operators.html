@@ -34,7 +34,7 @@
                 labels: [{% for i in data %}'{{ i.name }}',{% endfor %}],
                 datasets: [{
                     label: 'Операторы',
-                    data: [{% for i in data %}{{ i.norm.value }},{% endfor %}],
+                    data: [{% for i in data %}{{ i.norm }},{% endfor %}],
                     borderWidth: 1
                 }]
                 },

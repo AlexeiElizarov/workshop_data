@@ -17,7 +17,7 @@ from workshop_data.forms.record_job_form import (
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy, reverse
 from workshop_data.models.detail import ParametersDetailForSPU, Detail, Prefix
-from workshop_data.services import return_sum_recordjob_every_detail
+from workshop_data.services import return_sum_recordjob_every_detail, counter_norm
 
 
 class RecordJobCreateView(LoginRequiredMixin, CreateView):
@@ -224,16 +224,20 @@ class DiagramWorkSPUView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
-
+        # context['data'] = \
+        # [
+        #     {'name': user.surname,
+        #      'norm': (RecordJob.objects.filter(user=user).aggregate(value=Sum(F('detail__parameters_for_spu__norm') * F('quantity'))))
+        #      } for user in User.objects.filter(id__in=[62, 64, 75, 76])
+        # ]
+        print()
+        print(self.kwargs)
+        print()
         context['data'] = \
-        [
+            [
             {'name': user.surname,
-             'norm': (RecordJob.objects.filter(user=user).aggregate(value=Sum(F('detail__parameters_for_spu__norm') * F('quantity'))))
-             } for user in User.objects.filter(id__in=[62, 64, 75, 76])
+             'norm': counter_norm(month='08', worker=user)
+             } for user in User.objects.filter(id__in=[43, 61]) # 43, 61 # 62, 64, 75, 76
         ]
-        context['fff'] = RecordJob.objects.all()
-        print()
-        print(context['data'])
-        print()
+        # context['fff'] = counter_norm()
         return context
