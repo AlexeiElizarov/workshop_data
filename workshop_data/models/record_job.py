@@ -32,6 +32,7 @@ class RecordJob(models.Model):
     quantity = models.PositiveSmallIntegerField(
         default=0, blank=True,
          verbose_name='Количество по двум сторонам')
+    milling_was = models.BooleanField(default=False, blank=True, null=True)
     order_yes = models.BooleanField(default=False,
                                     verbose_name='Наряд выписан')
     order_at_master = models.BooleanField(default=False,
@@ -41,4 +42,5 @@ class RecordJob(models.Model):
     objects = models.Manager()
 
 
-
+    def __str__(self):
+        return f'{self.product} {self.detail}'

@@ -13,11 +13,12 @@ from workshop_data.models.record_job import RecordJob
 from workshop_data.forms.record_job_form import (
     RecordJobForm,
     ParametersDetailForSPUCreateForm,
+    MillingDetailForSPUCreateForm,
 )
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy, reverse
-from workshop_data.models.detail import ParametersDetailForSPU, Detail, Prefix
-from workshop_data.services import return_sum_recordjob_every_detail, counter_norm
+from workshop_data.models.detail import ParametersDetailForSPU, Detail, Prefix, MillingDetailForSPU
+from workshop_data.services import return_sum_recordjob_every_detail, counter_norm, return_detail_by_product_detail
 
 
 class RecordJobCreateView(LoginRequiredMixin, CreateView):
@@ -30,7 +31,6 @@ class RecordJobCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         self.object = form.save(commit=False)
         if form.is_valid():
-
             record_job = RecordJob(
                 date=datetime.datetime.now(),
                 month=self.object.month,
@@ -40,6 +40,7 @@ class RecordJobCreateView(LoginRequiredMixin, CreateView):
                 quantity_1=self.object.quantity_1 if self.object.quantity_1 else 0,
                 quantity_2=self.object.quantity_2 if self.object.quantity_2 else 0,
                 quantity=self.object.quantity if self.object.quantity else 0,
+                milling_was=self.object.milling_was,
                 author_id=self.request.user.id
             )
             record_job.save()
@@ -52,7 +53,7 @@ class RecordJobEditView(LoginRequiredMixin, UpdateView):
     form_class = RecordJobForm
     login_url = '/login/'
     template_name = 'workshop_data/record_job/create_record_job.html'
-    
+
     def get_object(self, queryset=None):
         print(self.kwargs)
         obj = RecordJob.objects.get(
@@ -88,7 +89,14 @@ class AllRecordJobForAllWorker(LoginRequiredMixin, ListView):
         #                                                             'detail__parameters_for_spu',
         #                                                             'user',
         #                                                             )
-        context['filter'] = RecordJobFilter(self.request.GET)
+        context['filter'] = RecordJobFilter(
+            self.request.GET,
+            queryset=self.get_queryset().select_related('user',
+                                                        'detail',
+                                                        'product',
+                                                        'detail__prefix',
+                                                        'detail__parameters_for_spu',
+                                                        ))
         if 'month' in self.kwargs:
             context['records'] = RecordJob.objects.filter(month=self.kwargs['month']).order_by('date')
         elif 'username' in self.kwargs:
@@ -98,6 +106,13 @@ class AllRecordJobForAllWorker(LoginRequiredMixin, ListView):
         elif 'detail' in self.kwargs:
             context['records'] = RecordJob.objects.filter(detail=Detail.objects.get(
                 name=self.kwargs.get('detail').split('.')[1]))
+        if 'records' in context:
+            context['records'] = context['records'].select_related('user',
+                                                                   'detail',
+                                                                   'product',
+                                                                   'detail__prefix',
+                                                                   'detail__parameters_for_spu',
+                                                                   ).prefetch_related('detail__millingdetailforspu_set')
         return context
 
 
@@ -110,7 +125,7 @@ class AllRecordJobForWorker(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         worker = User.objects.get(id=self.kwargs.get('id'))
         context['worker'] = worker
-        context['records'] = RecordJob.objects.filter(user=worker.id)\
+        context['records'] = RecordJob.objects.filter(user=worker.id) \
             .select_related('product',
                             'detail',
                             'detail__prefix',
@@ -206,6 +221,30 @@ class ParametersDetailForSPEditeView(LoginRequiredMixin, UpdateView):
                                                             'detail': self.kwargs.get('detail')})
 
 
+class MillingDetailForSPUCreateView(CreateView):
+    """Создание новой записи фрезерования детали на СПУ участке"""
+    model = MillingDetailForSPU
+    form_class = MillingDetailForSPUCreateForm
+    template_name = 'workshop_data/record_job/milling_detail_for_cpu_create.html'
+    success_url = reverse_lazy('all_record_job')
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        detail = return_detail_by_product_detail(self.kwargs.get('record'))
+        milling = MillingDetailForSPU(
+            name=self.object.name,
+            time=self.object.time,
+            norm_milling=self.object.norm_milling,
+            price=self.object.price,
+            operations=self.object.operations,
+            milling_for_detail=detail,
+        )
+        milling.save()
+        detail.parameters_for_spu.milling_operations = milling
+        detail.parameters_for_spu.save()
+        return HttpResponseRedirect(reverse_lazy('all_record_job'))
+
+
 def parameters_detail_for_spu_create_or_edit_redirect(request, product, detail):
     obj = Detail.objects.get(name=detail.split('.')[1],
                              prefix=Prefix.objects.get(name=detail.split('.')[0]))
@@ -214,7 +253,6 @@ def parameters_detail_for_spu_create_or_edit_redirect(request, product, detail):
     else:
 
         return redirect('create_parameter_detail_spu', product=product, detail=detail)
-
 
 
 class DiagramWorkSPUView(LoginRequiredMixin, TemplateView):
@@ -230,14 +268,11 @@ class DiagramWorkSPUView(LoginRequiredMixin, TemplateView):
         #      'norm': (RecordJob.objects.filter(user=user).aggregate(value=Sum(F('detail__parameters_for_spu__norm') * F('quantity'))))
         #      } for user in User.objects.filter(id__in=[62, 64, 75, 76])
         # ]
-        print()
-        print(self.kwargs)
-        print()
         context['data'] = \
             [
-            {'name': user.surname,
-             'norm': counter_norm(month='08', worker=user)
-             } for user in User.objects.filter(id__in=[43, 61]) # 43, 61 # 62, 64, 75, 76
-        ]
+                {'name': user.surname,
+                 'norm': counter_norm(month='08', worker=user)
+                 } for user in User.objects.filter(id__in=[43, 61])  # 43, 61 # 62, 64, 75, 76
+            ]
         # context['fff'] = counter_norm()
         return context

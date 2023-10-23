@@ -21,11 +21,10 @@
         </tr>
         </thead>
         <tbody>
-        {{ filter.qs }}
             {% for detail in filter.qs %}
                  <tr>
                     <th scope="row">{{ forloop.counter }}</th>
-                    <td>{{ detail.name }}</td>
+                    <td><i>{{ detail.prefix }}</i> <strong>{{ detail.name }}</strong></td>
                     <td>{{ detail.category }}</td>
                     <td>
                         {% block all_list %}

@@ -353,37 +353,28 @@ def return_salary_per_month(records):
         return '???'
 
 
-# def return_sum_recordjob_for_every_detail(records):
-#     """Возвращает общее колличество деталей по одинаковым записям за месяц"""
-#     dict = {}
-#     for record in records:
-#         q = {'quantity': 0,
-#              'quantity_1': 0,
-#              'quantity_2': 0}
-#
-#         dict[record.detail.name] = {'quantity' : record.quantity,
-#                                     'quantity_1': record.quantity_1,
-#                                     'quantity_2': record.quantity_2}
-#         print()
-#         print(dict)
-#         print()
-
-
 def return_sum_recordjob_every_detail(records):
     """Возвращает общее количество деталей по одинаковым записям за месяц(определенного рабочего)"""
     try:
         dict = {}
         for record in records:
             detail = f'{record.product} {record.detail}'
+            quantity = record.quantity if record.quantity else 0
+            quantity_1 = record.quantity_1 if record.quantity_1 else 0
+            quantity_2 = record.quantity_2 if record.quantity_2 else 0
+            norm = record.detail.parameters_for_spu.norm if record.detail.parameters_for_spu else 0
+            price = record.detail.parameters_for_spu.price if record.detail.parameters_for_spu else 0
+            price_1 = record.detail.parameters_for_spu.return_salary_per_first_side() if record.detail.parameters_for_spu else 0
+            price_2 = record.detail.parameters_for_spu.return_salary_per_second_side() if record.detail.parameters_for_spu else 0
             if (record.product, record.detail) not in dict:
                 dict[(record.product, record.detail)] = {
-                    'quantity': record.quantity if record.quantity else 0,
-                    'quantity_1': record.quantity_1 if record.quantity_1 else 0,
-                    'quantity_2': record.quantity_2 if record.quantity_2 else 0,
-                    'norm': record.detail.parameters_for_spu.norm,
-                    'price': record.detail.parameters_for_spu.price,
-                    'price_1': record.detail.parameters_for_spu.return_salary_per_first_side(),
-                    'price_2': record.detail.parameters_for_spu.return_salary_per_second_side(),
+                    'quantity': quantity,
+                    'quantity_1': quantity_1,
+                    'quantity_2': quantity_2,
+                    'norm': norm,
+                    'price': price,
+                    'price_1': price_1,
+                    'price_2': price_2,
                     'order_yes': 1 if record.order_yes else 0,
                     'order_at_master': 1 if record.order_at_master else 0
                 }
@@ -401,19 +392,25 @@ def return_sum_recordjob_every_detail(records):
         return HttpResponse("Exception: Data not found")
 
 
-
 def get_records_for_str_name(record, worker, month):
     """Ищет все записи модели RecordJob по строковому названию. Возвращает queryset с RecordJob"""
     from workshop_data.models import RecordJob, Product, Detail
-    records = RecordJob.objects.filter(user=worker,
-                                       month=month,
-                                       product=record[0],
-                                       detail=record[1])
+    if isinstance(record, str):
+        product = record.split(',')[0].split(' ')[1][:-1]
+        detail = record.split(',')[1].split(' ')[2].split('.')[1][:-2]
+        records = RecordJob.objects.filter(user=worker,
+                                           month=month,
+                                           product=Product.objects.get(name=product),
+                                           detail=Detail.objects.get(name=detail))
+    else:
+        records = RecordJob.objects.filter(user=worker,
+                                           month=month,
+                                           product=record[0],
+                                           detail=record[1])
     return records
 
 
 def record_job_order_yes_ready(request, worker, month, record):
-    """Меняет значение поля order_yes модели RecordJob"""
     records = get_records_for_str_name(record, worker, month)
     records.update(order_yes=True) if records[0].order_yes == False else records.update(order_yes=False)
     return HttpResponseRedirect(reverse_lazy(
@@ -452,3 +449,28 @@ def counter_norm(month, worker):
                      + value['quantity_2'] / 2 * value['norm']
     return round(norm_time, 2)
 
+
+def return_detail_by_product_detail(record):
+    """Возвращает деталь по названию детали и префиксу"""
+    from workshop_data.models import Product, Detail, Prefix
+    # product = Product.objects.get(name=record.split()[0])
+    detail = record.split()[1]
+    if len(detail.split('.')) > 1:
+        name = detail.split('.')[1]
+        prefix = Prefix.objects.get(name=detail.split('.')[0])
+        object = Detail.objects.get(name=name, prefix=prefix)
+    else:
+        object = Detail.objects.get(detail=detail)
+    return object
+
+
+def return_product_that_the_detail_is_included(detail):
+    """Находит изделие в который входит деталь"""
+    if detail.detail_in_detail.first().detail_in_detail.first().detail_in_detail.exists():
+        return detail.detail_in_detail.first().detail_in_detail.first().detail_in_detail.first().detail_in_product.first()
+    elif detail.detail_in_detail.first().detail_in_detail.exists():
+        return detail.detail_in_detail.first().detail_in_detail.first().detail_in_product.first()
+    elif detail.detail_in_detail.exists():
+        return detail.detail_in_detail.first().detail_in_product.first()
+    else:
+        return detail.detail_in_product.first()

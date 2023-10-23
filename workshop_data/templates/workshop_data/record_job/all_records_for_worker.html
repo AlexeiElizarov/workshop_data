@@ -44,7 +44,7 @@
                         <td><a href="{% url 'all_record_job_per_product' product=record.product %}">
                             {{ record.product }}</a>
                             <a href="{% url 'all_record_job_per_detail' detail=record.detail %}">
-                            {{ record.detail }}</a>
+                                <i>{{ record.detail.prefix }}</i>. {{ record.detail.name }}</a>
                             {% if record.detail.parameters_for_spu %}
                             {% else %}
                                 <a href="{% url 'create_parameter_detail_spu' product=record.product detail=record.detail %}">

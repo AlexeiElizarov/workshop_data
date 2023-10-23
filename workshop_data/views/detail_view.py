@@ -24,7 +24,9 @@ class DetailAllView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
         context['filter'] = DetailFilter(
-            self.request.GET, queryset=self.get_queryset().select_related('category'))
+            self.request.GET,
+            queryset=self.get_queryset().select_related(
+                'category', 'prefix'))
         if 'category' in self.kwargs:
             context['filter'] = DetailFilter(
                 self.request.GET,

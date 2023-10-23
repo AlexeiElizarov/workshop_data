@@ -2,9 +2,9 @@ from dal import autocomplete
 from django import forms
 from sign.models import User
 from workshop_data.forms.stage_in_work_form import InitialsModelChoiceField
-from workshop_data.models import Product, Detail, Month
+from workshop_data.models import Product, Detail, Month, Comment
 from workshop_data.models.record_job import RecordJob
-from workshop_data.models.detail import ParametersDetailForSPU
+from workshop_data.models.detail import ParametersDetailForSPU, MillingDetailForSPU
 
 
 # class MyModelChoicesField(ModelChoiceField):
@@ -49,6 +49,9 @@ class RecordJobForm(forms.ModelForm):
     quantity = forms.IntegerField(
         label='Количество по двум сторонам',
         widget=forms.TextInput(attrs={"class": "form-control", })
+    )
+    milling_was = forms.BooleanField(
+        label='Делал фрезеровку'
     )
 
 
@@ -148,3 +151,35 @@ class ParametersDetailForSPUCreateForm(forms.ModelForm):
                 k2 = cleaned_data.get('coefficient_second_side')
                 cleaned_data['coefficient_first_side'] = round((price - k2 * t2 * d) / (t1 * d), 3)
         return cleaned_data
+
+
+class MillingDetailForSPUCreateForm(forms.ModelForm):
+    """Форма описания новой операции фрезеровки для детали на участке СПУ"""
+    name = forms.CharField(
+        label='Что фрезеруем?',
+        widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    time = forms.FloatField(
+        label='Время операции',
+        widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    norm_milling = forms.FloatField(
+        label='Норма времени',
+        widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    price = forms.FloatField(
+        label='Расценка',
+        widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    operations = forms.CharField(
+        label='Операция',
+        widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+
+    class Meta:
+        model = MillingDetailForSPU
+        fields = '__all__'
+        exclude = ('milling_for_detail',)
+
+
+

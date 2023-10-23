@@ -1,4 +1,3 @@
-
 import django_filters
 from django import forms
 
@@ -30,7 +29,7 @@ class ProductFilter(FilterSet):
 class DetailFilter(FilterSet):
     """Фильтр поиска Детали"""
     name = django_filters.ModelChoiceFilter(
-        queryset=Detail.objects.all(),
+        queryset=Detail.objects.all().select_related('prefix'),
         widget=autocomplete.Select2(url='data_autocomplete_detail'),
         method='name_filter'
     )
@@ -102,12 +101,12 @@ class OrdersFilter(FilterSet):
         label=('Дата'),
         input_formats=["%d.%m.%Y"],
         lookup_expr='contains',
-        widget= forms.DateInput(attrs={'class': 'form-control'}),
+        widget=forms.DateInput(attrs={'class': 'form-control'}),
     )
 
     class Meta:
         model = Order
-        fields = ('date', )
+        fields = ('date',)
 
 
 class WorkersFilter(FilterSet):
@@ -120,6 +119,7 @@ class WorkersFilter(FilterSet):
     class Meta:
         model = User
         fields = ['surname']
+
 
 FAVORITE_COLORS_CHOICES = [
     ('blue', 'Blue'),
@@ -147,8 +147,8 @@ class RecordJobFilter(FilterSet):
         choices=Month.choices,
         widget=forms.CheckboxSelectMultiple()
     )
+    # milling = django_filters.BooleanFilter(field_name='milling_in_detail__name', lookup_expr='contains')
 
     class Meta:
         model = RecordJob
         fields = ['product', 'detail', 'month', 'user']
-

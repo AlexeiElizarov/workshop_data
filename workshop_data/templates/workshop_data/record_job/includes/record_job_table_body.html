@@ -11,12 +11,22 @@
                         <td><a href="{% url 'all_record_job_per_product' product=record.product %}">
                             {{ record.product }}</a>
                             <a href="{% url 'all_record_job_per_detail' detail=record.detail %}">
-                            {{ record.detail }}</a>
+                            <i>{{ record.detail.prefix }}</i>. {{ record.detail.name }}</a>
                             {% if record.detail.parameters_for_spu %}
                             {% else %}
                                 <a href="{% url 'create_parameter_detail_spu' product=record.product detail=record.detail %}">
                                 &#11015;</a>
 
+                            {% endif %}
+                            {% if record.detail.millingdetailforspu_set.all %}
+                                {% for milling in record.detail.millingdetailforspu_set.all %}
+                                    <abbr
+                                    title="{{ milling.name }} - {{ milling.price }}"
+                                    style="text-decoration: none;"
+                                    >
+                                        &#10022;
+                                    </abbr>
+                                {% endfor %}
                             {% endif %}
 
                         </td>
@@ -44,7 +54,7 @@
                                 0
                             {% endif %}</td>
                         <td>{{ record.detail.parameters_for_spu.price }}</td>
-                        <td><a href=""><strong>{% returns_salary_for_completed_detail_tag record %}</strong></a></td>
+                        <td><strong>{% returns_salary_for_completed_detail_tag record %}</strong></td>
                         <td>
                             <button class="btn btn-outline-primary dropdown-toggle btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 Действия
@@ -52,6 +62,10 @@
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="{% url 'record_job_edit' record.id %}">Исправить</a></li>
                                 <li><a class="dropdown-item" href="{% url 'record_job_delete' record.id %}">Удалить</a></li>
+                                <li><a class="dropdown-item" href="{% url 'milling_detail_for_cpu' record %}">Добавить фрезеровку</a></li>
+
+
+
                             </ul>
                         </td>
                 </tr>

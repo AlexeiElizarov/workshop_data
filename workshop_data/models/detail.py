@@ -35,7 +35,7 @@ class Detail(models.Model):
                                      on_delete=models.PROTECT,
                                      verbose_name='в кладовой',
                                      blank=True, null=True)
-    parameters_for_spu = models.ForeignKey("workshop_data.ParametersDetailForSPU",
+    parameters_for_spu = models.OneToOneField("workshop_data.ParametersDetailForSPU",
                                            on_delete=models.SET_NULL, blank=True, null=True,
                                            )
     objects = models.Manager()
@@ -89,6 +89,8 @@ class ParametersDetailForSPU(models.Model):
         default=0, blank=True, null=True,
         verbose_name='Норма времени'
     )
+    # milling_operations = models.ForeignKey("workshop_data.MillingDetailForSPU",
+    #                                        on_delete=models.SET_NULL, null=True)
 
     author = models.ForeignKey(
         User, on_delete=models.CASCADE,
@@ -111,3 +113,20 @@ class ParametersDetailForSPU(models.Model):
     def return_salary_per_two_side(self):
         """Возвращает зарплату по 2-ум сторонам"""
         return self.return_salary_per_first_side() + self.return_salary_per_second_side()
+
+
+class MillingDetailForSPU(models.Model):
+    """Параметры фрезеровки для СПУ операции"""
+    name = models.CharField(max_length=250, blank=True)
+    time = models.FloatField(default=0, blank=True)
+    norm_milling = models.FloatField(default=0, blank=True)
+    price = models.FloatField(default=0, blank=True)
+    operations = models.CharField(max_length=150, blank=True)
+    milling_for_detail = models.ForeignKey(
+        "workshop_data.Detail",
+        on_delete=models.SET_NULL,
+        null=True, blank=True,
+        related_name='milling_in_detail')
+
+
+

@@ -3,7 +3,7 @@ from workshop_data.models.product import (
     ProductDetail,
     DetailDetail,
     )
-from workshop_data.models.detail import Detail, ParametersDetailForSPU
+from workshop_data.models.detail import Detail, Prefix, ParametersDetailForSPU
 from workshop_data.models.stage_manufacturing_detail import StageManufacturingDetail
 from workshop_data.models.stage_name import StageName
 from workshop_data.models.month import Month
@@ -23,6 +23,7 @@ from workshop_data.models.record_job import RecordJob
 __all__ = (
     'Product',
     'Detail',
+    'Prefix',
     'StageManufacturingDetail',
     'StageName',
     'Month',

@@ -95,6 +95,7 @@ from workshop_data.views.record_job_view import (
     RecordJobDeleteView,
     AllRecordJobForWorker,
     AllRecordJobForWorkerPerMonth,
+    MillingDetailForSPUCreateView,
 )
 
 
@@ -214,6 +215,7 @@ urlpatterns = [
     path('create-parameter-detail-spu-<product>-<detail>/', ParametersDetailForSPUCreateView.as_view(), name='create_parameter_detail_spu'),
     path('edit-parameter-detail-spu-<product>-<detail>/', ParametersDetailForSPEditeView.as_view(), name='edit_parameter_detail_spu'),
     path('parameter-detail-spu-<product>-<detail>/', parameters_detail_for_spu_create_or_edit_redirect, name='parameter_detail_spu'),
+    path('milling-detail-for-spu-<record>/', MillingDetailForSPUCreateView.as_view(), name='milling_detail_for_cpu'),
 
     path('plan/product-add-in-plan-complete/', product_add_in_plan_complite, name='product_add_plan_complete'),
     path('plan/product-add-in-plan/', WorkshopPlanCreateView.as_view(), name='product_add_plan'),
