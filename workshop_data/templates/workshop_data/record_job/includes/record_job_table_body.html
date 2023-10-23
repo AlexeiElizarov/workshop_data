@@ -18,8 +18,8 @@
                                 &#11015;</a>
 
                             {% endif %}
-                            {% if record.detail.millingdetailforspu_set.all %}
-                                {% for milling in record.detail.millingdetailforspu_set.all %}
+                            {% if record.detail.milling_in_detail.all %}
+                                {% for milling in record.detail.milling_in_detail.all %}
                                     <abbr
                                     title="{{ milling.name }} - {{ milling.price }}"
                                     style="text-decoration: none;"

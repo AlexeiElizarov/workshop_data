@@ -31,6 +31,7 @@ class RecordJobCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         self.object = form.save(commit=False)
         if form.is_valid():
+
             record_job = RecordJob(
                 date=datetime.datetime.now(),
                 month=self.object.month,
@@ -95,8 +96,8 @@ class AllRecordJobForAllWorker(LoginRequiredMixin, ListView):
                                                         'detail',
                                                         'product',
                                                         'detail__prefix',
-                                                        'detail__parameters_for_spu',
-                                                        ))
+                                                        'detail__parameters_for_spu'
+                                                        ).prefetch_related('detail__milling_in_detail'))
         if 'month' in self.kwargs:
             context['records'] = RecordJob.objects.filter(month=self.kwargs['month']).order_by('date')
         elif 'username' in self.kwargs:
@@ -111,8 +112,8 @@ class AllRecordJobForAllWorker(LoginRequiredMixin, ListView):
                                                                    'detail',
                                                                    'product',
                                                                    'detail__prefix',
-                                                                   'detail__parameters_for_spu',
-                                                                   ).prefetch_related('detail__millingdetailforspu_set')
+                                                                   'detail__parameters_for_spu'
+                                                                   ).prefetch_related('detail__milling_in_detail')
         return context
 
 
@@ -169,9 +170,16 @@ class ParametersDetailForSPUCreateView(LoginRequiredMixin, CreateView):
     form_class = ParametersDetailForSPUCreateForm
     template_name = 'workshop_data/record_job/parameter_detail_for_spu_create.html'
 
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
     def form_valid(self, form):
         self.object = form.save(commit=False)
         data = self.kwargs.get('detail').split('.')
+        print()
+        print(self.kwargs)
+        print()
         if len(data) > 1:
             detail = Detail.objects.get(name=data[1],
                                         prefix=Prefix.objects.get(name=data[0]))
@@ -207,6 +215,7 @@ class ParametersDetailForSPEditeView(LoginRequiredMixin, UpdateView):
 
     def get_object(self, queryset=None):
         data = self.kwargs.get('detail').split('.')
+        print(self.kwargs)
         if len(data) > 1:
             obj = ParametersDetailForSPU.objects.get(
                 detail=Detail.objects.get(name=data[1],

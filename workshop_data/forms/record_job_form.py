@@ -65,6 +65,7 @@ class RecordJobForm(forms.ModelForm):
         self.fields['quantity_1'].required = False
         self.fields['quantity_2'].required = False
         self.fields['quantity'].required = False
+        self.fields['milling_was'].required = False
 
 
 class ParametersDetailForSPUCreateForm(forms.ModelForm):

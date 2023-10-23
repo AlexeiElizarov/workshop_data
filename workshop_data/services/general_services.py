@@ -443,7 +443,11 @@ def counter_norm(month, worker):
     from workshop_data.models import RecordJob
     records = RecordJob.objects.filter(user=worker, month=month)
     norm_time = 0
+
     for key, value, in return_sum_recordjob_every_detail(records).items():
+        print()
+        print(value)
+        print()
         norm_time += value['quantity'] * value['norm'] +\
                      value['quantity_1'] / 2 * value['norm'] \
                      + value['quantity_2'] / 2 * value['norm']

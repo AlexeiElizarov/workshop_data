@@ -212,8 +212,8 @@ urlpatterns = [
 
 
 
-    path('create-parameter-detail-spu-<product>-<detail>/', ParametersDetailForSPUCreateView.as_view(), name='create_parameter_detail_spu'),
-    path('edit-parameter-detail-spu-<product>-<detail>/', ParametersDetailForSPEditeView.as_view(), name='edit_parameter_detail_spu'),
+    path('create-parameter-detail-spu-<product>_<detail>/', ParametersDetailForSPUCreateView.as_view(), name='create_parameter_detail_spu'),
+    path('edit-parameter-detail-spu-<product>_<detail>/', ParametersDetailForSPEditeView.as_view(), name='edit_parameter_detail_spu'),
     path('parameter-detail-spu-<product>-<detail>/', parameters_detail_for_spu_create_or_edit_redirect, name='parameter_detail_spu'),
     path('milling-detail-for-spu-<record>/', MillingDetailForSPUCreateView.as_view(), name='milling_detail_for_cpu'),
 
