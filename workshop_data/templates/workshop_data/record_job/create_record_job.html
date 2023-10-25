@@ -11,11 +11,9 @@
     <div class="wrapper-form">
         <form method="POST">
             {% csrf_token %}
-
             {{ form.as_p }}
             {{ form.media }}
             <input type="submit" value="Сохранить" class="btn btn-primary">
-            <button type="submit" name="save_and_continue" class="btn btn-primary add">Сохранить и добавить еще</button>
         </form>
     </div>
     <div></div>
@@ -24,7 +22,7 @@
    <script>
         $('.add').click(function() {
             $(this).parent().after($('<h3>', {
-                'text': 'Изделие сохранено'
+                'text': 'Запись сохранена'
             }));
         });
     </script>

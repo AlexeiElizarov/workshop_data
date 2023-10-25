@@ -147,8 +147,17 @@ class RecordJobFilter(FilterSet):
         choices=Month.choices,
         widget=forms.CheckboxSelectMultiple()
     )
-    # milling = django_filters.BooleanFilter(field_name='milling_in_detail__name', lookup_expr='contains')
+    milling = django_filters.BooleanFilter(
+        label='С фрезеровкой',
+        field_name='milling_in_detail__name',
+        lookup_expr='contains',
+        )
+    milling_was = django_filters.BooleanFilter(
+        label='С фрезеровкой',
+        widget=forms.CheckboxInput
+    )
 
     class Meta:
         model = RecordJob
-        fields = ['product', 'detail', 'month', 'user']
+        fields = ['product', 'detail', 'month', 'user', 'milling', 'milling_was']
+
