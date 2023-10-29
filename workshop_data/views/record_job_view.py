@@ -31,7 +31,6 @@ class RecordJobCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         self.object = form.save(commit=False)
         if form.is_valid():
-
             record_job = RecordJob(
                 date=datetime.datetime.now(),
                 month=self.object.month,
@@ -92,12 +91,13 @@ class AllRecordJobForAllWorker(LoginRequiredMixin, ListView):
         #                                                             )
         context['filter'] = RecordJobFilter(
             self.request.GET,
-            queryset=self.get_queryset().select_related('user',
-                                                        'detail',
-                                                        'product',
-                                                        'detail__prefix',
-                                                        'detail__parameters_for_spu'
-                                                        ).prefetch_related('detail__milling_in_detail'))
+            queryset=self.get_queryset().order_by('-date').select_related('user',
+                                                                          'detail',
+                                                                          'product',
+                                                                          'detail__prefix',
+                                                                          'detail__parameters_for_spu'
+                                                                          ).prefetch_related(
+                'detail__milling_in_detail'))
         if 'month' in self.kwargs:
             context['records'] = RecordJob.objects.filter(month=self.kwargs['month']).order_by('date')
         elif 'username' in self.kwargs:
@@ -108,12 +108,13 @@ class AllRecordJobForAllWorker(LoginRequiredMixin, ListView):
             context['records'] = RecordJob.objects.filter(detail=Detail.objects.get(
                 name=self.kwargs.get('detail').split('.')[1]))
         if 'records' in context:
-            context['records'] = context['records'].select_related('user',
-                                                                   'detail',
-                                                                   'product',
-                                                                   'detail__prefix',
-                                                                   'detail__parameters_for_spu'
-                                                                   ).prefetch_related('detail__milling_in_detail')
+            context['records'] = context['records'].order_by('-date').select_related('user',
+                                                                                     'detail',
+                                                                                     'product',
+                                                                                     'detail__prefix',
+                                                                                     'detail__parameters_for_spu'
+                                                                                     ).prefetch_related(
+                'detail__milling_in_detail')
         return context
 
 
@@ -177,9 +178,6 @@ class ParametersDetailForSPUCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         self.object = form.save(commit=False)
         data = self.kwargs.get('detail').split('.')
-        print()
-        print(self.kwargs)
-        print()
         if len(data) > 1:
             detail = Detail.objects.get(name=data[1],
                                         prefix=Prefix.objects.get(name=data[0]))
@@ -195,8 +193,9 @@ class ParametersDetailForSPUCreateView(LoginRequiredMixin, CreateView):
                 coefficient_first_side=self.object.coefficient_first_side if self.object.coefficient_first_side is not None else 1,
                 second_side_time=self.object.second_side_time if self.object.second_side_time is not None else 1,
                 coefficient_second_side=self.object.coefficient_second_side if self.object.coefficient_second_side is not None else 1,
-                price=self.object.price,
-                norm=self.object.norm,
+                price=self.object.price if self.object.price is not None else 0,
+                norm=self.object.norm if self.object.norm is not None else 0,
+                difficultly=self.object.difficultly if self.object.difficultly is not None else 1,
                 author_id=self.request.user.id
             )
             parameter_detail.save()

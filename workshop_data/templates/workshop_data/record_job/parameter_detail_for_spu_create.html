@@ -14,8 +14,10 @@
             padding-bottom: 20px;
         }
     </style>
-    <div class="main-wrapper" style="display:flex">
-        <p>{{ record }}</p>
+    <div class="main-wrapper">
+        <div>
+            <p style="font-size:22px;">Внесите параметры для <strong>{{ view.kwargs.product }}  {{ view.kwargs.detail }}</strong></p>
+        </div>
         <div class="wrapper-form">
             <form method="POST">
                 {% csrf_token %}
@@ -71,9 +73,14 @@
                             {{ form.price }}
                         </div>
                         <div class="form-group">
-
+                            {{ form.norm.errors }}
                             <label>{{ form.norm.label }} </label>
                             {{ form.norm }}
+                        </div>
+                        <div class="form-group">
+                            {{ form.difficultly.errors }}
+                            <label>{{ form.difficultly.label }} </label>
+                            {{ form.difficultly }}
                         </div>
                     </div>
                 </div>

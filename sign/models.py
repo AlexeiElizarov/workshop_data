@@ -44,12 +44,44 @@ class User(AbstractUser):
     position = models.CharField(max_length=3, choices=Position.choices, verbose_name='Профессия')
     birthday = models.DateTimeField(verbose_name='День Рождения')
     gender = models.CharField(max_length=2, choices=Gender.choices, default=Gender.MAN, verbose_name='Пол')
+    # salary = models.OneToOneField('sign.CalculatinsOfTheOperatorSalary',
+    #                               on_delete=models.SET_NULL,
+    #                               null=True, blank=True,
+    #                               related_name='user_salary')
 
     def __str__(self):
         return f'{self.username}'
 
     def get_full_name(self):
         return f'{self.surname} {self.name[0]}.{self.patronymic[0]}.'
+
+
+# class CalculatinsOfTheOperatorSalary(models.Model):
+#     pass
+
+# class WorkingAtTheMachine(models.Model):
+#     """""" #FIXME
+#
+#     class Machine(models.TextChoices):
+#         SMEC_1 = '001', 'Смек 1'
+#         SMEC_2 = '002', 'Смек 2 барфидер'
+#         SMEC_3 = '003', 'Смек 3'
+#         SMEC_4 = '004', 'Смек 4 барфидер'
+#         SPINNER_1 = '005', 'Шпинер 1'
+#         SPINNER_2 = '006', 'Шпинер 2'
+#         HI5000 = '007', 'Малыш'
+#
+#     date = models.DateField(auto_now_add=True)
+#     machine = models.CharField(max_length=3, choices=Machine.choices, verbose_name='Станок')
+#     work_time_green = models.FloatField(default=0, null=True, blank=True)
+#     barfider = models.BooleanField(default=False)
+#     detail = models.ForeignKey('workshop_data.Detail', on_delete=models.SET_NULL, blank=False, null=True)
+
+
+
+
+
+
 
 
 

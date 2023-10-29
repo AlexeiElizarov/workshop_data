@@ -1,5 +1,6 @@
 from django.db import models
 from sign.models import User
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 
 def product_image_directory(instance, filename):
@@ -89,8 +90,11 @@ class ParametersDetailForSPU(models.Model):
         default=0, blank=True, null=True,
         verbose_name='Норма времени'
     )
-    # milling_operations = models.ForeignKey("workshop_data.MillingDetailForSPU",
-    #                                        on_delete=models.SET_NULL, null=True)
+    difficultly = models.FloatField(
+        default=1,
+        validators=[MaxValueValidator(2), MinValueValidator(1)]
+     )
+
 
     author = models.ForeignKey(
         User, on_delete=models.CASCADE,

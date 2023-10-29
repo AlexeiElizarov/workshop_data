@@ -136,7 +136,8 @@ class RecordJobFilter(FilterSet):
     )
     detail = django_filters.ModelChoiceFilter(
         queryset=Detail.objects.all().select_related('prefix', ),
-        widget=autocomplete.Select2(url='data_autocomplete_detail')
+        widget=autocomplete.Select2(url='data_autocomplete_detail'),
+        field_name='detail',
     )
 
     user = django_filters.ModelChoiceFilter(
@@ -145,7 +146,8 @@ class RecordJobFilter(FilterSet):
     )
     month = django_filters.MultipleChoiceFilter(
         choices=Month.choices,
-        widget=forms.CheckboxSelectMultiple()
+        widget=forms.CheckboxSelectMultiple(),
+        field_name='month',
     )
     milling = django_filters.BooleanFilter(
         label='С фрезеровкой',
@@ -154,10 +156,16 @@ class RecordJobFilter(FilterSet):
         )
     milling_was = django_filters.BooleanFilter(
         label='С фрезеровкой',
-        widget=forms.CheckboxInput
+        widget=forms.CheckboxInput,
+        method='filter_milling',
     )
 
     class Meta:
         model = RecordJob
         fields = ['product', 'detail', 'month', 'user', 'milling', 'milling_was']
+
+    def filter_milling(self, queryset, name, value):
+        if not value:
+            return queryset
+        return queryset.filter(**{name: value})
 

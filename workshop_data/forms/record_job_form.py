@@ -102,6 +102,10 @@ class ParametersDetailForSPUCreateForm(forms.ModelForm):
         label='Норма времени',
         widget=forms.TextInput(attrs={"class": "form-control", })
     )
+    difficultly = forms.FloatField(
+        label='Сложность',
+        widget=forms.TextInput(attrs={"class": "form-control", })
+    )
     salary_per_first_side = forms.FloatField(
         label='Зарплата по 1-й стороне',
         widget=forms.TextInput(attrs={"class": "form-control",  'readonly': True})
@@ -123,6 +127,7 @@ class ParametersDetailForSPUCreateForm(forms.ModelForm):
         self.fields['first_side_time'].required = False
         self.fields['second_side_time'].required = False
         self.fields['price'].required = False
+        self.fields['norm'].required = False
         self.fields['coefficient_first_side'].required = False
         self.fields['coefficient_second_side'].required = False
         self.fields['salary_per_first_side'].required = False
