@@ -18,7 +18,8 @@ from workshop_data.forms.record_job_form import (
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy, reverse
 from workshop_data.models.detail import ParametersDetailForSPU, Detail, Prefix, MillingDetailForSPU
-from workshop_data.services import return_sum_recordjob_every_detail, counter_norm, return_detail_by_product_detail
+from workshop_data.services import return_sum_recordjob_every_detail, counter_norm, return_detail_by_product_detail, \
+    return_quantity_for_order, return_quantity_for_records
 
 
 class RecordJobCreateView(LoginRequiredMixin, CreateView):
@@ -96,8 +97,18 @@ class AllRecordJobForAllWorker(LoginRequiredMixin, ListView):
                                                                           'product',
                                                                           'detail__prefix',
                                                                           'detail__parameters_for_spu'
-                                                                          ).prefetch_related(
-                'detail__milling_in_detail'))
+                                                                          ).prefetch_related('detail__milling_in_detail'))
+        if 'filter' in context:
+            try:
+                detail=context['filter'].data['detail']
+                month = context['filter'].data['month']
+                records = RecordJob.objects.all().filter(detail=detail, month=month)
+                context['total_quantity'] = return_quantity_for_records(records)
+                context['month'] = month
+                context['detail'] = Detail.objects.get(id=detail)
+            except:
+                print('111')
+
         if 'month' in self.kwargs:
             context['records'] = RecordJob.objects.filter(month=self.kwargs['month']).order_by('date')
         elif 'username' in self.kwargs:

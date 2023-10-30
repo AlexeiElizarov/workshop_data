@@ -81,10 +81,29 @@
             {% for record in filter.qs %}
                 {% include 'workshop_data/record_job/includes/record_job_table_body.html' %}
             {% endfor %}
+            {% if month and detail %}
+
+
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    Общее количество деталей <strong>{{ detail }}</strong> за {% month_name_tag month %}:
+                    <strong>{{ total_quantity }}</strong> шт.
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            {% endif %}
         {% endif %}
         </tbody>
     </table>
-
-
-
 {% endblock content %}

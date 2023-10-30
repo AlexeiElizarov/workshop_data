@@ -437,6 +437,15 @@ def return_quantity_for_order(worker, month, record):
         count += record.quantity_2 / 2
     return int(count)
 
+def return_quantity_for_records(records):
+    """Возвращает количество деталей из списка записей RecordJob(для заполнения наряда)"""
+    count = 0
+    for record in records:
+        count += record.quantity
+        count += record.quantity_1 / 2
+        count += record.quantity_2 / 2
+    return int(count)
+
 
 def counter_norm(month, worker):
     """Считает норму времени сделанных деталей"""
