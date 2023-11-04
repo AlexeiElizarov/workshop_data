@@ -45,6 +45,7 @@ class RecordJobCreateView(LoginRequiredMixin, CreateView):
                 author_id=self.request.user.id
             )
             record_job.save()
+            print()
             return HttpResponseRedirect(reverse_lazy('all_record_job'))
 
 
