@@ -1,7 +1,12 @@
 from django.db import models
+from django.db.models import Avg, Sum, Count, Q, F
+
 from workshop_data.models.month import Month
 from sign.models import User
 
+# id операторов участка №2
+ID_OPERATORS = [43, 75, 62, 64, 72, 76]
+# 61?
 
 class RecordJob(models.Model):
     """Класс описывает запись сделанной работы в БД"""
@@ -33,6 +38,7 @@ class RecordJob(models.Model):
         default=0, blank=True,
          verbose_name='Количество по двум сторонам')
     milling_was = models.BooleanField(default=False, blank=True, null=True)
+
     order_yes = models.BooleanField(default=False,
                                     verbose_name='Наряд выписан')
     order_at_master = models.BooleanField(default=False,
@@ -44,6 +50,59 @@ class RecordJob(models.Model):
 
     def __str__(self):
         return f'{self.product} {self.detail}'
+
+
+class Machine(models.TextChoices):
+    SMEC_1 = '001', 'Смек 1'
+    SMEC_2 = '002', 'Смек 2 барфидер'
+    SMEC_3 = '003', 'Смек 3'
+    SMEC_4 = '004', 'Смек 4 барфидер'
+    SPINNER_1 = '005', 'Шпинер 1'
+    SPINNER_2 = '006', 'Шпинер 2'
+    HI5000 = '007', 'Малыш'
+
+
+class EvaluationOfTheOperatorsWork(models.Model):
+    """Оценка работы оператора"""
+    worker = models.ForeignKey(User,
+        on_delete=models.PROTECT,
+        verbose_name='Рабочий',
+        related_name="evaluation_work")
+    date = models.DateField()
+    work_time = models.SmallIntegerField(default=0)
+    green_time = models.SmallIntegerField(default=0)
+    coefficient = models.FloatField()
+    coefficient_for_day = models.FloatField(blank=True, null=True)
+    machine = models.CharField(max_length=3, choices=Machine.choices, verbose_name='Станок')
+    barfider = models.BooleanField(default=False)
+    objects = models.Manager()
+
+    def get_coefficient(self):
+        return self.green_time / self.work_time * (self.work_time / 480)
+
+    def save(self, *args, **kwargs):
+        if self.barfider:
+            self.coefficient = round((self.get_coefficient()) * 0.3, 2)
+        else:
+            self.coefficient = round(self.get_coefficient(), 2)
+        super(EvaluationOfTheOperatorsWork, self).save(*args, **kwargs)
+        self.coefficient_for_day = EvaluationOfTheOperatorsWork.objects.filter(
+            worker=self.worker.id, date=self.date).aggregate(Sum("coefficient"))['coefficient__sum']
+        q = EvaluationOfTheOperatorsWork.objects.filter(worker=self.worker, date=self.date)
+        for record in q:
+            record.coefficient_for_day=self.coefficient_for_day
+        EvaluationOfTheOperatorsWork.objects.bulk_update(q, ['coefficient_for_day'])
+        super(EvaluationOfTheOperatorsWork, self).save(*args, **kwargs)
+
+
+    # def get_coefficient(self):
+    #     """Получает коэффициент затраченного на работу времени"""
+    #     if self.barfider:
+    #         return round((self.green_time / self.work_time) * 0.3, 2)
+    #     return round((self.green_time / self.work_time), 2)
+
+
+
 
 
 # class RecordJob2(models.Model):

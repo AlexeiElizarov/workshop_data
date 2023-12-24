@@ -1,10 +1,13 @@
 from dal import autocomplete
 from django import forms
+
+from project.settings import DATE_INPUT_FORMATS
 from sign.models import User
 from workshop_data.forms.stage_in_work_form import InitialsModelChoiceField
 from workshop_data.models import Product, Detail, Month, Comment
-from workshop_data.models.record_job import RecordJob
+from workshop_data.models.record_job import RecordJob, EvaluationOfTheOperatorsWork, Machine
 from workshop_data.models.detail import ParametersDetailForSPU, MillingDetailForSPU
+from django.forms.widgets import NumberInput, DateInput
 
 
 # class MyModelChoicesField(ModelChoiceField):
@@ -53,7 +56,6 @@ class RecordJobForm(forms.ModelForm):
     milling_was = forms.BooleanField(
         label='Делал фрезеровку'
     )
-
 
     class Meta:
         model = RecordJob
@@ -188,4 +190,74 @@ class MillingDetailForSPUCreateForm(forms.ModelForm):
         exclude = ('milling_for_detail',)
 
 
+class EnteringOperatorWorkTimeForm(forms.ModelForm):
+    """Внесение времени работы оператора"""
+    date = forms.DateField(
+        label='Дата',
+        input_formats=['%Y-%m-%d'],
+        widget=NumberInput(attrs={"class": "form-control", 'type': 'date'}))
 
+    worker = forms.ModelChoiceField(
+        label='Оператор',
+        queryset=User.objects.all(),
+        widget=autocomplete.ModelSelect2(
+            url='data_autocomplete_worker_cpu')
+    )
+
+    work_time = forms.DecimalField(
+        label='Время смены',
+        widget=NumberInput(
+            attrs={"class": "form-control"},))
+    green_time = forms.DecimalField(
+        label='Зеленое время',
+        widget=NumberInput(
+            attrs={"class": "form-control"}, ))
+    barfider = forms.BooleanField(
+        label='Барфидер',
+        required=False
+    )
+
+    class Meta:
+        model = EvaluationOfTheOperatorsWork
+        fields = ('date', 'machine', 'barfider', 'worker', 'work_time', 'green_time')
+        widgets = {
+            'machine': forms.Select(attrs={"class": "form-control"})
+        }
+
+
+class MyDateInput(forms.DateInput):
+    input_type = 'date'
+
+
+class AverageCoefficientOperatorsForRangeDateForm(forms.Form):
+    """Форма ввода диапазона дат для расчета среднего коэффициента за период времени"""
+    date1 = forms.DateField(
+        label='С:',
+        widget=MyDateInput(attrs={"class": "form-control"}),
+        input_formats=DATE_INPUT_FORMATS,
+    )
+    date2 = forms.DateField(
+        label='по:',
+        widget=MyDateInput(attrs={"class": "form-control"}),
+        input_formats=DATE_INPUT_FORMATS,
+    )
+    salary = forms.DecimalField(
+        label='Общая зарплата',
+        required=False,
+        widget=NumberInput(
+            attrs={"class": "form-control"}, ))
+
+    class Meta:
+        fields = '__all__'
+
+
+
+
+    # class DateForm(forms.Form):
+#     date = forms.DateTimeField(
+#         input_formats=['%d/%m/%Y %H:%M'],
+#         widget=forms.DateTimeInput(attrs={
+#             'class': 'form-control datetimepicker-input',
+#             'data-target': '#datetimepicker1'
+#         })
+#     )

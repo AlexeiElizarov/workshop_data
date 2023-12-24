@@ -18,7 +18,7 @@ from workshop_data.models.statement_about_job_over_detail import (
     ResolutionForStatementAboutJobOverDetail)
 from workshop_data.models.order import Order
 from workshop_data.models.warehouse import Warehouse, Unit
-from workshop_data.models.record_job import RecordJob
+from workshop_data.models.record_job import RecordJob, EvaluationOfTheOperatorsWork
 
 __all__ = (
     'Product',
@@ -40,7 +40,7 @@ __all__ = (
     'Unit',
     'RecordJob',
     'ParametersDetailForSPU',
-
+    'EvaluationOfTheOperatorsWork'
 )
 
 

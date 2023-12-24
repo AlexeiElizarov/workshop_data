@@ -9,6 +9,22 @@
 
 
 {% block content %}
+    <form action="" method="GET">
+        {% csrf_token %}
+        <div class="input-group mb-3">
+            <div class="input-group-text">
+                {% for choice in filter.form.month %}
+                <div class="wrapper-month" style="max-width:100px;margin-right:21.5px;">
+                    {{ choice }}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="d-grid col-2" style="margin:10px;">
+            <input class="btn btn btn-info btn-lg" type="submit" value="Обновить">
+        </div>
+    </form>
+
     <div style="display: none" id="jsonData" data-json="{{ data }}"></div>
     <div>
         <canvas id="myChart" width="600px" height="600px">

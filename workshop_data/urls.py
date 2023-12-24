@@ -96,8 +96,14 @@ from workshop_data.views.record_job_view import (
     AllRecordJobForWorker,
     AllRecordJobForWorkerPerMonth,
     MillingDetailForSPUCreateView,
+    EnteringOperatorWorkTimeView,
+    AllOperatorWorkTimeView,
+    AverageCoefficientOperators,
+    DeletingOperatorWorkTimeView,
+    EditOperatorWorkTimeView,
+    DiagramWorkTimeOperatorView,
 )
-
+from workshop_data.services.evaluation_work_time import get_average_coefficient_all_operator
 
 
 urlpatterns = [
@@ -195,6 +201,15 @@ urlpatterns = [
     path('master/update-bonus/<id>/',UpdateBonusView.as_view(), name='update-bonus'),
     path('master/list-all-worker-and-here-bonus/', ListAllWorkersAndBonuses.as_view(), name='list_all_worker_here_bonuses'),
 
+    path('evaluation-operator-work/', EnteringOperatorWorkTimeView.as_view(), name='operators_time'),
+    path('all-operator-work/', AllOperatorWorkTimeView.as_view(), name='all_operators_time'),
+    path('average-coefficient_operators/', AverageCoefficientOperators.as_view(), name='average_coefficient_operators'),
+    path('average-all_operators_avg_coef_for_range/', AverageCoefficientOperators.as_view(), name='all_operators_avg_coef_for_range'),
+    path('refresh-average-all_operators_avg/', get_average_coefficient_all_operator, name='refresh_all_operators_avg_coef'),
+    path('delete-record-operator-work-time/str-<worker>/<date>/<id>/', DeletingOperatorWorkTimeView.as_view(), name='delete_record_operator_work_time'),
+    path('edit-record-operator-work-time/str-<worker>/<date>/<id>/', EditOperatorWorkTimeView.as_view(),name='edit_record_operator_work_time'),
+    path('diagram-work-time-operator/', DiagramWorkTimeOperatorView.as_view(),name='diagram_work_time_operator'),
+
 
     path('record-job-create/', RecordJobCreateView.as_view(),name='record_job_create'),
     path('record-job-edit/<id>/', RecordJobEditView.as_view(),name='record_job_edit'),
@@ -202,7 +217,7 @@ urlpatterns = [
     path('record_job/order_at_master/<worker>/<month>/<record>/', record_job_order_at_master,name='record_job_order_at_master'),
     path('record_job/order_yes_ready/<worker>/<month>/<record>/', record_job_order_yes_ready, name='record_job_order_yes_ready'),
     path('all-record-job/', AllRecordJobForAllWorker.as_view(), name='all_record_job'),
-    path('all-record-job/worker-<id>/', AllRecordJobForWorker.as_view(), name='all_record_job_for_worker'),
+    path('all-record-job/worker-<id>/', AllRecordJobForAllWorker.as_view(), name='all_record_job_for_worker'),
     path('all-record-job/worker-<id>/month-<month>/', AllRecordJobForWorkerPerMonth.as_view(), name='all_record_job_for_worker_per_month'),
     path('all-record-job/mon_<month>/', AllRecordJobForAllWorker.as_view(), name='all_record_job_per_month'),
     path('all-record-job/product_<product>/', AllRecordJobForAllWorker.as_view(), name='all_record_job_per_product'),
