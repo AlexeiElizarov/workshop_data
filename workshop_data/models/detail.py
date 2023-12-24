@@ -15,12 +15,12 @@ class Detail(models.Model):
         unique=True,
         verbose_name='Деталь',
         db_index=True)
-    prefix = models.ForeignKey("workshop_data.Prefix", on_delete=models.PROTECT, blank=True,null=True)
+    prefix = models.ForeignKey("workshop_data.Prefix", on_delete=models.PROTECT, blank=True, null=True)
     secondary_detail = models.ManyToManyField(
         "workshop_data.Detail",
         through='workshop_data.DetailDetail',
         related_name="detail_in_detail",
-        through_fields=('main_detail', 'secondary_detail'),)
+        through_fields=('main_detail', 'secondary_detail'), )
     image = models.ImageField(
         upload_to='images/',
         blank=True,
@@ -37,8 +37,8 @@ class Detail(models.Model):
                                      verbose_name='в кладовой',
                                      blank=True, null=True)
     parameters_for_spu = models.OneToOneField("workshop_data.ParametersDetailForSPU",
-                                           on_delete=models.SET_NULL, blank=True, null=True,
-                                           )
+                                              on_delete=models.SET_NULL, blank=True, null=True,
+                                              )
     objects = models.Manager()
 
     def __str__(self):
@@ -92,9 +92,9 @@ class ParametersDetailForSPU(models.Model):
     )
     difficultly = models.FloatField(
         default=1,
-        validators=[MaxValueValidator(2), MinValueValidator(1)]
-     )
-
+        validators=[MaxValueValidator(2), MinValueValidator(1)],
+        verbose_name='Сложность'
+    )
 
     author = models.ForeignKey(
         User, on_delete=models.CASCADE,
@@ -131,6 +131,3 @@ class MillingDetailForSPU(models.Model):
         on_delete=models.SET_NULL,
         null=True, blank=True,
         related_name='milling_in_detail')
-
-
-

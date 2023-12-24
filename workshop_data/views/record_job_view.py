@@ -2,31 +2,34 @@ import datetime
 import json
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Sum, F
-from django.shortcuts import redirect
+from django.db.models import Sum, F, Avg
+from django.shortcuts import redirect, render
 from django.views.generic import ListView, CreateView, UpdateView, TemplateView, DeleteView
 
 from sign.forms import User
 from workshop_data.filters import RecordJobFilter
 from workshop_data.models import Product
-from workshop_data.models.record_job import RecordJob
+from workshop_data.models.record_job import RecordJob, EvaluationOfTheOperatorsWork, ID_OPERATORS
 from workshop_data.forms.record_job_form import (
     RecordJobForm,
     ParametersDetailForSPUCreateForm,
     MillingDetailForSPUCreateForm,
+    EnteringOperatorWorkTimeForm,
+    AverageCoefficientOperatorsForRangeDateForm
 )
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse_lazy, reverse
 from workshop_data.models.detail import ParametersDetailForSPU, Detail, Prefix, MillingDetailForSPU
 from workshop_data.services import return_sum_recordjob_every_detail, counter_norm, return_detail_by_product_detail, \
     return_quantity_for_order, return_quantity_for_records
+from workshop_data.services.evaluation_work_time import get_average_coefficient_all_operator, \
+    update_database_after_deleting_record_work_time, get_average_coefficient_operator_range_date
 
 
 class RecordJobCreateView(LoginRequiredMixin, CreateView):
     """Отображает страницу создания новой записи о сделанных за день деталей"""
     model = RecordJob
     form_class = RecordJobForm
-    login_url = '/login/'
     template_name = 'workshop_data/record_job/create_record_job.html'
 
     def form_valid(self, form):
@@ -53,7 +56,6 @@ class RecordJobEditView(LoginRequiredMixin, UpdateView):
     """Отображает страницу редактирования записи о сделанных за день деталей"""
     model = RecordJob
     form_class = RecordJobForm
-    login_url = '/login/'
     template_name = 'workshop_data/record_job/create_record_job.html'
 
     def get_object(self, queryset=None):
@@ -74,6 +76,7 @@ class RecordJobDeleteView(LoginRequiredMixin, DeleteView):
     template_name = 'workshop_data/record_job/record_job_delete.html'
     success_url = reverse_lazy('all_record_job')
 
+
     def get_object(self, queryset=None):
         return RecordJob.objects.get(id=self.kwargs.get('id'))
 
@@ -85,12 +88,9 @@ class AllRecordJobForAllWorker(LoginRequiredMixin, ListView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
-        # context['records'] = RecordJob.objects.all().select_related('product',
-        #                                                             'detail',
-        #                                                             'detail__prefix',
-        #                                                             'detail__parameters_for_spu',
-        #                                                             'user',
-        #                                                             )
+        print()
+        print('********', self.kwargs)
+        print()
         context['filter'] = RecordJobFilter(
             self.request.GET,
             queryset=self.get_queryset().order_by('-date').select_related('user',
@@ -101,19 +101,30 @@ class AllRecordJobForAllWorker(LoginRequiredMixin, ListView):
                                                                           ).prefetch_related('detail__milling_in_detail'))
         if 'filter' in context:
             try:
-                detail=context['filter'].data['detail']
-                month = context['filter'].data['month']
-                records = RecordJob.objects.all().filter(detail=detail, month=month)
-                context['total_quantity'] = return_quantity_for_records(records)
-                context['month'] = month
-                context['detail'] = Detail.objects.get(id=detail)
+                if 'month' in context['filter'].data and 'detail' in context['filter'].data:
+                    detail = context['filter'].data['detail']
+                    month = context['filter'].data['month']
+                    records = RecordJob.objects.all().filter(detail=detail, month=month)
+                    context['total_quantity'] = return_quantity_for_records(records)
+                    context['month'] = month
+                    context['detail'] = Detail.objects.get(id=detail)
+                elif 'month' in context['filter'].data:
+                    month = context['filter'].data['month']
+                    records = RecordJob.objects.all().filter(month=month)
+                    context['total_quantity'] = return_quantity_for_records(records)
+                    context['month'] = month
+                elif 'detail' in context['filter'].data:
+                    detail=context['filter'].data['detail']
+                    records = RecordJob.objects.all().filter(detail=detail)
+                    context['total_quantity'] = return_quantity_for_records(records)
+                    context['detail'] = Detail.objects.get(id=detail)
             except:
-                print('111')
+                return print('record_job_view.py 119')
 
         if 'month' in self.kwargs:
-            context['records'] = RecordJob.objects.filter(month=self.kwargs['month']).order_by('date')
-        elif 'username' in self.kwargs:
-            context['records'] = RecordJob.objects.filter(user=User.objects.get(username=self.kwargs.get('username')))
+            context['records'] = RecordJob.objects.filter(month=self.kwargs['month']).order_by('-date')
+        elif 'id' in self.kwargs:
+            context['records'] = RecordJob.objects.filter(user=User.objects.get(id=self.kwargs.get('id'))).order_by('-date')
         elif 'product' in self.kwargs:
             context['records'] = RecordJob.objects.filter(product=Product.objects.get(name=self.kwargs.get('product')))
         elif 'detail' in self.kwargs:
@@ -241,7 +252,7 @@ class ParametersDetailForSPEditeView(LoginRequiredMixin, UpdateView):
                                                             'detail': self.kwargs.get('detail')})
 
 
-class MillingDetailForSPUCreateView(CreateView):
+class MillingDetailForSPUCreateView(LoginRequiredMixin, CreateView):
     """Создание новой записи фрезерования детали на СПУ участке"""
     model = MillingDetailForSPU
     form_class = MillingDetailForSPUCreateForm
@@ -275,13 +286,162 @@ def parameters_detail_for_spu_create_or_edit_redirect(request, product, detail):
         return redirect('create_parameter_detail_spu', product=product, detail=detail)
 
 
-class DiagramWorkSPUView(LoginRequiredMixin, TemplateView):
+class EnteringOperatorWorkTimeView(LoginRequiredMixin, CreateView):
+    """Отображает страницу заполнения формы оценки работы оператора"""
+    model = EvaluationOfTheOperatorsWork
+    form_class = EnteringOperatorWorkTimeForm
+    template_name = 'workshop_data/record_job/evaluation_work/evaluation_operator_work.html'
+    success_url = reverse_lazy('all_operators_time')
+
+
+class EditOperatorWorkTimeView(LoginRequiredMixin, UpdateView):
+    """Редактирование записи работы оператора"""
+    model = EvaluationOfTheOperatorsWork
+    form_class = EnteringOperatorWorkTimeForm
+    template_name = 'workshop_data/record_job/evaluation_work/evaluation_operator_work.html'
+    success_url = reverse_lazy('all_operators_time')
+
+    def get_object(self, queryset=None):
+        return EvaluationOfTheOperatorsWork.objects.get(id=self.kwargs.get('id'))
+
+
+class DeletingOperatorWorkTimeView(LoginRequiredMixin, DeleteView):
+    """Отображает страницу удаления записи работы оператора"""
+    model = EvaluationOfTheOperatorsWork
+    template_name = 'workshop_data/record_job/evaluation_work/delete_record_operator_work_time.html'
+    success_url = reverse_lazy('all_operators_time')
+
+    def get_object(self, queryset=None):
+        return EvaluationOfTheOperatorsWork.objects.get(id=self.kwargs.get('id'))
+
+    def form_valid(self, form):
+        success_url = self.get_success_url()
+        self.object.delete()
+        update_database_after_deleting_record_work_time(self.kwargs.get('worker'), self.kwargs.get('date'))
+        return HttpResponseRedirect(success_url)
+
+
+class AllOperatorWorkTimeView(LoginRequiredMixin, ListView):
+    """Отображает страницу с данными по отработанному времени операторов в смене"""
+    model = EvaluationOfTheOperatorsWork
+    template_name = 'workshop_data/record_job/evaluation_work/all_operator_work_time.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['time_records'] = (EvaluationOfTheOperatorsWork.objects.all().order_by('-date').
+                                   select_related('worker',))
+        return context
+
+    def get(self, request, *args, **kwargs):
+        self.object_list = self.get_queryset()
+        context = self.get_context_data()
+        get_average_coefficient_all_operator(request)
+        return render(request, self.template_name, context)
+
+
+class AverageCoefficientOperators(LoginRequiredMixin, ListView):
+    model = User
+    template_name = 'workshop_data/record_job/evaluation_work/average_operators_coefficient.html'
+    success_url = reverse_lazy('all_operators_time')
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = AverageCoefficientOperatorsForRangeDateForm
+        context['operators'] = User.objects.filter(id__in=ID_OPERATORS)
+        context['avg_range'] = self.request.session.get('dict_avg_range')
+        context['date1'] = self.request.session.get('date1')
+        context['date2'] = self.request.session.get('date2')
+        context['data'] = \
+            [
+                {'name': user.get_full_name(),
+                 'coefficient': user.average_coefficient_operator
+                 } for user in User.objects.filter(id__in=ID_OPERATORS)
+            ]
+        if ('date1' in context and context['date1'] is not None) and ('date2' in context and context['date2'] is not None):
+            context['data'] = \
+                [
+                    {'name': user,
+                     'coefficient': coef[0]
+                     } for user, coef in get_average_coefficient_operator_range_date(
+                    self.request.session.get('date1'), self.request.session.get('date2')).items()
+                ]
+        return context
+
+    def post(self, request):
+        if request.method == 'POST':
+            form = AverageCoefficientOperatorsForRangeDateForm(request.POST)
+            if form.is_valid():
+                date1 = form.cleaned_data['date1']
+                date2 = form.cleaned_data['date2']
+                avg_coefficient_operator_dict = get_average_coefficient_operator_range_date(date1, date2)
+                sum_avg_coef = sum(sum(avg_coefficient_operator_dict.values(), []))
+                if form.cleaned_data['salary'] is not None:
+                    total_salary = float(form.cleaned_data['salary'])
+                    request.session['total_salary'] = total_salary
+                    for operator_id in ID_OPERATORS:
+                        worker = User.objects.get(id=operator_id)
+                        salary = int(total_salary / sum_avg_coef * avg_coefficient_operator_dict[worker.get_full_name()][0])
+                        avg_coefficient_operator_dict[worker.get_full_name()].append(salary)
+                request.session['dict_avg_range'] = avg_coefficient_operator_dict
+                request.session['date1'] = str(date1)
+                request.session['date2'] = str(date2)
+                get_average_coefficient_all_operator(request)
+                return redirect('average_coefficient_operators')
+            else:
+                form = AverageCoefficientOperatorsForRangeDateForm()
+                return redirect('average_coefficient_operators')
+        return redirect('all_operators_time')
+
+    def get(self, request, *args, **kwargs):
+        self.object_list = self.get_queryset()
+        context = self.get_context_data()
+        if 'dict_avg_range' in self.request.session:
+            del self.request.session['dict_avg_range']
+        if 'total_salary' in self.request.session:
+            del self.request.session['total_salary']
+        if 'date1' in self.request.session:
+            del self.request.session['date1']
+        if 'date2' in self.request.session:
+            del self.request.session['date2']
+        return render(request, self.template_name, context)
+
+
+class DiagramWorkSPUView(LoginRequiredMixin, ListView):
     """Отображает диаграмму эффективности операторов"""
     model = RecordJob
     template_name = 'workshop_data/record_job/diagram_work_operators.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['filter'] = RecordJobFilter(
+            self.request.GET,
+            queryset=self.get_queryset())
+        # context['data'] = \
+        # [
+        #     {'name': user.surname,
+        #      'norm': (RecordJob.objects.filter(user=user).aggregate(value=Sum(F('detail__parameters_for_spu__norm') * F('quantity'))))
+        #      } for user in User.objects.filter(id__in=[62, 64, 75, 76])
+        # ]
+        if 'month' in self.request.GET:
+            context['data'] = \
+                [
+                    {'name': user.surname,
+                     'norm': counter_norm(month=self.request.GET['month'], worker=user)
+                     } for user in User.objects.filter(id__in=ID_OPERATORS)
+                ]
+        return context
+
+
+class DiagramWorkTimeOperatorView(LoginRequiredMixin, ListView):
+    """Отображает диаграмму эффективности операторов"""
+    model = EvaluationOfTheOperatorsWork
+    template_name = 'workshop_data/record_job/evaluation_work/diagram_work_time_operator.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['filter'] = RecordJobFilter(
+            self.request.GET,
+            queryset=self.get_queryset())
         # context['data'] = \
         # [
         #     {'name': user.surname,
@@ -290,9 +450,18 @@ class DiagramWorkSPUView(LoginRequiredMixin, TemplateView):
         # ]
         context['data'] = \
             [
-                {'name': user.surname,
-                 'norm': counter_norm(month='08', worker=user)
-                 } for user in User.objects.filter(id__in=[43, 61])  # 43, 61 # 62, 64, 75, 76
+                {'name': user.get_full_name(),
+                 'coefficient': user.average_coefficient_operator
+                 } for user in User.objects.filter(id__in=ID_OPERATORS)
             ]
-        # context['fff'] = counter_norm()
+        print()
+        print('********', context['data'])
+        print()
+        if 'month' in self.request.GET:
+            context['data'] = \
+                [
+                    {'name': user.surname,
+                     'coefficient': user.average_coefficient_operator
+                     } for user in User.objects.filter(id__in=ID_OPERATORS)
+                ]
         return context

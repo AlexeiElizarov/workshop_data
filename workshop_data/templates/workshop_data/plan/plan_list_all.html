@@ -49,7 +49,7 @@
                 <th scope="col"></th>
             </tr>
         </thead>
-
+св
         {% for product in products %}
 
         <tbody>
@@ -70,7 +70,7 @@
             <td></td>
         </tr>
         {% endifchanged %}
-            {% for month in filter.form.month.value %}
+        {% for month in filter.form.month.value %}
 
             {% for detail1 in product.detail.all %}
                 {% object_workshopplan product=product detail=detail1 month=month as object %}

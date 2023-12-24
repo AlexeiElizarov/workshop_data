@@ -99,7 +99,6 @@ class AllOrderForAllWorker(LoginRequiredMixin, ListView):
 class OrderUserParametrListView(LoginRequiredMixin, ListView):
     """Отображает наряды пользователя фильтруя их в зависимости от переданного параметра"""
     model = Order
-    login_url = '/login/'
     context_object_name = 'orders'
     template_name = 'workshop_data/worker/order/orders_user_parametr_list.html'
 

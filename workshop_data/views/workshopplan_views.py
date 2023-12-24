@@ -32,6 +32,9 @@ class WorkshopPlanView(LoginRequiredMixin, ListView):
             'detail__secondary_detail',
             'detail__in_warehouse'
             )
+        print()
+        print('222', context['products'])
+        print()
         return context
 
 

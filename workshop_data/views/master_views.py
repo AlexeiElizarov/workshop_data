@@ -10,7 +10,6 @@ from workshop_data.services import get_average_price_orders, get_average_price_o
 class WorkerListView(LoginRequiredMixin, ListView):
     """Отображает страницу всех работников(или выборка по специальности)"""
     model = User
-    login_url = '/login/'
     template_name = 'workshop_data/master/workers/workers_parametr_list.html'
     context_object_name = 'workers'
 
@@ -34,7 +33,6 @@ class WorkerSalaryListView(LoginRequiredMixin, ListView):
 # class WorkerOrdersListForMaster(LoginRequiredMixin, ListView):
 #     """Показывает наряды работников(все, по месяцам)"""
 #     model = Order
-#     login_url = '/login/'
 #     template_name = 'workshop_data/worker/order/orders_user_parametr_list.html'  # шаблон из OrderUserParametrListView
 #     context_object_name = 'orders'
 #
@@ -58,7 +56,6 @@ class WorkerSalaryListView(LoginRequiredMixin, ListView):
 class WorkerAveragePriceListForMaster(LoginRequiredMixin, ListView):
     """Отображает страницу работников и их средней расценки по нарядам"""
     model = Order
-    login_url = '/login/'
     template_name = 'workshop_data/master/workers/workers_average_price_order.html'
 
     def get_context_data(self, *args, **kwargs):

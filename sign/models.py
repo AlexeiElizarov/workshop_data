@@ -44,6 +44,7 @@ class User(AbstractUser):
     position = models.CharField(max_length=3, choices=Position.choices, verbose_name='Профессия')
     birthday = models.DateTimeField(verbose_name='День Рождения')
     gender = models.CharField(max_length=2, choices=Gender.choices, default=Gender.MAN, verbose_name='Пол')
+    average_coefficient_operator = models.FloatField(default=0)
     # salary = models.OneToOneField('sign.CalculatinsOfTheOperatorSalary',
     #                               on_delete=models.SET_NULL,
     #                               null=True, blank=True,

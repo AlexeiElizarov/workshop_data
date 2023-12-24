@@ -116,7 +116,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        'NAME': "D:\Alexei\!!!DATABASE!!!\db.sqlite3",
+        'NAME': "D:\Alexei\!!!DATABASE!!!\green_time\db.sqlite3",
     }
 }
 
@@ -166,12 +166,12 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGIN_URL = 'sign/login/'
+LOGIN_URL = '/sign/login/'
 LOGIN_REDIRECT_URL = '/'
-
+LOGOUT_REDIRECT_URL = '/'
 AUTH_USER_MODEL = 'sign.User'
 
-DATE_INPUT_FORMATS = ["%d.%m.%Y"]
+DATE_INPUT_FORMATS = ["%d.%m.%Y", "%Y-%m-%d"]
 # USE_L10N = False
 
 # SESSION_EXPIRE_AT_BROWSER_CLOSE = True
