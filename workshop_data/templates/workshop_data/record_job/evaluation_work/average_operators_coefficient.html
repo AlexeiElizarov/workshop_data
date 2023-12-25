@@ -1,0 +1,186 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block title %}
+    Средние коэффициенты всех операторов
+{% endblock title %}
+
+{% block content %}
+    <style>
+        .wrapper {
+
+        }
+        .input-group {
+             display:flex;
+             flex-wrap: nowrap;
+             align-items: center;
+             width:220px;
+             padding: 10px;
+        }
+        .form-label {
+            padding-right: 10px;
+        }
+        .btn-coef {
+            max-height: 34px;
+            margin-top: 10px;
+
+        }
+        .head-coef {
+            text-align: center;
+        }
+        .wrapper-table-diagram {
+            display:flex;
+
+        }
+        .wrapper-table {
+            min-width: 668px;
+            margin-right: 140px;
+        }
+        #myChart {
+
+        }
+    </style>
+
+<div class="wrapper">
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.media }}
+        <div >
+
+            <div class="wrapper-date-input" style="display:flex;justify-content:center;">
+                <div class="wrapper-date-input" style="display:flex;justify-content:center;">
+                <a href="{% url 'refresh_all_operators_avg_coef' %}" name='refresh' class="btn btn-primary btn-coef">Обновить</a>
+            </div>
+                <div class='input-group date'>
+                    <label class="form-label">{{form.salary.label}}</label>
+                    {{ form.salary }}
+
+                    <div class="form-error">{{ form.date2.errors }}</div>
+                </div>
+                <div class='input-group date'>
+                    <label class="form-label">{{form.date1.label}}</label>
+                    {{ form.date1 }}
+
+                    <div class="form-error">{{ form.date1.errors }}</div>
+                </div>
+                <div class='input-group date'>
+                    <label class="form-label">{{form.date2.label}}</label>
+                    {{ form.date2 }}
+
+                    <div class="form-error">{{ form.date2.errors }}</div>
+                </div>
+                <input id="button-submit" class="btn btn-primary btn-coef" type="submit" value="Расчет"/></div>
+        </div>
+    </form>
+    <!--
+
+                    <div class="container">-->
+    <!--                <h2>Basic Date Time Picker</h2>-->
+    <!--                <div class='input-group date' id='picker'>-->
+    <!--                    <input type='text' class="form-control"/>-->
+    <!--                    <span class="input-group-addon">-->
+    <!--                        <span class="glyphicon glyphicon-calendar"></span></span>-->
+
+    <!--                </div>-->
+    <!--                <input type="submit" value="Gogogo!"/>-->
+    <!--            </div>-->
+
+
+    <div class="wrapper-table-diagram">
+        <div class="wrapper-table">
+            <table class="table table-success table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Оператор</th>
+                    <th scope="col">Средний коэффициент</th>
+                    <th scope="col">Зарплата</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% if avg_range %}
+                <h3 class="head-coef">Средний коэффициент за период с <i>{{ date1 }}</i> по <i>{{ date2 }}</i></h3>
+                {% for worker, data in avg_range.items %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ worker }}</td>
+                    <td>{{ data.0 }}</td>
+                    <td>{{ data.1 }}</td>
+                    {% endfor %}
+
+                    {% elif operators %}
+                    <h3 class="head-coef">Средний коэффициент за все время</h3>
+                    {% for worker in operators %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ worker.get_full_name }}</td>
+                    <td>{{ worker.average_coefficient_operator }}</td>
+                    <td></td>
+                </tr>
+                {% endfor %}
+                {% endif %}
+                </tbody>
+            </table>
+        </div>
+
+
+        <div>
+            <div style="display: none" id="jsonData" data-json="{{ data }}"></div>
+
+            <canvas id="myChart" width="900px" height="600px">
+
+            </canvas>
+        </div>
+
+        <script src="{% static 'js/cdnjs.cloudflare.com_ajax_libs_Chart.js_4.4.0_chart.min.js' %}"></script>
+        <script src="{% static 'diagram.js' %}"></script>
+
+         <script>
+            const ctx = document.getElementById('myChart').getContext('2d');
+    <!--        function loadJson(selector) {-->
+    <!--            return JSON.parse(document.querySelector(selector).getAttribute('data-json'));-->
+    <!--        }-->
+            window.onload = function () {
+                ctx.canvas.parentNode.style.height = '500px';
+                ctx.canvas.parentNode.style.width = '700px';
+
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                    labels: [{% for i in data %}'{{ i.name }}',{% endfor %}],
+                    datasets: [{
+                        label: 'Коэффициент',
+                        data: [{% for i in data %}{{ i.coefficient }},{% endfor %}],
+                        borderWidth: 1
+                    }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            },
+                        maintainAspectRatio: false,
+                        }
+                    }
+                });
+                };
+            </script>
+    </div>
+</div>
+
+<!--        <script type="text/javascript">-->
+<!--         $(function () {-->
+<!--             $('#id_date1').datetimepicker({-->
+<!--                format: 'DD/MM/YYYY',-->
+<!--             });-->
+<!--         });-->
+<!--         $(function () {-->
+<!--            $('#id_date2').datetimepicker({-->
+<!--                format: 'DD/MM/YYYY',-->
+<!--             });-->
+<!--         });-->
+<!--      </script>-->
+
+
+
+{% endblock content %}
+

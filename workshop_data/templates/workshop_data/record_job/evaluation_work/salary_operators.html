@@ -1,0 +1,63 @@
+{% extends 'main.html' %}
+
+{% block title %}
+    Средние коэффициенты всех операторов
+{% endblock title %}
+
+{% block content %}
+    <style>
+
+    </style>
+
+<div class="wrapper">
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.media }}
+        <div >
+
+            <div>
+                <div>
+                <a href="" name='refresh' class="btn btn-primary btn-coef">Обновить</a>
+            </div>
+                <div class='input-group date'>
+                    <label class="form-label">{{form.date2.label}}</label>
+                    {{ form.date2 }}
+
+                    <div class="form-error">{{ form.date2.errors }}</div>
+                </div>
+        </div>
+    </form>
+
+    <table class="table table-success table-striped">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Оператор</th>
+            <th scope="col">Средний коэффициент</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% if avg_range %}
+        <h3 class="head-coef">Средний коэффициент за период с <i>{{ date1 }}</i> по <i>{{ date2 }}</i></h3>
+        {% for worker, avg in avg_range.items %}
+        <tr>
+            <th scope="row">{{ forloop.counter }}</th>
+            <td>{{ worker }}</td>
+            <td>{{ avg}}</td>
+        </tr>
+        {% endfor %}
+        {% elif operators %}
+        <h3 class="head-coef">Средний коэффициент за все время</h3>
+        {% for worker in operators %}
+        <tr>
+            <th scope="row">{{ forloop.counter }}</th>
+            <td>{{ worker.get_full_name }}</td>
+            <td>{{ worker.average_coefficient_operator }}</td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+        </tbody>
+    </table>
+</div>
+{% endblock content %}
+

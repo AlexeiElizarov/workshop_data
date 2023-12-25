@@ -1,0 +1,79 @@
+{% extends 'main.html' %}
+
+{% block title %}
+    Коэффициенты всех операторов
+{% endblock title %}
+
+{% block content %}
+    <table class="table table-success table-striped">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Дата</th>
+            <th scope="col">Станок</th>
+            <th scope="col">Оператор</th>
+            <th scope="col">Смена</th>
+            <th scope="col">Время по программе</th>
+            <th scope="col">Барфидер</th>
+            <th scope="col">Коэффициент</th>
+            <th scope="col">Средний коэффициент</th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+
+        <tbody>
+            {% for time_record in time_records %}
+            {% ifchanged time_record.date %}
+                <tr class="table-light">
+                    <td></td>
+                    <td><h5>{{ time_record.date }}</h5></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                {% endifchanged %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                        <td></td>
+                        <td>{{ time_record.get_machine_display }}</td>
+                        <td>{{ time_record.worker.get_full_name }}</td>
+                        <td>{{ time_record.work_time }}</td>
+                        <td>{{ time_record.green_time }}</td>
+                        <td>
+                            {% if time_record.barfider %}
+                                &#10004;
+                            {% endif %}
+                            </td>
+                        <td>{{ time_record.coefficient }}</td>
+                        <td>{{ time_record.worker.average_coefficient_operator }}</td>
+                        <td>
+                            <button class="btn btn-outline-primary dropdown-toggle btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Действия
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a class="dropdown-item" href="
+                                    {% url 'edit_record_operator_work_time' worker=time_record.worker date=time_record.date id=time_record.id %}">
+                                        Исправить
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="
+                                    {% url 'delete_record_operator_work_time' worker=time_record.worker date=time_record.date id=time_record.id %}">
+                                        Удалить
+                                    </a>
+                                </li>
+                            </ul>
+                        </td>
+
+                </tr>
+            {% endfor %}
+
+        </tbody>
+    </table>
+{% endblock content %}

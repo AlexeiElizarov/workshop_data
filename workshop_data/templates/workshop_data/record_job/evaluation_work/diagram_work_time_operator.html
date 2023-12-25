@@ -1,0 +1,71 @@
+{% extends 'main.html' %}
+{% load recordjob_tag %}
+{% load static %}
+
+{% block title %}
+    Все записи
+{% endblock title %}
+
+
+
+{% block content %}
+    <form action="" method="GET">
+        {% csrf_token %}
+        <div class="input-group mb-3">
+            <div class="input-group-text">
+                {% for choice in filter.form.month %}
+                <div class="wrapper-month" style="max-width:100px;margin-right:21.5px;">
+                    {{ choice }}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="d-grid col-2" style="margin:10px;">
+            <input class="btn btn btn-info btn-lg" type="submit" value="Обновить">
+        </div>
+    </form>
+
+    <div style="display: none" id="jsonData" data-json="{{ data }}"></div>
+    <div>
+        <canvas id="myChart" width="600px" height="600px">
+
+        </canvas>
+    </div>
+
+    <script src="{% static 'js/cdnjs.cloudflare.com_ajax_libs_Chart.js_4.4.0_chart.min.js' %}"></script>
+    <script src="{% static 'diagram.js' %}"></script>
+
+    <script>
+        const ctx = document.getElementById('myChart').getContext('2d');
+<!--        function loadJson(selector) {-->
+<!--            return JSON.parse(document.querySelector(selector).getAttribute('data-json'));-->
+<!--        }-->
+        window.onload = function () {
+            ctx.canvas.parentNode.style.height = '500px';
+            ctx.canvas.parentNode.style.width = '500px';
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                labels: [{% for i in data %}'{{ i.name }}',{% endfor %}],
+                datasets: [{
+                    label: 'Средний коэффициент за все время',
+                    data: [{% for i in data %}{{ i.coefficient }},{% endfor %}],
+                    borderWidth: 1
+                }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        },
+                    maintainAspectRatio: false,
+                    }
+                }
+            });
+            };
+    </script>
+
+{% endblock content %}
+'doughnut'
+'bar'
