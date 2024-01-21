@@ -9,14 +9,15 @@
         <thead>
         <tr>
             <th scope="col">#</th>
-            <th scope="col">Дата</th>
+<!--            <th scope="col">Дата</th>-->
             <th scope="col">Станок</th>
             <th scope="col">Оператор</th>
-            <th scope="col">Смена</th>
-            <th scope="col">Время по программе</th>
-            <th scope="col">Барфидер</th>
-            <th scope="col">Коэффициент</th>
-            <th scope="col">Средний коэффициент</th>
+            <th scope="col">Изделие.Деталь</th>
+            <th scope="col">Количество</th>
+            <th scope="col">Смена/по программе</th>
+<!--            <th scope="col">Барфидер</th>-->
+            <th scope="col">Коэффициент/Средний</th>
+<!--            <th scope="col">Средний коэффициент</th>-->
             <th scope="col"></th>
         </tr>
         </thead>
@@ -26,9 +27,7 @@
             {% ifchanged time_record.date %}
                 <tr class="table-light">
                     <td></td>
-                    <td><h5>{{ time_record.date }}</h5></td>
-                    <td></td>
-                    <td></td>
+                    <td><h5><strong>{{ time_record.date }}</strong></h5></td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -39,18 +38,29 @@
                 {% endifchanged %}
                 <tr>
                     <th scope="row">{{ forloop.counter }}</th>
-                        <td></td>
-                        <td>{{ time_record.get_machine_display }}</td>
-                        <td>{{ time_record.worker.get_full_name }}</td>
-                        <td>{{ time_record.work_time }}</td>
-                        <td>{{ time_record.green_time }}</td>
+<!--                        <td></td>-->
                         <td>
+                            {{ time_record.get_machine_display }}
                             {% if time_record.barfider %}
-                                &#10004;
+                                <abbr title="барфидер" style="text-decoration: none;">(&#10004;)</abbr>
                             {% endif %}
-                            </td>
-                        <td>{{ time_record.coefficient }}</td>
-                        <td>{{ time_record.worker.average_coefficient_operator }}</td>
+                        </td>
+                        <td>{{ time_record.worker.get_full_name }}</td>
+                        <td>{{ time_record.product }} <strong>{{ time_record.detail }}</strong></td>
+                        <td>{{ time_record.quantity_1 }} / {{ time_record.quantity_2 }} / {{ time_record.quantity }}</td>
+                        <td>{{ time_record.work_time }} /
+                            <strong>{{ time_record.green_time }}</strong></td>
+<!--                        <td>{{ time_record.green_time }}</td>-->
+<!--                        <td>-->
+<!--                            {% if time_record.barfider %}-->
+<!--                                &#10004;-->
+<!--                            {% endif %}-->
+<!--                            </td>-->
+                        <td>
+                            {{ time_record.coefficient }} /
+                            <strong>{{ time_record.coefficient_for_day }}</strong> /
+                        {{ time_record.worker.average_coefficient_operator }}</td>
+<!--                        <td>{{ time_record.worker.average_coefficient_operator }}</td>-->
                         <td>
                             <button class="btn btn-outline-primary dropdown-toggle btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 Действия

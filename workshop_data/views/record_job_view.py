@@ -88,9 +88,6 @@ class AllRecordJobForAllWorker(LoginRequiredMixin, ListView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
-        print()
-        print('********', self.kwargs)
-        print()
         context['filter'] = RecordJobFilter(
             self.request.GET,
             queryset=self.get_queryset().order_by('-date').select_related('user',
@@ -156,7 +153,7 @@ class AllRecordJobForWorker(LoginRequiredMixin, ListView):
                             'detail__prefix',
                             'detail__parameters_for_spu',
                             'user',
-                            )
+                            ).order_by('-date')
         if 'month' in self.kwargs:
             context['records'] = RecordJob.objects.filter(
                 month=self.kwargs['month'],
@@ -290,15 +287,36 @@ class EnteringOperatorWorkTimeView(LoginRequiredMixin, CreateView):
     """Отображает страницу заполнения формы оценки работы оператора"""
     model = EvaluationOfTheOperatorsWork
     form_class = EnteringOperatorWorkTimeForm
-    template_name = 'workshop_data/record_job/evaluation_work/evaluation_operator_work.html'
+    template_name = 'workshop_data/record_job/evaluation_work/evaluation_operator_work_create.html'
     success_url = reverse_lazy('all_operators_time')
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        record = EvaluationOfTheOperatorsWork(
+            date=self.object.date,
+            month=self.object.month,
+            worker=self.object.worker,
+            machine=self.object.machine,
+            barfider=self.object.barfider,
+            work_time=self.object.work_time,
+            green_time=self.object.green_time,
+            product=self.object.product,
+            detail=self.object.detail,
+            quantity=self.object.quantity if self.object.quantity else 0,
+            quantity_1=self.object.quantity_1 if self.object.quantity_1 else 0,
+            quantity_2=self.object.quantity_2 if self.object.quantity_2 else 0,
+            milling_was=self.object.milling_was,
+            author=self.request.user
+        )
+        record.save()
+        return HttpResponseRedirect(reverse_lazy('all_operators_time'))
 
 
 class EditOperatorWorkTimeView(LoginRequiredMixin, UpdateView):
     """Редактирование записи работы оператора"""
     model = EvaluationOfTheOperatorsWork
     form_class = EnteringOperatorWorkTimeForm
-    template_name = 'workshop_data/record_job/evaluation_work/evaluation_operator_work.html'
+    template_name = 'workshop_data/record_job/evaluation_work/evaluation_operator_work_create.html'
     success_url = reverse_lazy('all_operators_time')
 
     def get_object(self, queryset=None):
@@ -329,7 +347,7 @@ class AllOperatorWorkTimeView(LoginRequiredMixin, ListView):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
         context['time_records'] = (EvaluationOfTheOperatorsWork.objects.all().order_by('-date').
-                                   select_related('worker',))
+                                   select_related('worker', 'detail', 'product', 'detail__prefix'))
         return context
 
     def get(self, request, *args, **kwargs):

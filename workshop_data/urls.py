@@ -217,15 +217,13 @@ urlpatterns = [
     path('record_job/order_at_master/<worker>/<month>/<record>/', record_job_order_at_master,name='record_job_order_at_master'),
     path('record_job/order_yes_ready/<worker>/<month>/<record>/', record_job_order_yes_ready, name='record_job_order_yes_ready'),
     path('all-record-job/', AllRecordJobForAllWorker.as_view(), name='all_record_job'),
-    path('all-record-job/worker-<id>/', AllRecordJobForAllWorker.as_view(), name='all_record_job_for_worker'),
+    path('all-record-job/worker-<id>/', AllRecordJobForWorker.as_view(), name='all_record_job_for_worker'),
     path('all-record-job/worker-<id>/month-<month>/', AllRecordJobForWorkerPerMonth.as_view(), name='all_record_job_for_worker_per_month'),
     path('all-record-job/mon_<month>/', AllRecordJobForAllWorker.as_view(), name='all_record_job_per_month'),
     path('all-record-job/product_<product>/', AllRecordJobForAllWorker.as_view(), name='all_record_job_per_product'),
     path('all-record-job/detail_<detail>/', AllRecordJobForAllWorker.as_view(), name='all_record_job_per_detail'),
     path('all-record-job/username_<username>/', AllRecordJobForAllWorker.as_view(), name='all_record_job_username'),
     path('all-record-job/diagram/', DiagramWorkSPUView.as_view(), name='all_record_job_diagram'),
-
-
 
     path('create-parameter-detail-spu-<product>_<detail>/', ParametersDetailForSPUCreateView.as_view(), name='create_parameter_detail_spu'),
     path('edit-parameter-detail-spu-<product>_<detail>/', ParametersDetailForSPEditeView.as_view(), name='edit_parameter_detail_spu'),

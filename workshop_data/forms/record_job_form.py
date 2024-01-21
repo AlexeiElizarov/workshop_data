@@ -7,7 +7,7 @@ from workshop_data.forms.stage_in_work_form import InitialsModelChoiceField
 from workshop_data.models import Product, Detail, Month, Comment
 from workshop_data.models.record_job import RecordJob, EvaluationOfTheOperatorsWork, Machine
 from workshop_data.models.detail import ParametersDetailForSPU, MillingDetailForSPU
-from django.forms.widgets import NumberInput, DateInput
+from django.forms.widgets import NumberInput, DateInput, SelectDateWidget, Select
 
 
 # class MyModelChoicesField(ModelChoiceField):
@@ -195,15 +195,26 @@ class EnteringOperatorWorkTimeForm(forms.ModelForm):
     date = forms.DateField(
         label='Дата',
         input_formats=['%Y-%m-%d'],
-        widget=NumberInput(attrs={"class": "form-control", 'type': 'date'}))
-
+        widget=NumberInput(attrs={"class": "form-control",
+                                  'type': 'date'}))
+    month = forms.ChoiceField(choices=Month.choices,
+                              label='Месяц',
+                              initial=Month.NOT_SPECIFIED,
+                              widget=Select(
+                                          attrs={"class": "form-control"},
+                              ))
     worker = forms.ModelChoiceField(
         label='Оператор',
         queryset=User.objects.all(),
         widget=autocomplete.ModelSelect2(
             url='data_autocomplete_worker_cpu')
     )
-
+    machine = forms.ChoiceField(choices=Machine.choices,
+                              label='Станок',
+                                initial=Machine.NOT_SPECIFIED,
+                              widget=Select(
+                                          attrs={"class": "form-control"},
+                              ))
     work_time = forms.DecimalField(
         label='Время смены',
         widget=NumberInput(
@@ -215,14 +226,42 @@ class EnteringOperatorWorkTimeForm(forms.ModelForm):
     barfider = forms.BooleanField(
         label='Барфидер',
         required=False
-    )
+        )
+    product = forms.ModelChoiceField(
+        label='Изделие',
+        queryset=Product.objects.all(),
+        widget=autocomplete.ModelSelect2(url='data_autocomplete_product',
+                                         forward=('detail',))
+
+        )
+    detail = forms.ModelChoiceField(
+        queryset=Detail.objects.all(),
+        label="Деталь",
+        widget=autocomplete.ModelSelect2(url='data_autocomplete_detail_for_product',
+                                         forward=('product',))
+        )
+    quantity_1 = forms.DecimalField(
+        label='Количество по 1й стороне',
+        required=False,
+        widget=NumberInput(
+            attrs={"class": "form-control"}, ))
+    quantity_2 = forms.DecimalField(
+        label='Количество по 2й стороне',
+        required=False,
+        widget=NumberInput(
+            attrs={"class": "form-control"}, ))
+    quantity = forms.DecimalField(
+        label='Количество по двум сторонам',
+        required=False,
+        widget=NumberInput(
+            attrs={"class": "form-control"}, ))
+
 
     class Meta:
         model = EvaluationOfTheOperatorsWork
-        fields = ('date', 'machine', 'barfider', 'worker', 'work_time', 'green_time')
-        widgets = {
-            'machine': forms.Select(attrs={"class": "form-control"})
-        }
+        # fields = '__all__'
+        fields = ('date', 'month', 'worker', 'machine', 'barfider',  'work_time', 'green_time', 'barfider',
+                  'product', 'detail', 'quantity', 'quantity_1', 'quantity_2')
 
 
 class MyDateInput(forms.DateInput):

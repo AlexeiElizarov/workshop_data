@@ -60,21 +60,48 @@ class Machine(models.TextChoices):
     SPINNER_1 = '005', 'Шпинер 1'
     SPINNER_2 = '006', 'Шпинер 2'
     HI5000 = '007', 'Малыш'
+    NOT_SPECIFIED = '777', 'не указан'
 
 
 class EvaluationOfTheOperatorsWork(models.Model):
     """Оценка работы оператора"""
+    date = models.DateField()
+    month = models.PositiveSmallIntegerField(
+        choices=Month.choices,
+        default=Month.NOT_SPECIFIED,
+        verbose_name='Месяц')
     worker = models.ForeignKey(User,
         on_delete=models.PROTECT,
         verbose_name='Рабочий',
         related_name="evaluation_work")
-    date = models.DateField()
+    machine = models.CharField(max_length=3,
+                               choices=Machine.choices,
+                               default=Machine.NOT_SPECIFIED,
+                               verbose_name='Станок')
+    barfider = models.BooleanField(default=False)
     work_time = models.SmallIntegerField(default=0)
     green_time = models.SmallIntegerField(default=0)
+    product = models.ForeignKey(
+        'workshop_data.Product',
+        on_delete=models.PROTECT,
+        verbose_name='Изделие')
+    detail = models.ForeignKey(
+        'workshop_data.Detail',
+        on_delete=models.PROTECT,
+        verbose_name='Деталь')
+    quantity_1 = models.PositiveSmallIntegerField(
+        default=0, blank=True,
+        verbose_name='Количество по 1й стороне')
+    quantity_2 = models.PositiveSmallIntegerField(
+        default=0, blank=True,
+        verbose_name='Количество по 2й стороне')
+    quantity = models.PositiveSmallIntegerField(
+        default=0, blank=True,
+        verbose_name='Количество по двум сторонам')
+    milling_was = models.BooleanField(default=False, blank=True, null=True)
     coefficient = models.FloatField()
     coefficient_for_day = models.FloatField(blank=True, null=True)
-    machine = models.CharField(max_length=3, choices=Machine.choices, verbose_name='Станок')
-    barfider = models.BooleanField(default=False)
+    author = models.ForeignKey(User, on_delete=models.PROTECT, related_name='record_job_evaluation')
     objects = models.Manager()
 
     def get_coefficient(self):
@@ -86,20 +113,14 @@ class EvaluationOfTheOperatorsWork(models.Model):
         else:
             self.coefficient = round(self.get_coefficient(), 2)
         super(EvaluationOfTheOperatorsWork, self).save(*args, **kwargs)
-        self.coefficient_for_day = EvaluationOfTheOperatorsWork.objects.filter(
-            worker=self.worker.id, date=self.date).aggregate(Sum("coefficient"))['coefficient__sum']
+        self.coefficient_for_day = round(EvaluationOfTheOperatorsWork.objects.filter(
+            worker=self.worker.id, date=self.date).aggregate(Sum("coefficient"))['coefficient__sum'], 2)
         q = EvaluationOfTheOperatorsWork.objects.filter(worker=self.worker, date=self.date)
         for record in q:
             record.coefficient_for_day=self.coefficient_for_day
         EvaluationOfTheOperatorsWork.objects.bulk_update(q, ['coefficient_for_day'])
         super(EvaluationOfTheOperatorsWork, self).save(*args, **kwargs)
 
-
-    # def get_coefficient(self):
-    #     """Получает коэффициент затраченного на работу времени"""
-    #     if self.barfider:
-    #         return round((self.green_time / self.work_time) * 0.3, 2)
-    #     return round((self.green_time / self.work_time), 2)
 
 
 

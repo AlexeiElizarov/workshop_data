@@ -1,0 +1,96 @@
+{% extends 'main.html' %}
+
+{% block title %}
+    Время работы оператора
+{% endblock title %}
+
+{% block content %}
+    <style>
+        .wrapper-main {
+            display:flex;
+            flex-wrap: nowrap;
+            padding: 10px;
+        }
+        .wrapper-left-block {
+            margin-right: 200px;
+        }
+        .block-data {
+            margin-bottom: 10px;
+        }
+    </style>
+    <div class="main-wrapper" style="display:flex; margin-left: auto; margin-left:10px;">
+    <form method="POST">
+    {% csrf_token %}
+    {{ form.media }}
+        <div class="wrapper-main">
+            <div class="wrapper-left-block">
+                <div class="block-data">
+                    <label class="form-label">{{form.date.label}}</label>
+                    {{ form.date }}
+                    <div class="form-error">{{ form.date.errors }}</div>
+                </div>
+                <div class="block-data">
+                    <label class="form-label">{{form.month.label}}</label>
+                    {{ form.month }}
+                    <div class="form-error">{{ form.month.errors }}</div>
+                </div>
+                <div class="block-data">
+                    <label class="form-label">{{form.worker.label}}</label>
+                    <p>{{ form.worker }}</p>
+                    <div class="form-error">{{ form.worker.errors }}</div>
+                </div>
+                <div class="block-data">
+                    <label class="form-label">{{form.machine.label}}</label>
+                    {{ form.machine }}
+                    <div class="form-error">{{ form.machine.errors }}</div>
+                </div>
+                <div class="block-data">
+                    <label class="form-label">{{form.barfider.label}}</label>
+                    {{ form.barfider }}
+                    <div class="form-error">{{ form.barfider.errors }}</div>
+                </div>
+                <div class="block-data">
+                    <label class="form-label">{{form.work_time.label}}</label>
+                    {{ form.work_time }}
+                    <div class="form-error">{{ form.work_time.errors }}</div>
+                </div>
+                <div class="block-data">
+                    <label class="form-label">{{form.green_time.label}}</label>
+                    {{ form.green_time }}
+                    <div class="form-error">{{ form.green_time.errors }}</div>
+                </div>
+            </div>
+            <div>
+                <div class="block-data">
+                    <label class="form-label">{{form.product.label}}</label>
+                    <p>{{ form.product }}</p>
+                    <div class="form-error">{{ form.product.errors }}</div>
+                </div>
+                <div class="block-data">
+                    <label class="form-label">{{form.detail.label}}</label>
+                    <p>{{ form.detail }}</p>
+                    <div class="form-error">{{ form.detail.errors }}</div>
+                </div>
+                <div class="block-data">
+                    <label class="form-label">{{form.quantity_1.label}}</label>
+                    <p>{{ form.quantity_1 }}</p>
+                    <div class="form-error">{{ form.quantity_1.errors }}</div>
+                </div>
+                <div class="block-data">
+                    <label class="form-label">{{form.quantity_2.label}}</label>
+                    <p>{{ form.quantity_2 }}</p>
+                    <div class="form-error">{{ form.quantity_2.errors }}</div>
+                </div>
+                <div class="block-data">
+                    <label class="form-label">{{form.quantity.label}}</label>
+                    <p>{{ form.quantity }}</p>
+                    <div class="form-error">{{ form.quantity.errors }}</div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <input class="btn btn-primary" type="submit" value="Сохранить"/>
+        </div>
+    </form>
+    </div>
+{% endblock content %}

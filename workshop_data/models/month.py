@@ -17,3 +17,17 @@ class Month(models.IntegerChoices):
     NOVEMBER = 11, 'ноябрь'
     DECEMBER = 12, 'декабрь'
     NOT_SPECIFIED = 13, 'не указан'
+
+
+months = [('January', 'Январь'),
+              ('February', 'Февраль'),
+              ('March', 'Март'),
+              ('April', 'Апрель'),
+              ('May', 'Май'),
+              ('June', 'Июнь'),
+              ('July', 'Июль'),
+              ('August', 'Август'),
+              ('September', 'Сентябрь'),
+              ('October', 'Октябрь'),
+              ('November', 'Ноябрь'),
+              ('December', 'Декабрь'), ]
