@@ -5,7 +5,7 @@ from sign.forms import User
 from workshop_data.models.record_job import EvaluationOfTheOperatorsWork, ID_OPERATORS
 
 
-def get_average_coefficient_all_operator(request):
+def get_average_coefficient_all_operator():
     """Высчитывает средний коэффициент для всех операторов и обновляет в БД"""
     for id in ID_OPERATORS:
         worker = User.objects.get(id=id)

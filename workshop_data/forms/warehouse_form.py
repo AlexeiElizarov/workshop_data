@@ -1,13 +1,44 @@
 from django import forms
+from django.forms import NumberInput, Select
 
-from workshop_data.models import Warehouse, Comment
+from workshop_data.models import Warehouse, Comment, Unit
 
 
 class WarehouseCreateForm(forms.ModelForm):
     """"""
     comment = forms.CharField(
-        widget=forms.Textarea(attrs={"class": "form-control"}),
-        label="Комментарий")
+        label='Комментарий',
+        required=False,
+        widget=forms.Textarea(
+            attrs={"class": "form-control",
+                   # 'placeholder':'Комментарий',
+                   'rows': 4,
+                   'cols': 5}
+        ))
+    section = forms.DecimalField(
+        label='Участок',
+        required=True,
+        initial=423,
+        widget=NumberInput(
+            attrs={"class": "form-control"}, ))
+    semis = forms.DecimalField(
+        label='Заготовка',
+        required=True,
+        widget=NumberInput(
+            attrs={"class": "form-control"}, ))
+    intermediate_detail = forms.DecimalField(
+        label='Полуфабрикат',
+        required=True,
+        widget=NumberInput(
+            attrs={"class": "form-control"}, ))
+    unit = forms.ChoiceField(choices=Unit.choices,
+                              label='Еденица измерения',
+                              initial=Unit.NOT_SPECIFIED,
+                              widget=Select(
+                                  attrs={"class": "form-control"},
+                              ))
+
+
     class Meta:
         model = Warehouse
         fields = ['section', 'semis', 'intermediate_detail', 'unit', 'comment']

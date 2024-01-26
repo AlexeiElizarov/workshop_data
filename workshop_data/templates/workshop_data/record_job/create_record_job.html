@@ -6,18 +6,73 @@
 {% endblock title %}
 
 {% block content %}
+<style>
+        .wrapper-create-plan {
+            display:flex;
+            flex-wrap: nowrap;
+            padding: 10px;
+            max-width: 400px;
+        }
 
-<div class="main-wrapper" style="display:flex; margin-left: auto; margin-right: 0;">
-    <div class="wrapper-form">
+        .block-data {
+            margin-bottom: 10px;
+            display: block;
+
+        }
+    </style>
+
+    <div class="wrapper-create-plan">
         <form method="POST">
-            {% csrf_token %}
-            {{ form.as_p }}
-            {{ form.media }}
+        {% csrf_token %}
+        {{ form.media }}
+            <h4 style="color: red;">{{form.non_field_errors }}</h4>
+            <div class="wrapper-left-block">
+                <div class="block-data">
+                    <div><label class="form-label">{{form.month.label}}</label></div>
+                    <div>{{ form.month }}</div>
+                    <div class="form-error">{{ form.month.errors }}</div>
+                </div>
+                <div class="block-data">
+                    <div><label class="form-label">{{form.user.label}}</label></div>
+                    <div>{{ form.user }}</div>
+                    <div class="form-error">{{ form.user.errors }}</div>
+                </div>
+                <div class="block-data">
+                    <div><label class="form-label">{{form.product.label}}</label></div>
+                    <div><p>{{ form.product }}</p></div>
+                    <div class="form-error">{{ form.product.errors }}</div>
+                </div>
+                <div class="block-data">
+                    <div><label class="form-label">{{form.detail.label}}</label></div>
+                    <div>{{ form.detail }}</div>
+                    <div class="form-error">{{ form.detail.errors }}</div>
+                </div>
+                <div class="block-data">
+                    <div><label class="form-label">{{form.quantity_1.label}}</label></div>
+                    <div>{{ form.quantity_1 }}</div>
+                    <div class="form-error">{{ form.quantity_1.errors }}</div>
+                </div>
+                <div class="block-data">
+                    <div><label class="form-label">{{form.quantity_2.label}}</label></div>
+                    <div>{{ form.quantity_2 }}</div>
+                    <div class="form-error">{{ form.quantity_2.errors }}</div>
+                </div>
+                <div class="block-data">
+                    <div><label class="form-label">{{form.quantity.label}}</label></div>
+                    <div>{{ form.quantity }}</div>
+                    <div class="form-error">{{ form.quantity.errors }}</div>
+                </div>
+                <div class="block-data">
+                    <div><label class="form-label">{{form.milling_was.label}}</label></div>
+                    <div>{{ form.milling_was }}</div>
+                    <div class="form-error">{{ form.errors.milling_was }}</div>
+                </div>
+            </div>
+
             <input type="submit" value="Сохранить" class="btn btn-primary">
         </form>
     </div>
-    <div></div>
-</div>
+
 
    <script>
         $('.add').click(function() {

@@ -12,6 +12,7 @@ def get_workshopplan_object_for_month_tag(product: Product, detail: Detail, mont
     """Возвращает """
     try:
         print('121212')
+        print(product, detail, month)
         print(WorkshopPlan.objects.select_related('product', 'detail', 'detail__prefix', 'comment').\
             filter(product=product, detail=detail, month__in=month))
         print()

@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import UpdateView, CreateView, DeleteView, ListView
 
@@ -14,6 +15,7 @@ class WarehouseCreateView(LoginRequiredMixin, CreateView):
     template_name = 'workshop_data/plan/warehouse/warehouse.html'
     success_url = reverse_lazy('plan')
 
+
     def get_form_kwargs(self):
         kwargs = super(WarehouseCreateView, self).get_form_kwargs()
         kwargs.update({'user': self.request.user})
@@ -23,7 +25,7 @@ class WarehouseCreateView(LoginRequiredMixin, CreateView):
         self.object = form.save(commit=False)
         self.object.save()
         detail = Detail.objects.get(prefix=Prefix.objects.get(
-            name=self.kwargs.get('object').split('_')[1].split('.')[0]
+            name=self.kwargs.get('object').split('.')[0]
         ),
             name=self.kwargs.get('object').split('.')[1])
         detail.in_warehouse = self.object

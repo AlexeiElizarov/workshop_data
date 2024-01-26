@@ -48,7 +48,6 @@ class RecordJobCreateView(LoginRequiredMixin, CreateView):
                 author_id=self.request.user.id
             )
             record_job.save()
-            print()
             return HttpResponseRedirect(reverse_lazy('all_record_job'))
 
 
@@ -353,7 +352,7 @@ class AllOperatorWorkTimeView(LoginRequiredMixin, ListView):
     def get(self, request, *args, **kwargs):
         self.object_list = self.get_queryset()
         context = self.get_context_data()
-        get_average_coefficient_all_operator(request)
+        get_average_coefficient_all_operator()
         return render(request, self.template_name, context)
 
 
@@ -398,7 +397,7 @@ class AverageCoefficientOperators(LoginRequiredMixin, ListView):
                     request.session['total_salary'] = total_salary
                     for operator_id in ID_OPERATORS:
                         worker = User.objects.get(id=operator_id)
-                        salary = int(total_salary / sum_avg_coef * avg_coefficient_operator_dict[worker.get_full_name()][0])
+                        salary = int((total_salary / sum_avg_coef) * avg_coefficient_operator_dict[worker.get_full_name()][0])
                         avg_coefficient_operator_dict[worker.get_full_name()].append(salary)
                 request.session['dict_avg_range'] = avg_coefficient_operator_dict
                 request.session['date1'] = str(date1)

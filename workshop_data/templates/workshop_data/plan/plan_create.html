@@ -5,10 +5,70 @@
 {% endblock title %}
 
 {% block content %}
-    <form method="POST">
+    <style>
+        .wrapper-create-plan {
+            display:flex;
+            flex-wrap: nowrap;
+            padding: 10px;
+            max-width: 400px;
+        }
+
+        .block-data {
+            margin-bottom: 10px;
+            display: block;
+
+        }
+    </style>
+
+    <div class="wrapper-create-plan">
+        <form method="POST">
         {% csrf_token %}
-        {{ form.as_p }}
         {{ form.media }}
-        <input type="submit" value="Отправить" class="btn btn-primary">
-    </form>
+            <h4 style="color: red;">{{form.non_field_errors }}</h4>
+            <div class="wrapper-left-block">
+                <div class="block-data">
+                    <div><label class="form-label">{{form.product.label}}</label></div>
+                    <div>{{ form.product }}</div>
+                    <div class="form-error">{{ form.product.errors }}</div>
+                </div>
+                <div class="block-data">
+                    <div><label class="form-label">{{form.detail.label}}</label></div>
+                    <div>{{ form.detail }}</div>
+                    <div class="form-error">{{ form.detail.errors }}</div>
+                </div>
+                <div class="block-data">
+                    <div><label class="form-label">{{form.month.label}}</label></div>
+                    <div><p>{{ form.month }}</p></div>
+                    <div class="form-error">{{ form.month.errors }}</div>
+                </div>
+                <div class="block-data">
+                    <div><label class="form-label">{{form.quantity_state_order.label}}</label></div>
+                    <div>{{ form.quantity_state_order }}</div>
+                    <div class="form-error">{{ form.quantity_state_order.errors }}</div>
+                </div>
+                <div class="block-data">
+                    <div><label class="form-label">{{form.quantity_commercial_order.label}}</label></div>
+                    <div>{{ form.quantity_commercial_order }}</div>
+                    <div class="form-error">{{ form.quantity_commercial_order.errors }}</div>
+                </div>
+                <div class="block-data">
+                    <div><label class="form-label">{{form.sos.label}}</label></div>
+                    <div>{{ form.sos }}</div>
+                    <div class="form-error">{{ form.sos.errors }}</div>
+                </div>
+                <div class="block-data">
+                    <div><label class="form-label">{{form.year.label}}</label></div>
+                    <div>{{ form.year }}</div>
+                    <div class="form-error">{{ form.year.errors }}</div>
+                </div>
+                <div class="block-data">
+                    <div><label class="form-label">{{form.comment.label}}</label></div>
+                    <div>{{ form.comment }}</div>
+                    <div class="form-error">{{ form.errors.comment }}</div>
+                </div>
+            </div>
+
+            <input type="submit" value="Сохранить" class="btn btn-primary">
+        </form>
+    </div>
 {% endblock content %}

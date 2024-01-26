@@ -9,7 +9,7 @@ from workshop_data.forms import (
     EditWorkshopPlanForm,
     WorkshopPlanAddExistingBatchForm)
 from ..filters import WorkshopPlanFilter
-from ..models import BatchDetailInPlan, Product, Month
+from ..models import BatchDetailInPlan, Product, Month, Comment
 
 
 class WorkshopPlanView(LoginRequiredMixin, ListView):
@@ -32,9 +32,7 @@ class WorkshopPlanView(LoginRequiredMixin, ListView):
             'detail__secondary_detail',
             'detail__in_warehouse'
             )
-        print()
-        print('222', context['products'])
-        print()
+        # self.request.session['month'] = self.request.GET['month']
         return context
 
 
@@ -49,6 +47,12 @@ class WorkshopPlanCreateView(LoginRequiredMixin, CreateView):
         self.object = form.save(commit=False)
         self.object.author = self.request.user
         return super().form_valid(form)
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
 
 
 class WorkshopPlanDeleteView(LoginRequiredMixin, DeleteView):

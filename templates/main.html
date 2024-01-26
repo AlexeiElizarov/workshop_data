@@ -41,7 +41,6 @@
                             {% now "Y" as current_year %}
                             {% now "M" as current_month %}
                             {% if request.user.position == 'MSR' or  request.user.position == 'EPB'%}
-                            {% comment %}
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle" href="" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         План
@@ -107,12 +106,11 @@
                                         <li><a class="dropdown-item" href="{% url 'create_new_bonus' %}">Добавить премию</a></li>
                                         <li><a class="dropdown-item" href="{% url 'list_bonuses_all_worker' %}">Все бонусы</a></li>
                                         <li><a class="dropdown-item" href="{% url 'list_all_worker_here_bonuses' %}">Рабочии и премия</a></li>
-                                        <li><a class="dropdown-item" href="{% url 'list_all_resolution_or_not_detail' username=user.username %}">Заявки                                    на Детали</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'list_all_resolution_or_not_detail' username=user.username %}">Заявки на Детали</a></li>
                                         <li><a class="dropdown-item" href="{% url 'average_time_of_work_stage_in_detail' %}">Среднее
                                             время работы</a></li>
                                     </ul>
                                 </li>
-                            {% endcomment %}
 
                                 <li class="nav-item">
                                     <a class="nav-link" href="{% url 'record_job_create' %}">

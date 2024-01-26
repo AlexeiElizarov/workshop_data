@@ -14,7 +14,7 @@
         <form method="GET">
             <div class="filter">
                 <h5>Найти по изделию  {{ filter.form.product }}{{ filter.form.media }}</h5>
-                <h5>Найти по детали {{ filter.form.detail }}{{ filter.form.media }}</h5>
+                <h5>Найти по детали {{ filter.form.detail }}{{ filter.form.media }}!!! не работает фильтр по детали !!!</h5>
 
             </div>
             <div class="input-group mb-3">
@@ -49,14 +49,13 @@
                 <th scope="col"></th>
             </tr>
         </thead>
-св
-        {% for product in products %}
 
+        {% for product in products %}
         <tbody>
         {% ifchanged product %}
         <tr class="table-light">
             <td></td>
-            <td><h5>{{ product }}</h5></td>
+            <td><h5><strong>{{ product }}</strong></h5></td>
             <td></td>
             <td></td>
             <td></td>
@@ -71,7 +70,6 @@
         </tr>
         {% endifchanged %}
         {% for month in filter.form.month.value %}
-
             {% for detail1 in product.detail.all %}
                 {% object_workshopplan product=product detail=detail1 month=month as object %}
                 {% if object %}

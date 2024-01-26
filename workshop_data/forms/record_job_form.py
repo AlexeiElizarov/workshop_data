@@ -36,11 +36,12 @@ class RecordJobForm(forms.ModelForm):
         widget=autocomplete.ModelSelect2(url='data_autocomplete_detail_for_product',
                                          forward=('product',))
     )
-    # month = forms.ModelChoiceField(
-    #     label='Месяц',
-    #     queryset=Month.objects.all(),
-    #     widget=forms.TextInput(attrs={"class": "form-control", })
-    # )
+    month = forms.ChoiceField(choices=Month.choices,
+                              label='Месяц',
+                              initial=Month.NOT_SPECIFIED,
+                              widget=Select(
+                                  attrs={"class": "form-control"},
+                              ))
     quantity_1 = forms.IntegerField(
         label='Количество по 1й стороне',
         widget=forms.TextInput(attrs={"class": "form-control",})

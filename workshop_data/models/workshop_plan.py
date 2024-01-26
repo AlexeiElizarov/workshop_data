@@ -26,6 +26,7 @@ class WorkshopPlan(models.Model):
     year = models.PositiveIntegerField(
         default=current_year(), validators=[MinValueValidator(2022), max_value_current_year])
     comment = models.ForeignKey("workshop_data.Comment",
+                                blank=True,
                                 on_delete=models.PROTECT,
                                 verbose_name='Заметки')
     author = models.ForeignKey(User, on_delete=models.PROTECT, related_name='user_workshopplan')
