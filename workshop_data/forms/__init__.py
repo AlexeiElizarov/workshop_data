@@ -29,7 +29,9 @@ from workshop_data.forms.stage_in_work_form import (
     CreateNewStageManufacturingInWorkForm,
     EnteringDetailToViewAverageTimeOfWorkForm)
 from workshop_data.forms.warehouse_form import WarehouseCreateForm
-from workshop_data.forms.comment_form import CommentEditForm
+from workshop_data.forms.comment_form import (
+    CommentEditForm,
+    CommentCreateForm)
 from workshop_data.forms.record_job_form import MillingDetailForSPUCreateForm
 
 

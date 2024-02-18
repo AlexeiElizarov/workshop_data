@@ -6,7 +6,7 @@ from ..filters import BatchFilter
 from workshop_data.models.batch_detail_in_plan import BatchDetailInPlan
 from workshop_data.models.workshop_plan import WorkshopPlan
 from workshop_data.forms.batch_form import CreateBatchDetailInPlanForm
-from workshop_data.models import Detail, Product, StageManufacturingDetailInWork
+from workshop_data.models import Detail, Product, StageManufacturingDetailInWork, Prefix
 from ..services import current_month, current_year
 from django.db.models import Prefetch
 
@@ -19,11 +19,14 @@ class CreateBatchDetailInPlan(LoginRequiredMixin, CreateView):
 
     def get_object(self, queryset=None):
         name = self.kwargs.get('object')
+        prefix = name.split('_')[1].split('.')[0]
+        detail_name = name.split('_')[1].split('.')[1]
+        detail = Detail.objects.get(prefix__name=prefix, name=detail_name)
+
         product = name.split('_')[0]
-        detail = name.split('_')[1].split('.')[1]
         obj = WorkshopPlan.objects.filter(
             product__name=product,
-            detail__name=detail,).select_related('product', 'detail')[0]
+            detail=detail).select_related('product', 'detail')[0]
         return obj
 
     def get_context_data(self, **kwargs):
@@ -71,7 +74,7 @@ class AllBatchDetailInPlanView(LoginRequiredMixin, ListView):
         context['filter'] = BatchFilter(
             self.request.GET,
             queryset=self.get_queryset(). \
-                select_related('detail', 'workshopplan_detail', 'comment'). \
+                select_related('detail', 'workshopplan_detail',). \
                 prefetch_related('detail__detail_in_product'). \
                 prefetch_related(Prefetch('stages',
                                           queryset=StageManufacturingDetailInWork.objects.
@@ -106,20 +109,22 @@ class AllBatchDetailProductInPlan(LoginRequiredMixin, DetailView):
 
     def get_object(self, queryset=None):
         name = self.kwargs.get('object')
-        if name[-2:] == 'уз':
-            product = name.split('_')[0]
-            node = name.split('_')[1][:-2]
-            obj = WorkshopPlan.objects.filter(
-                product__name=product,
-                node__name=node).select_related('product', 'detail')[0]
-            return obj
-        else:
-            product = name.split('_')[0]
-            detail = name.split('_')[1]
-            obj = WorkshopPlan.objects.filter(
-                product__name=product,
-                detail__name=detail,).select_related('product', 'detail')[0]
-            return obj
+
+        # product = Product.objects.get(name=name.split('_')[0])
+        # detail = Detail.objects.get(prefix=Prefix.objects.get(
+        #     name=self.kwargs.get('object').split('_')[1].split('.')[0]
+        # ),
+        #     name=self.kwargs.get('object').split('_')[1].split('.')[1])
+
+        prefix = name.split('_')[1].split('.')[0]
+        detail_name = name.split('_')[1].split('.')[1]
+        detail = Detail.objects.get(prefix__name=prefix, name=detail_name)
+
+        product = name.split('_')[0]
+        obj = WorkshopPlan.objects.filter(
+            product__name=product,
+            detail=detail).select_related('product', 'detail')[0]
+        return obj
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()

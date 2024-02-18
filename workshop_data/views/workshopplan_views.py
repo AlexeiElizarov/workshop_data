@@ -46,11 +46,14 @@ class WorkshopPlanCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         self.object = form.save(commit=False)
         self.object.author = self.request.user
+        super().form_valid(form)
+        form.cleaned_data['comment'].workshop_plan = self.object
+        form.cleaned_data['comment'].save()
         return super().form_valid(form)
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs['user'] = self.request.user
+        kwargs['user'] = self.request.user._wrapped if hasattr(self.request.user,'_wrapped') else self.request.user
         return kwargs
 
 

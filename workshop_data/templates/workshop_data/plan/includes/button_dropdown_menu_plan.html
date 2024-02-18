@@ -13,6 +13,12 @@
             </li>
             <li>
                 <a class="dropdown-item"
+                   href="{% url 'create_new_comment_workshop_plan' object.id %}">
+                    Новый комментарий к {{ object.detail }}
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item"
                    href="{% url 'add_existing_batch_in_plan' object %}">
                     Добавить существующую партию
                 </a>

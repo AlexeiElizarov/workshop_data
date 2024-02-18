@@ -4,7 +4,7 @@ from django import forms
 from sign.forms import User
 from workshop_data.models import BatchDetailInPlan, StageManufacturingDetail, Detail
 from workshop_data.models.stage_manufacturing_detail_in_work import StageManufacturingDetailInWork
-from workshop_data.models.comment import Comment
+from workshop_data.models.comment import Comment, StageManufacturingDetailInWorkComment
 from workshop_data.services.general_services import get_list_all_workers, get_list_all_workers_initials
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
@@ -46,7 +46,7 @@ class CreateNewStageManufacturingInWorkForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         comment = cleaned_data.pop('comment_in_batch')
-        new_comment = Comment.objects.create(body=comment, author=self.user)
+        new_comment = StageManufacturingDetailInWorkComment.objects.create(body=comment, author=self.user)
         cleaned_data.update({'comment_in_batch': new_comment})
         worker = self.cleaned_data['worker']
         stage_in_batch = self.cleaned_data['stage_in_batch']

@@ -18,16 +18,23 @@ class WarehouseCreateView(LoginRequiredMixin, CreateView):
 
     def get_form_kwargs(self):
         kwargs = super(WarehouseCreateView, self).get_form_kwargs()
-        kwargs.update({'user': self.request.user})
+        kwargs.update({'user': self.request.user._wrapped if hasattr(self.request.user,'_wrapped') else self.request.user})
         return kwargs
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
         self.object.save()
-        detail = Detail.objects.get(prefix=Prefix.objects.get(
-            name=self.kwargs.get('object').split('.')[0]
-        ),
-            name=self.kwargs.get('object').split('.')[1])
+
+        if '_' in self.kwargs.get('object'):
+            detail = Detail.objects.get(prefix=Prefix.objects.get(
+                name=self.kwargs.get('object').split('_')[1].split('.')[0]
+            ),
+                name=self.kwargs.get('object').split('_')[1].split('.')[1])
+        else:
+            detail = Detail.objects.get(prefix=Prefix.objects.get(
+                name=self.kwargs.get('object').split('.')[0]
+            ),
+                name=self.kwargs.get('object').split('.')[1])
         detail.in_warehouse = self.object
         detail.save()
         self.object.author = self.request.user

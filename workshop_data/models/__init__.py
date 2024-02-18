@@ -10,7 +10,7 @@ from workshop_data.models.month import Month
 from workshop_data.models.batch_detail_in_plan import BatchDetailInPlan
 from workshop_data.models.stage_manufacturing_detail_in_work import StageManufacturingDetailInWork
 from workshop_data.models.category_detail import CategoryDetail
-from workshop_data.models.comment import Comment
+from workshop_data.models.comment import Comment, WorkshopPlanComment, WarehouseComment, BatchComment
 from workshop_data.models.workshop_plan import WorkshopPlan
 from workshop_data.models.bonus import Bonus
 from workshop_data.models.statement_about_job_over_detail import (
@@ -31,6 +31,9 @@ __all__ = (
     'StageManufacturingDetailInWork',
     'CategoryDetail',
     'Comment',
+    'WorkshopPlanComment',
+    'WarehouseComment',
+    'BatchComment',
     'WorkshopPlan',
     'Bonus',
     'StatementAboutJobOverDetail',

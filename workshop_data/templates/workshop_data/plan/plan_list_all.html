@@ -80,8 +80,8 @@
                         <td></td>
                         <td>{{ object.get_month_display }}</td>
                         <td>{% if detail1.prefix %} {{ detail1.prefix }}. {% endif %} {{ detail1.get_name_detail }}
-                            <a title="{{ object.comment.body }}" href="">&#9776;</a>
-
+                            <a title="Подробнее" data-bs-toggle="modal" data-bs-target="" href="#{{object.id}}">&#9776;</a>
+                            {% include 'workshop_data/plan/includes/workshop_plan_modal_window_comments_list.html' %}
                         </td>
                         <td></td>
                         <td></td>
@@ -237,4 +237,9 @@
         {% endfor %}
         {% endcomment %}
     </table>
+
+
+{% include 'workshop_data/plan/includes/workshop_plan_modal_window_comments_list.html' %}
+
+
 {% endblock content %}

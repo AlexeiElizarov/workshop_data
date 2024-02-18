@@ -3,6 +3,7 @@ from django import forms
 from django.forms import Select, NumberInput
 
 from workshop_data.models import Month, Comment
+from workshop_data.models.comment import WorkshopPlanComment
 from workshop_data.models.workshop_plan import WorkshopPlan
 from workshop_data.services import current_year
 
@@ -61,7 +62,8 @@ class WorkshopPlanCreateForm(forms.ModelForm):
 
     def clean(self):
         comment = self.cleaned_data.pop('comment')
-        new_comment = Comment.objects.create(body=comment, author=self.user)
+        new_comment = WorkshopPlanComment.objects.create(body=comment,
+                                                         author=self.user)
         self.cleaned_data.update({'comment': new_comment})
         super(WorkshopPlanCreateForm, self).clean()
         product = self.cleaned_data.get('product')

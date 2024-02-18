@@ -18,6 +18,8 @@ from workshop_data.views.workshopplan_views import (
     WorkshopPlanDeleteView,
     WorkshopPlanUpdateView
 )
+from workshop_data.views.comment_view import (
+    WorkshopPlanCommentCreateView)
 from workshop_data.views.master_views import (
     WorkerListView,
     # WorkerOrdersListForMaster

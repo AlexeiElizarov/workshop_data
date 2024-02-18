@@ -17,11 +17,11 @@ class Bonus(models.Model):
         default=Month.NOT_SPECIFIED,
         verbose_name='Месяц')
     time = models.SmallIntegerField(default=0, verbose_name="Затраченное время")
-    comment = models.ForeignKey(
-        Comment,
-        on_delete=models.PROTECT,
-        blank=False,
-        verbose_name="Комментарий")
+    # comment = models.ForeignKey(
+    #     Comment,
+    #     on_delete=models.PROTECT,
+    #     blank=False,
+    #     verbose_name="Комментарий")
     date = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(
         User,

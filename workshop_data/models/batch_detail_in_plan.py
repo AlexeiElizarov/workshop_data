@@ -16,11 +16,11 @@ class BatchDetailInPlan(models.Model):
     quantity_in_batch = models.SmallIntegerField(default=0, verbose_name="Количество в партии")
     ready = models.BooleanField(default=False)
     sos = models.BooleanField(default=False)
-    comment = models.ForeignKey("workshop_data.Comment",
-                                on_delete=models.SET_NULL,
-                                null=True,
-                                verbose_name='Комментарий'
-                                )
+    # comment = models.ForeignKey("workshop_data.BatchComment",
+    #                             on_delete=models.SET_NULL,
+    #                             null=True,
+    #                             verbose_name='Комментарий'
+    #                             )
     author = models.ForeignKey(User, on_delete=models.PROTECT, related_name='user_batch')
 
     objects = models.Manager()

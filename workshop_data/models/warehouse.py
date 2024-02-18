@@ -23,12 +23,12 @@ class Warehouse(models.Model):
         choices=Unit.choices,
         default=Unit.NOT_SPECIFIED,
         verbose_name='Единица измерения')
-    comment = models.ForeignKey(
-        "workshop_data.Comment",
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        verbose_name='Комментарий')
+    # comment = models.ForeignKey(
+    #     "workshop_data.WarehouseComment",
+    #     on_delete=models.SET_NULL,
+    #     null=True,
+    #     blank=True,
+    #     verbose_name='Комментарий')
     author = models.ForeignKey(
         User,
         on_delete=models.PROTECT,

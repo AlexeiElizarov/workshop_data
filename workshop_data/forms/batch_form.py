@@ -2,7 +2,7 @@ from django import forms
 from workshop_data.models.workshop_plan import WorkshopPlan
 from workshop_data.models.batch_detail_in_plan import BatchDetailInPlan
 from workshop_data.models.detail import Detail
-from workshop_data.models.comment import Comment
+from workshop_data.models.comment import Comment, BatchComment
 
 
 class CreateBatchDetailInPlanForm(forms.ModelForm):
@@ -30,5 +30,5 @@ class CreateBatchDetailInPlanForm(forms.ModelForm):
 
     def clean(self):
         comment = self.cleaned_data.pop('comment')
-        new_comment = Comment.objects.create(body=comment, author=self.user)
+        new_comment = BatchComment.objects.create(body=comment, author=self.user)
         self.cleaned_data.update({'comment': new_comment})

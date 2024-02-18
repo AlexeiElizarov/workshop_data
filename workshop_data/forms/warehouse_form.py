@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import NumberInput, Select
 
-from workshop_data.models import Warehouse, Comment, Unit
+from workshop_data.models import Warehouse, WarehouseComment, Unit
 
 
 class WarehouseCreateForm(forms.ModelForm):
@@ -49,5 +49,5 @@ class WarehouseCreateForm(forms.ModelForm):
 
     def clean(self):
         comment = self.cleaned_data.pop('comment')
-        new_comment = Comment.objects.create(body=comment, author=self.user)
+        new_comment = WarehouseComment.objects.create(body=comment, author=self.user)
         self.cleaned_data.update({'comment': new_comment})

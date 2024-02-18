@@ -41,7 +41,8 @@ ALLOWED_HOSTS = ['*']
 
 SITE_ID = 1
 
-#INTERNAL_IPS = ["127.0.0.1", "192.168.1.67"]
+
+# INTERNAL_IPS = ["127.0.0.1", "192.168.1.67"]
 
 
 def show_toolbar(request):
@@ -61,6 +62,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'bootstrap_modal_forms',
     'debug_toolbar',
     'sign',
     'protect',
@@ -116,7 +118,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        'NAME': "D:\Alexei\!!!DATABASE!!!\green_time\db.sqlite3",
+        'NAME': "D:\Alexei\!!!DATABASE!!!\model_Comment\db.sqlite3",
     }
 }
 

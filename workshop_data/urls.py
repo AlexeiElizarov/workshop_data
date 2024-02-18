@@ -83,7 +83,10 @@ from workshop_data.views.category_detail_views import (
 )
 from workshop_data.views.any_view import ShiftTask
 from workshop_data.services.general_services import batch_ready, batch_cancel_ready
-from workshop_data.views.comment_view import CommentUpdateView
+from workshop_data.views.comment_view import (
+    CommentUpdateView,
+    WorkshopPlanCommentCreateView,
+)
 from workshop_data.views.record_job_view import (
     RecordJobCreateView,
     RecordJobEditView,
@@ -194,6 +197,7 @@ urlpatterns = [
 
     path('master/task_list/', ShiftTask.as_view(), name='task_list'),
     path('master/commentupdate/', CommentUpdateView.as_view(), name='update_comment'),
+    path('master/new-comment-create/plan-<object>/', WorkshopPlanCommentCreateView.as_view(), name='create_new_comment_workshop_plan'),
 
     path('master/create-new-bonus/', CreateNewBonusView.as_view(), name='create_new_bonus'),
     path('master/create-bonus-complete/', create_bonus_complete, name='create_bonus_complete'),
