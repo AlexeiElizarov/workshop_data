@@ -11,14 +11,23 @@ class Unit(models.IntegerChoices):
 
 class Warehouse(models.Model):
     """Класс описывает детали/заготовки на складе"""
+    date = models.DateTimeField(auto_now_add=True)
     section = models.SmallIntegerField(default=423,
                                        verbose_name="Участок")
-    semis = models.SmallIntegerField(
-        default=0,
-        verbose_name="Заготовка")
-    intermediate_detail = models.SmallIntegerField(
-        default=0,
-        verbose_name="Полуфабрикат")
+    detail = models.ForeignKey("workshop_data.Detail",
+                               on_delete=models.DO_NOTHING,
+                               related_name="in_warehouse_detail")
+    product = models.ForeignKey("workshop_data.Product",
+                                on_delete=models.DO_NOTHING,
+                                related_name="in_warehouse_product")
+    expenditures = models.PositiveSmallIntegerField(default=0, verbose_name="Расход")
+    income = models.PositiveSmallIntegerField(default=0, verbose_name="Приход")
+    semis = models.BooleanField(verbose_name="Заготовка")
+    intermediate_detail = models.BooleanField(verbose_name="Полуфабрикат")
+    cell = models.SmallIntegerField(default=0)
+    employee = models.ForeignKey("sign.User",
+                                 on_delete=models.PROTECT,
+                                 verbose_name="Сотрудник")
     unit = models.PositiveSmallIntegerField(
         choices=Unit.choices,
         default=Unit.NOT_SPECIFIED,

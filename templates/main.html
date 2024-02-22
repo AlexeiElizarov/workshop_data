@@ -20,8 +20,9 @@
         <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css">
 
         <script src="{% static 'js/jquery.bootstrap.modal.forms.js' %}"></script>
-
+        <script src="{% static 'js/jquery-1.12.4.js' %}"></script>
         <script src="{% static 'js/jquery1.12.4.min.js' %}"></script>
+        <script src="{% static 'js/jquery-ui.js' %}"></script>
         <script src="{% static 'js/moment.min.js' %}"></script>
         <script src="{% static 'js/bootstrap-datetimepicker.min.js' %}"></script>
         <link rel="stylesheet" href="{% static 'css/bootstrap-5.2.2-dist/css/bootstrap3.3.7.min.css' %}" type="text/css">
@@ -160,7 +161,17 @@
                                         <li><a class="dropdown-item" href="{% url 'create_new_detail' %}">Деталь</a></li>
                                     </ul>
                                 </li>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Кладовая
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        <li><a class="dropdown-item" href="{% url 'create_new_record_in_warehouse' %}">Приход/Расход</a></li>
+                                        <li><a class="dropdown-item" href="">Просмотр</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'view_record_in_warehouse' %}">Просмотр записи</a></li>
 
+                                    </ul>
+                                </li>
                             {% else %}
 
 

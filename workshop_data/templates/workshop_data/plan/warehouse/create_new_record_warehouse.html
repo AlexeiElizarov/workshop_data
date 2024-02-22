@@ -1,0 +1,192 @@
+{% extends 'main.html' %}
+
+{% block title %}
+
+{% endblock title %}
+
+{% block content %}
+    <style>
+        .main-wrapper{
+            display: flex;
+        }
+        .wrapper-warehouse-create-record  {
+            display:flex;
+            flex-wrap: nowrap;
+            padding: 10px;
+            max-width: 400px;
+        }
+        .wrapper-income-expenditures {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            max-width: 279px;
+
+        }
+        .wrapper-semis-intermediate {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            margin-top:10px;
+        }
+        .wrapper-unit-cell {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            margin-top:10px;
+            max-width: 279px;
+        }
+
+        .block-data {
+            margin-bottom: 10px;
+            display: block;
+        }
+        .content-center {
+            display: flex;
+            justify-content: center;
+        }
+        .page-block {
+
+        }
+    </style>
+
+<div class="main-wrapper">
+    <div class="wrapper-warehouse-create-record">
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.media }}
+            <h4 style="color: red;">{{form.non_field_errors }}</h4>
+            <div class="wrapper-left-block">
+                <div class="block-data">
+                    <div><label class="form-label">{{form.section.label}}</label></div>
+                    <div>{{ form.section }}</div>
+                    <div class="form-error">{{ form.section.errors }}</div>
+                </div>
+                <div class="block-data">
+                    <div><label class="form-label">{{form.employee.label}}</label></div>
+                    <div>{{ form.employee }}</div>
+                    <div class="form-error">{{ form.employee.errors }}</div>
+                </div>
+                <div class="block-data">
+                    <div><label class="form-label">{{form.product.label}}</label></div>
+                    <div>{{ form.product }}</div>
+                    <div class="form-error">{{ form.product.errors }}</div>
+                </div>
+                <div class="block-data">
+                    <div><label class="form-label">{{form.detail.label}}</label></div>
+                    <div>{{ form.detail }}</div>
+                    <div class="form-error">{{ form.detail.errors }}</div>
+                </div>
+                <div class="wrapper-income-expenditures">
+                    <div style="margin-right:10px;">
+                        <div class="content-center"><label class="form-label">{{form.income.label}}</label></div>
+                        <div>{{ form.income }}</div>
+                        <div class="form-error">{{ form.income.errors }}</div>
+                    </div>
+                    <div>
+                        <div class="content-center"><label class="form-label">{{form.expenditures.label}}</label></div>
+                        <div>{{ form.expenditures }}</div>
+                        <div class="form-error">{{ form.expenditures.errors }}</div>
+                    </div>
+                </div>
+
+                <div class="wrapper-unit-cell">
+                    <div class="block-data" style="margin-right:10px;width:133px;">
+                        <div class="content-center"><label class="form-label">{{form.unit.label}}</label></div>
+                        <div>{{ form.unit }}</div>
+                        <div class="form-error">{{ form.unit.errors }}</div>
+                    </div>
+                    <div class="block-data" style="max-width: 136px;">
+                        <div class="content-center"><label class="form-label">{{form.cell.label}}</label></div>
+                        <div>{{ form.cell }}</div>
+                        <div class="form-error">{{ form.cell.errors }}</div>
+                    </div>
+                </div>
+
+                <div class="wrapper-semis-intermediate">
+                    <div>
+                        <div><label class="form-label">{{form.semis.label}}</label></div>
+                        <div class="content-center">{{ form.semis }}</div>
+                        <div class="form-error">{{ form.semis.errors }}</div>
+                    </div>
+                    <div>
+                        <div><label class="form-label">{{form.intermediate_detail.label}}</label></div>
+                        <div class="content-center">{{ form.intermediate_detail }}</div>
+                        <div class="form-error">{{ form.intermediate_detail.errors }}</div>
+                    </div>
+                </div>
+                <div class="block-data" style="margin-top:10px;">
+                    <div><label class="form-label">{{form.comment.label}}</label></div>
+                    <div>{{ form.comment }}</div>
+                    <div class="form-error">{{ form.errors.comment }}</div>
+                </div>
+            </div>
+            <input type="submit" value="Сохранить" class="btn btn-primary">
+
+        </form>
+    </div>
+
+    <div>
+        <button class="addBtn">+Страница</button>
+    </div>
+    <div id="row">
+        <div class="page-block" style="display: none;visibility: hidden;">
+            <h3>Наряды </h3>
+            <hr>
+            <table class="table table-success table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Дата</th>
+                    <th scope="col">Месяц</th>
+                    <th scope="col">Изделие.Деталь</th>
+                    <th scope="col">Количество 1</th>
+                    <th scope="col">Количество 2</th>
+                    <th scope="col">Количество 1+2</th>
+                    <th scope="col">Расценка</th>
+                    <th scope="col">Зарплата(1.4)</th>
+                    <th scope="col"></th>
+                </tr>
+                </thead>
+                <tbody>
+
+                        <tr>
+                            <th scope="row">{{ forloop.counter }}</th>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><strong></strong></td>
+                                <td>
+                                    <button class="btn btn-outline-primary dropdown-toggle btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Действия
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="">Исправить</a></li>
+                                        <li><a class="dropdown-item" href="">Удалить</a></li>
+                                    </ul>
+                                </td>
+                        </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+const addBtn = document.querySelector('.addBtn');
+var blockNumber = 2;
+addBtn.onclick = () => {
+  // Создаем блок и добавляем номер
+  const createBlock = document.createElement('div');
+  createBlock.className = 'page-block';
+  createBlock.innerText = 'Страница ' + blockNumber;
+  blockNumber++;
+  addBtn.insertAdjacentElement('afterend', createBlock);
+}
+</script>
+
+{% endblock content %}

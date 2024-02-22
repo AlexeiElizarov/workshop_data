@@ -384,9 +384,12 @@ def return_sum_recordjob_every_detail(records):
                 dict[(record.product, record.detail)]['quantity_2'] += record.quantity_2 if record.quantity_2 else 0
                 dict[(record.product, record.detail)]['order_yes'] += record.order_yes
                 dict[(record.product, record.detail)]['order_at_master'] += record.order_at_master
-            dict[(record.product, record.detail)]['salary'] = round(((dict[(record.product, record.detail)]['quantity'] *  dict[(record.product, record.detail)]['price'] +\
-                                     dict[(record.product, record.detail)]['quantity_1'] * dict[(record.product, record.detail)]['price_1'] +\
-                                     dict[(record.product, record.detail)]['quantity_2'] * dict[(record.product, record.detail)]['price_2']) * 1.4), 2)
+            dict[(record.product, record.detail)]['salary'] = round(
+                ((dict[(record.product, record.detail)]['quantity'] * dict[(record.product, record.detail)]['price'] + \
+                  dict[(record.product, record.detail)]['quantity_1'] * dict[(record.product, record.detail)][
+                      'price_1'] + \
+                  dict[(record.product, record.detail)]['quantity_2'] * dict[(record.product, record.detail)][
+                      'price_2']) * 1.4), 2)
         return dict
     except AttributeError:
         return HttpResponse("Exception: Data not found")
@@ -421,7 +424,8 @@ def record_job_order_yes_ready(request, worker, month, record):
 def record_job_order_at_master(request, worker, month, record):
     """Меняет значение поля order_at_master модели RecordJob"""
     records = get_records_for_str_name(record, worker, month)
-    records.update(order_at_master=True) if records[0].order_at_master == False else records.update(order_at_master=False)
+    records.update(order_at_master=True) if records[0].order_at_master == False else records.update(
+        order_at_master=False)
     return HttpResponseRedirect(reverse_lazy(
         'all_record_job_for_worker_per_month',
         kwargs={'id': records[0].user.id, 'month': records[0].month}))
@@ -436,6 +440,7 @@ def return_quantity_for_order(worker, month, record):
         count += record.quantity_1 / 2
         count += record.quantity_2 / 2
     return int(count)
+
 
 def return_quantity_for_records(records):
     """Возвращает количество деталей из списка записей RecordJob(для заполнения наряда)"""
@@ -454,7 +459,7 @@ def counter_norm(month, worker):
     norm_time = 0
 
     for key, value, in return_sum_recordjob_every_detail(records).items():
-        norm_time += value['quantity'] * value['norm'] +\
+        norm_time += value['quantity'] * value['norm'] + \
                      value['quantity_1'] / 2 * value['norm'] \
                      + value['quantity_2'] / 2 * value['norm']
     return round(norm_time, 2)
@@ -471,6 +476,19 @@ def return_detail_by_product_detail(record):
         object = Detail.objects.get(name=name, prefix=prefix)
     else:
         object = Detail.objects.get(detail=detail)
+    return object
+
+
+def return_detail_by_product_detail_for_name(detail, product):
+    """Возвращает деталь по названию детали и префиксу"""
+    from workshop_data.models import Product, Detail, Prefix
+    if len(detail.split('.')) > 1:
+        name = detail.split('.')[1]
+        prefix = detail.split('.')[0]
+        object = Detail.objects.get(name=name,
+                                    prefix__name=prefix)
+    else:
+        object = Detail.objects.get(product__name=product, detail__name=detail)
     return object
 
 

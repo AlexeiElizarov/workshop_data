@@ -28,9 +28,9 @@ class BatchComment(Comment):
 
 
 class WarehouseComment(Comment):
-    detail_in_warehouse = models.ForeignKey("workshop_data.Warehouse",
-                                      on_delete=models.SET_NULL,
-                                      null=True)
+    warehouse = models.ForeignKey("workshop_data.Warehouse",
+                                  on_delete=models.SET_NULL,
+                                  null=True)
     objects = models.Manager()
 
 

@@ -5,7 +5,7 @@ from django_filters import FilterSet, filters
 from django_filters.widgets import RangeWidget
 
 from sign.models import User
-from workshop_data.models import Bonus, Order, RecordJob
+from workshop_data.models import Bonus, Order, RecordJob, Warehouse
 from workshop_data.models.product import Product
 from workshop_data.models.detail import Detail
 from workshop_data.models.workshop_plan import WorkshopPlan
@@ -169,3 +169,18 @@ class RecordJobFilter(FilterSet):
             return queryset
         return queryset.filter(**{name: value})
 
+
+class WarehouseRecordsFilter(FilterSet):
+    """Фильтр поиска записи в кладовой"""
+    product = django_filters.ModelChoiceFilter(
+        queryset=Product.objects.all(),
+        widget=autocomplete.Select2(url='data_autocomplete_product')
+    )
+    detail = django_filters.ModelChoiceFilter(
+        queryset=Detail.objects.all().select_related('prefix', ),
+        widget=autocomplete.Select2(url='data_autocomplete_detail'),
+        field_name='detail',
+    )
+    class Meta:
+        model = Warehouse
+        fields = ['product', 'detail']

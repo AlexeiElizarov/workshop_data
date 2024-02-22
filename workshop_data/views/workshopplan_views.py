@@ -30,8 +30,8 @@ class WorkshopPlanView(LoginRequiredMixin, ListView):
             'detail',
             'detail__prefix',
             'detail__secondary_detail',
-            'detail__in_warehouse'
-            )
+
+            )#'detail__in_warehouse'
         # self.request.session['month'] = self.request.GET['month']
         return context
 

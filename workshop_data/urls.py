@@ -68,7 +68,7 @@ from workshop_data.views.batch_views import (
     AllBatchDetailProductInPlan)
 from workshop_data.views.warehouse_view import (
     WarehouseCreateView,
-    WarehouseUpdateView,
+    WarehouseUpdateView, WarehouseListView, ViewWarehouseRecord,
 )
 from workshop_data.views.workshopplan_views import (
     WorkshopPlanUpdateView,
@@ -245,8 +245,11 @@ urlpatterns = [
     path('plan/<year>-<month>/batch-<id>/ready_cancel/', batch_cancel_ready, name='batch_cancel_ready_in_plan'),
     path('plan/<year>-<month>/batch-<id>/ready_complete/', batch_ready_comlite, name='batch_ready_complete'),
 
-    path('plan/warehouse/add-<object>/', WarehouseCreateView.as_view(), name='add_quantity_in_warehouse'),
+    # path('plan/warehouse/add-<object>/', WarehouseCreateView.as_view(), name='create_new_record_in_warehouse'),
+    path('plan/warehouse/new-record/', WarehouseCreateView.as_view(), name='create_new_record_in_warehouse'),
     path('plan/warehouse/edit-<object_id>/', WarehouseUpdateView.as_view(), name='edit_object_in_warehouse'),
+    path('plan/warehouse/all-record/<product>-<detail>', WarehouseListView.as_view(), name='all_record_in_warehouse'),
+    path('plan/warehouse/view-record/', ViewWarehouseRecord.as_view(), name='view_record_in_warehouse'),
 
     path('test_view/<username>/<id>/', TimeOfWorkInStage.as_view(), name='order_user_edit_test'),
 

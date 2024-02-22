@@ -1,7 +1,9 @@
+from dal import autocomplete
 from django import forms
 from django.forms import NumberInput, Select
 
-from workshop_data.models import Warehouse, WarehouseComment, Unit
+from sign.forms import User
+from workshop_data.models import Warehouse, WarehouseComment, Unit, Product, Detail
 
 
 class WarehouseCreateForm(forms.ModelForm):
@@ -21,27 +23,47 @@ class WarehouseCreateForm(forms.ModelForm):
         initial=423,
         widget=NumberInput(
             attrs={"class": "form-control"}, ))
-    semis = forms.DecimalField(
-        label='Заготовка',
-        required=True,
+    product = forms.ModelChoiceField(
+        label='Изделие',
+        queryset=Product.objects.all(),
+        widget=autocomplete.ModelSelect2(url='data_autocomplete_product',
+                                         forward=('detail',))
+    )
+    detail = forms.ModelChoiceField(
+        queryset=Detail.objects.all(),
+        label="Деталь",
+        widget=autocomplete.ModelSelect2(url='data_autocomplete_detail_for_product',
+                                         forward=('product',))
+    )
+    employee = forms.ModelChoiceField(
+        label='Сотрудник',
+        queryset=User.objects.all(),
+        widget=autocomplete.ModelSelect2(url='data_autocomplete_worker_cpu')
+    )
+    income = forms.DecimalField(
+        label='Приход',
         widget=NumberInput(
             attrs={"class": "form-control"}, ))
-    intermediate_detail = forms.DecimalField(
-        label='Полуфабрикат',
-        required=True,
+    expenditures = forms.DecimalField(
+        label='Расход',
         widget=NumberInput(
             attrs={"class": "form-control"}, ))
+    semis = forms.BooleanField(label='Заготовка', required=False)
+    intermediate_detail = forms.BooleanField(label='Полуфабрикат', required=False)
+    cell = forms.IntegerField(
+            label='Ячейка',
+            widget=NumberInput(
+                attrs={"class": "form-control"}, ))
     unit = forms.ChoiceField(choices=Unit.choices,
-                              label='Еденица измерения',
+                              label='Ед. изм.',
                               initial=Unit.NOT_SPECIFIED,
                               widget=Select(
                                   attrs={"class": "form-control"},
                               ))
 
-
     class Meta:
         model = Warehouse
-        fields = ['section', 'semis', 'intermediate_detail', 'unit', 'comment']
+        fields = ['section', 'product', 'detail', 'employee', 'income', 'expenditures', 'semis', 'intermediate_detail', 'cell', 'unit', 'comment']
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user')
@@ -49,5 +71,21 @@ class WarehouseCreateForm(forms.ModelForm):
 
     def clean(self):
         comment = self.cleaned_data.pop('comment')
-        new_comment = WarehouseComment.objects.create(body=comment, author=self.user)
-        self.cleaned_data.update({'comment': new_comment})
+        if comment:
+            new_comment = WarehouseComment.objects.create(body=comment, author=self.user)
+            self.cleaned_data.update({'comment': new_comment})
+
+
+class ViewWarehouseRecordForm(forms.Form):
+    product = forms.ModelChoiceField(
+        label='Изделие',
+        queryset=Product.objects.all(),
+        widget=autocomplete.ModelSelect2(url='data_autocomplete_product',
+                                         forward=('detail',))
+    )
+    detail = forms.ModelChoiceField(
+        queryset=Detail.objects.all(),
+        label="Деталь",
+        widget=autocomplete.ModelSelect2(url='data_autocomplete_detail_for_product',
+                                         forward=('product',))
+    )

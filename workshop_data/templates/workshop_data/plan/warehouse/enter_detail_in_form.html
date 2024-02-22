@@ -1,0 +1,16 @@
+{% extends 'main.html' %}
+{% load recordjob_tag %}
+
+{% block title %}
+    Все записи
+{% endblock title %}
+
+{% block content %}
+    <form  method="post">
+        {% csrf_token %}
+        {{ form.media }}
+        {{ form }}
+        <input type="submit" value="Submit">
+    </form>
+
+{% endblock content %}

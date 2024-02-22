@@ -32,10 +32,8 @@ class Detail(models.Model):
         null=True,
         blank=True,
         verbose_name='Категория')
-    in_warehouse = models.ForeignKey("workshop_data.Warehouse",
-                                     on_delete=models.PROTECT,
-                                     verbose_name='в кладовой',
-                                     blank=True, null=True)
+    balance_semis_in_warehouse = models.PositiveSmallIntegerField(default=0)
+    balance_intermediate_detail_in_warehouse = models.PositiveSmallIntegerField(default=0)
     parameters_for_spu = models.OneToOneField("workshop_data.ParametersDetailForSPU",
                                               on_delete=models.SET_NULL, blank=True, null=True,
                                               )
@@ -51,6 +49,9 @@ class Detail(models.Model):
         if self.secondary_detail.all():
             return f'{self.name}уз'
         return f'{self.name}'
+
+    def get_balance_in_warehouse(self):
+        return self.balance_semis_in_warehouse + self.balance_intermediate_detail_in_warehouse
 
 
 class Prefix(models.Model):
