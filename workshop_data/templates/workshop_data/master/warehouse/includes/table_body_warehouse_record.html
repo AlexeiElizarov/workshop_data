@@ -1,0 +1,45 @@
+{% load recordjob_tag %}
+{% load other_tag %}
+        <tr class="{% if record == records|last %}table-info
+               {% else %}table-success{% endif %}">
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ record.date|date:"D d M Y H:i" }}</td>
+                    <td>{{ record.section }}</td>
+                    <td>{{ record.cell }}</td>
+                    <td>{% if record.semis %}
+                        {% get_verbose_field_name_tag record "semis" %}
+                        {% elif record.intermediate_detail %}
+                        {% get_verbose_field_name_tag record "intermediate_detail" %}
+                        {% endif %}
+                    </td>
+                    <td>{{ record.get_unit_display }}</td>
+
+                    <td>{{ record.income }}</td>
+                    <td>{{ record.expenditures }}</td>
+                    <td><strong>{{ record.balance_in_warehouse_on_this_moment }}</strong>
+                        (п-{{ record.balance_intermediate_detail_on_this_moment }},
+                        з-{{ record.balance_semis_on_this_moment }})
+                    </td>
+                    <td><strong>{{ record.employee.get_full_name }}</strong></td>
+                    <td>
+                        {% with record.warehousecomment_set.all|first as comment %}
+                        <abbr data-title="{{ comment.body }}">{{ comment.body|truncatechars:10 }}</abbr>
+                        {% endwith %}
+                    </td>
+                    <td style="width: 125px;">
+                        {% if record == records|last %}
+                        <button class="btn btn-outline-primary dropdown-toggle btn-sm" type="button"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                            Инструменты
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{% url 'edit_record_in_warehouse' id=record.id %}">Исправить</a></li>
+                            <li><a class="dropdown-item" href="{% url 'delete_record_in_warehouse' id=record.id %}">Удалить</a></li>
+                            <li><a class="dropdown-item" href="{% url 'all_record_in_warehouse' product=record.product detail=record.detail %}">Показать все записи</a></li>
+                        </ul>
+                        {% endif %}
+                    </td>
+                </tr>
+
+

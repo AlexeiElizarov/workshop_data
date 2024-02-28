@@ -480,15 +480,18 @@ def return_detail_by_product_detail(record):
 
 
 def return_detail_by_product_detail_for_name(detail, product):
-    """Возвращает деталь по названию детали и префиксу"""
+    """Возвращает деталь по названию изделия, детали и префикса(если есть)"""
     from workshop_data.models import Product, Detail, Prefix
     if len(detail.split('.')) > 1:
         name = detail.split('.')[1]
-        prefix = detail.split('.')[0]
-        object = Detail.objects.get(name=name,
-                                    prefix__name=prefix)
+        prefix_name = detail.split('.')[0]
+        prefix = Prefix.objects.filter(name=prefix_name).first()
+        if prefix is not None:
+            object = Detail.objects.select_related('prefix').get(name=name, prefix__name=prefix)
+        else:
+            object = Detail.objects.get(name=detail)
     else:
-        object = Detail.objects.get(product__name=product, detail__name=detail)
+        object = Detail.objects.get(detail_in_product__name=product, name=detail)
     return object
 
 

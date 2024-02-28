@@ -62,18 +62,37 @@ class WarehouseCreateForm(forms.ModelForm):
                               ))
 
     class Meta:
+        prefix="form1"
         model = Warehouse
         fields = ['section', 'product', 'detail', 'employee', 'income', 'expenditures', 'semis', 'intermediate_detail', 'cell', 'unit', 'comment']
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user')
+        product = kwargs.pop('product', None)
+        detail = kwargs.pop('detail', None)
         super(WarehouseCreateForm, self).__init__(*args, **kwargs)
+        if product:
+            self.fields['product'].initial = product
+        if detail:
+            self.fields['detail'].initial = detail
+        self.fields['income'].initial = 0
+        self.fields['expenditures'].initial = 0
 
     def clean(self):
         comment = self.cleaned_data.pop('comment')
         if comment:
             new_comment = WarehouseComment.objects.create(body=comment, author=self.user)
             self.cleaned_data.update({'comment': new_comment})
+
+        semis = self.cleaned_data.get('semis')
+        intermediate_detail = self.cleaned_data.get('intermediate_detail')
+        if (semis and intermediate_detail) or (not semis and not intermediate_detail):
+            raise forms.ValidationError('Выберите или "Заготовка", или "Полуфабрикат"')
+
+        income = self.cleaned_data.get('income')
+        expenditures = self.cleaned_data.get('expenditures')
+        if (income > 0 and expenditures) or (income == 0 and expenditures == 0) > 0:
+            raise forms.ValidationError('Заполните "Приход", или "Расход"')
 
 
 class ViewWarehouseRecordForm(forms.Form):

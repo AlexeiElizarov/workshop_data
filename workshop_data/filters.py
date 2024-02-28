@@ -172,15 +172,10 @@ class RecordJobFilter(FilterSet):
 
 class WarehouseRecordsFilter(FilterSet):
     """Фильтр поиска записи в кладовой"""
-    product = django_filters.ModelChoiceFilter(
-        queryset=Product.objects.all(),
-        widget=autocomplete.Select2(url='data_autocomplete_product')
-    )
-    detail = django_filters.ModelChoiceFilter(
-        queryset=Detail.objects.all().select_related('prefix', ),
-        widget=autocomplete.Select2(url='data_autocomplete_detail'),
-        field_name='detail',
+    employee = django_filters.ModelChoiceFilter(
+        queryset=User.objects.all(),
+        widget=autocomplete.Select2(url='data_autocomplete_worker')
     )
     class Meta:
         model = Warehouse
-        fields = ['product', 'detail']
+        fields = ['employee',]

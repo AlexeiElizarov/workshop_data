@@ -68,7 +68,10 @@ from workshop_data.views.batch_views import (
     AllBatchDetailProductInPlan)
 from workshop_data.views.warehouse_view import (
     WarehouseCreateView,
-    WarehouseUpdateView, WarehouseListView, ViewWarehouseRecord,
+    WarehouseUpdateView,
+    WarehouseListView,
+    ViewWarehouseRecord,
+    WarehouseCreateSelectedDetailView, WarehouseDeleteView,
 )
 from workshop_data.views.workshopplan_views import (
     WorkshopPlanUpdateView,
@@ -246,8 +249,12 @@ urlpatterns = [
     path('plan/<year>-<month>/batch-<id>/ready_complete/', batch_ready_comlite, name='batch_ready_complete'),
 
     # path('plan/warehouse/add-<object>/', WarehouseCreateView.as_view(), name='create_new_record_in_warehouse'),
-    path('plan/warehouse/new-record/', WarehouseCreateView.as_view(), name='create_new_record_in_warehouse'),
-    path('plan/warehouse/edit-<object_id>/', WarehouseUpdateView.as_view(), name='edit_object_in_warehouse'),
+    # path('plan/warehouse/new-record/', WarehouseCreateView.as_view(), name='create_new_record_in_warehouse'),
+    path('plan/warehouse/new-record/<product>_<detail>', WarehouseCreateSelectedDetailView.as_view(), name='create_and_view_new_record_in_warehouse'),
+    path('plan/warehouse/edit-record/<id>', WarehouseUpdateView.as_view(), name='edit_record_in_warehouse'),
+    path('plan/warehouse/delete-record/<id>', WarehouseDeleteView.as_view(), name='delete_record_in_warehouse'),
+    path('plan/warehouse/exeption-integrity-error/', exeption_integrity_error, name='exeption_integrity_error'),
+    path('plan/warehouse/edit-<object_id>/', WarehouseUpdateView.as_view(), name='edit_object_in_warehouse'), # используется в Plan
     path('plan/warehouse/all-record/<product>-<detail>', WarehouseListView.as_view(), name='all_record_in_warehouse'),
     path('plan/warehouse/view-record/', ViewWarehouseRecord.as_view(), name='view_record_in_warehouse'),
 

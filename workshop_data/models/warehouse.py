@@ -4,8 +4,8 @@ from sign.forms import User
 
 
 class Unit(models.IntegerChoices):
-    UNITS = 1, "штук"
-    KILOGRAM = 2, "килограмм"
+    UNITS = 1, "шт."
+    KILOGRAM = 2, "кг."
     NOT_SPECIFIED = 3, "не указан"
 
 
@@ -23,7 +23,10 @@ class Warehouse(models.Model):
     expenditures = models.PositiveSmallIntegerField(default=0, verbose_name="Расход")
     income = models.PositiveSmallIntegerField(default=0, verbose_name="Приход")
     semis = models.BooleanField(verbose_name="Заготовка")
+    balance_semis_on_this_moment = models.PositiveSmallIntegerField(default=0)
     intermediate_detail = models.BooleanField(verbose_name="Полуфабрикат")
+    balance_intermediate_detail_on_this_moment = models.PositiveSmallIntegerField(default=0)
+    balance_in_warehouse_on_this_moment = models.PositiveSmallIntegerField(default=0)
     cell = models.SmallIntegerField(default=0)
     employee = models.ForeignKey("sign.User",
                                  on_delete=models.PROTECT,
@@ -32,12 +35,6 @@ class Warehouse(models.Model):
         choices=Unit.choices,
         default=Unit.NOT_SPECIFIED,
         verbose_name='Единица измерения')
-    # comment = models.ForeignKey(
-    #     "workshop_data.WarehouseComment",
-    #     on_delete=models.SET_NULL,
-    #     null=True,
-    #     blank=True,
-    #     verbose_name='Комментарий')
     author = models.ForeignKey(
         User,
         on_delete=models.PROTECT,
@@ -46,4 +43,16 @@ class Warehouse(models.Model):
 
     objects = models.Manager()
 
+    # def save(self, *args, **kwargs):
+    #     self.balance_in_warehouse_on_this_moment = self.detail.get_balance_on_this_moment() + self.income - self.expenditures ####
+    #     if self.semis:
+    #         self.balance_semis_on_this_moment += self.detail.balance_semis_in_warehouse + self.income - self.expenditures
+    #         self.balance_intermediate_detail_on_this_moment = self.detail.balance_intermediate_detail_in_warehouse
+    #         self.detail.balance_semis_in_warehouse += self.income - self.expenditures
+    #     elif self.intermediate_detail:
+    #         self.balance_intermediate_detail_on_this_moment += self.detail.balance_intermediate_detail_in_warehouse + self.income - self.expenditures
+    #         self.balance_semis_on_this_moment = self.detail.balance_semis_in_warehouse
+    #         self.detail.balance_intermediate_detail_in_warehouse += self.income - self.expenditures
+    #     self.detail.save()
+    #     super(Warehouse, self).save(*args, **kwargs)
 

@@ -1,0 +1,32 @@
+{% extends 'main.html' %}
+{% load recordjob_tag %}
+{% load other_tag %}
+{% load static %}
+
+{% block title %}
+    Карточка {{ detail }}
+{% endblock title %}
+
+{% block content %}
+    <link rel="stylesheet" href="{% static 'css/warehouse/warehouse.css' %}" type="text/css">
+
+    {% include 'workshop_data/master/warehouse/includes/template_header_card_warehouse.html' %}
+    <div class="main-wrapper">
+        {% include 'workshop_data/master/warehouse/includes/form_create_warehouse_record.html' %}
+        <div class="wrapper-table-records">
+            <table class="table table-active table-hover ">
+                {% include 'workshop_data/master/warehouse/includes/table_header_records_warehouse.html' %}
+                <tbody>
+                {% for record in records %}
+                    {% include 'workshop_data/master/warehouse/includes/table_body_warehouse_record.html' %}
+                {% endfor %}
+                </tbody>
+            </table>
+            {% if all %}
+            <div style="display: flex; justify-content:flex-end;">
+                <input type=button class="btn btn-primary" value="Назад" onClick="javascript:history.go(-1);">
+            </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock content %}

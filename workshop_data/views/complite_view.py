@@ -27,8 +27,14 @@ def new_batch_complite(request):
 def start_new_stage_in_work_complite(request):
     return render(request, 'workshop_data/master/stage_in_work/start_new_stage_in_work_complete.html')
 
+
 def batch_ready_comlite(request, year, month, id):
     return render(request, 'workshop_data/master/batch/batch_ready_complete.html')
 
+
 def create_bonus_complete(request):
     return render(request, 'workshop_data/master/bonus/create_new_bonus_complete.html')
+
+
+def exeption_integrity_error(request):
+    return render(request, 'workshop_data/plan/warehouse/exception_IntegrityError.html')

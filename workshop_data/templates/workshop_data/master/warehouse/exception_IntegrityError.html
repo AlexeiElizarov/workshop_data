@@ -1,0 +1,10 @@
+{% extends 'main.html' %}
+
+{% block title %}
+    Ошибка
+{% endblock title %}
+
+{% block content %}
+    <h3>Возможно вы пытаетесь внести в "Расход" больше чем есть в "Остаток п/ф" или в "Остаток заготовок"</h3>
+    <input type=button class="btn btn-primary" value="Назад" onClick="javascript:history.go(-1);">
+{% endblock content %}

@@ -1,0 +1,48 @@
+{% extends 'main.html' %}
+{% load recordjob_tag %}
+{% load other_tag %}
+{% load static %}
+
+{% block title %}
+    Все записи
+{% endblock title %}
+
+{% block content %}
+    <form method="GET">
+        <div style="display: flex;flex-direction: row;">
+            <div>
+                <div style="display: flex;margin:10px;">
+                    <div style="margin-left: 10px;">
+                        {{ filter.form.employee.label }}
+                        {{ filter.form.employee }}
+                        {{ filter.form.media }}
+                    </div>
+                </div>
+            </div>
+            <div class="d-grid col-2" style="margin:10px;">
+                <input class="btn btn btn-info btn-lg" type="submit" value="Поиск">
+            </div>
+        </div>
+    </form>
+    <link rel="stylesheet" href="{% static 'css/warehouse/warehouse.css' %}" type="text/css">
+
+    {% include 'workshop_data/master/warehouse/includes/template_header_card_warehouse.html' %}
+    <div class="main-wrapper">
+        {% include 'workshop_data/master/warehouse/includes/form_create_warehouse_record.html' %}
+        <div class="wrapper-table-records">
+            <table class="table table-active table-hover ">
+                {% include 'workshop_data/master/warehouse/includes/table_header_records_warehouse.html' %}
+                <tbody>
+                {% for record in filter.qs %}
+                    {% include 'workshop_data/master/warehouse/includes/table_body_warehouse_record.html' %}
+                {% endfor %}
+                </tbody>
+            </table>
+            {% if all %}
+            <div style="display: flex; justify-content:flex-end;">
+                <input type=button class="btn btn-primary" value="Назад" onClick="javascript:history.go(-1);">
+            </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock content %}

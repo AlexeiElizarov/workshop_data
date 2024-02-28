@@ -1,0 +1,50 @@
+{% extends 'main.html' %}
+{% load recordjob_tag %}
+
+{% block title %}
+    Все записи
+{% endblock title %}
+
+{% block content %}
+
+    <style>
+        .main-wrapper {
+            display: flex;
+            flex-direction: row;
+        }
+        .main-wrapper-form{
+            display: flex;
+            margin-right: 16px;
+        }
+        .block-data {
+            margin-bottom: 10px;
+            display: block;
+        }
+    </style>
+    <div>
+        <h3>Октрыть карточку</h3>
+        <hr>
+    </div>
+    <div class="main-wrapper">
+        <form method="post">
+            {% csrf_token %}
+            {{ form.media }}
+            <div class="main-wrapper-form">
+                <div class="wrapper-left-block">
+                    <div class="block-data">
+                        <div><label class="form-label">{{form.product.label}}</label></div>
+                        <div>{{ form.product }}</div>
+                        <div class="form-error">{{ form.product.errors }}</div>
+                    </div>
+                    <div class="block-data">
+                        <div><label class="form-label">{{form.detail.label}}</label></div>
+                        <div>{{ form.detail }}</div>
+                        <div class="form-error">{{ form.detail.errors }}</div>
+                    </div>
+                    <input type="submit" value="Открыть" class="btn btn-primary">
+                </div>
+            </div>
+        </form>
+    </div>
+
+{% endblock content %}

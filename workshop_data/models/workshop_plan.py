@@ -38,6 +38,7 @@ class WorkshopPlan(models.Model):
 
     def get_product(self):
         return f'{self.product} {self.detail}'
+
     def get_quantity(self):
         """Возвращает общее количество деталей(госзаказ и коммерция)"""
         quantity = self.quantity_state_order + self.quantity_commercial_order

@@ -1,0 +1,85 @@
+
+        <div class="main-wrapper-form">
+            <div class="wrapper-warehouse-create-record">
+                <form method="POST">
+                    {% csrf_token %}
+                    {{ form.media }}
+                    <h4 style="color: red;max-width: 280px;">{{form.non_field_errors }}</h4>
+                    <div class="wrapper-left-block">
+                        <div class="block-data">
+                            <div><label class="form-label">{{form.section.label}}</label></div>
+                            <div>{{ form.section }}</div>
+                            <div class="form-error">{{ form.section.errors }}</div>
+                        </div>
+                        <div class="block-data">
+                            <div><label class="form-label">{{form.employee.label}}</label></div>
+                            <div>{{ form.employee }}</div>
+                            <div class="form-error">{{ form.employee.errors }}</div>
+                        </div>
+                        <div class="block-data">
+                            <div><label class="form-label">{{form.product.label}}</label></div>
+                            <div>{{ form.product }}</div>
+                            <div class="form-error">{{ form.product.errors }}</div>
+                        </div>
+                        <div class="block-data">
+                            <div><label class="form-label">{{form.detail.label}}</label></div>
+                            <div>{{ form.detail }}</div>
+                            <div class="form-error">{{ form.detail.errors }}</div>
+                        </div>
+                        <div class="wrapper-income-expenditures">
+                            <div style="margin-right:10px;">
+                                <div class="content-center"><label class="form-label">{{form.income.label}}</label>
+                                </div>
+                                <div>{{ form.income }}</div>
+                                <div class="form-error">{{ form.income.errors }}</div>
+                            </div>
+                            <div>
+                                <div class="content-center"><label
+                                        class="form-label">{{form.expenditures.label}}</label>
+                                </div>
+                                <div>{{ form.expenditures }}</div>
+                                <div class="form-error">{{ form.expenditures.errors }}</div>
+                            </div>
+                        </div>
+
+                        <div class="wrapper-unit-cell">
+                            <div class="block-data" style="margin-right:10px;width:133px;">
+                                <div class="content-center"><label class="form-label">{{form.unit.label}}</label></div>
+                                <div>{{ form.unit }}</div>
+                                <div class="form-error">{{ form.unit.errors }}</div>
+                            </div>
+                            <div class="block-data" style="max-width: 136px;">
+                                <div class="content-center"><label class="form-label">{{form.cell.label}}</label></div>
+                                <div>{{ form.cell }}</div>
+                                <div class="form-error">{{ form.cell.errors }}</div>
+                            </div>
+                        </div>
+
+                        <div class="wrapper-semis-intermediate">
+                            <div>
+                                <div><label class="form-label">{{form.semis.label}}</label></div>
+                                <div class="content-center">{{ form.semis }}</div>
+                                <div class="form-error">{{ form.semis.errors }}</div>
+                            </div>
+                            <div>
+                                <div><label class="form-label">{{form.intermediate_detail.label}}</label></div>
+                                <div class="content-center">{{ form.intermediate_detail }}</div>
+                                <div class="form-error">{{ form.intermediate_detail.errors }}</div>
+                            </div>
+                        </div>
+                        <div class="block-data" style="margin-top:10px;">
+                            <div><label class="form-label">{{form.comment.label}}</label></div>
+                            <div>{{ form.comment }}</div>
+                            <div class="form-error">{{ form.errors.comment }}</div>
+                        </div>
+                    </div>
+                    {% if button_name == 'update' %}
+                        <input type="submit" value="Изменить" class="btn btn-warning">
+                        <input type=button class="btn btn-primary" value="Назад" onClick="javascript:history.go(-1);">
+                    {% elif button_name == 'create' %}
+                        <input type="submit" value="Сохранить" class="btn btn-primary">
+                    {% endif %}
+
+                </form>
+            </div>
+        </div>

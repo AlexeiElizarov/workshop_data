@@ -1,0 +1,64 @@
+{% extends 'main.html' %}
+{% load recordjob_tag %}
+{% load other_tag %}
+
+{% block title %}
+    Удаление
+{% endblock title %}
+
+{% block content %}
+    <h2>Вы действительно хотите удалить запись из карточки {{ record.detail }}</h2>
+    <table class="table table-active table-hover ">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Дата</th>
+                    <th scope="col">Участок</th>
+                    <th scope="col">Ячейка</th>
+                    <th scope="col">Изделие.Деталь</th>
+                    <th scope="col">Вид</th>
+                    <th scope="col">Ед.изм.</th>
+                    <th scope="col">Приход</th>
+                    <th scope="col">Расход</th>
+                    <th scope="col">Остаток</th>
+                    <th scope="col">Сотрудник</th>
+                    <th scope="col">Комментарий</th>
+                </tr>
+                </thead>
+        <tbody>
+                <tr class="{% if record == records|last %}table-info
+               {% else %}table-success{% endif %}">
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ record.date }}</td>
+                    <td>{{ record.section }}</td>
+                    <td>{{ record.cell }}</td>
+                    <td>{{ record.product }} <i>{% if record.detail.prefix %}{{ record.detail.prefix }}{% endif %}.
+                        {{ record.detail.name }}</i></td>
+                    <td>{% if record.semis %}
+                            {% get_verbose_field_name_tag record "semis" %}
+                        {% elif record.intermediate_detail %}
+                            {% get_verbose_field_name_tag record "intermediate_detail" %}
+                        {% endif %}
+                    </td>
+                    <td>{{ record.unit.get_unit_display }}</td>
+
+                    <td>{{ record.income }}</td>
+                    <td>{{ record.expenditures }}</td>
+                    <td><strong>{{ record.balance_in_warehouse_on_this_moment }}</strong>
+                        (п-{{ record.balance_intermediate_detail_on_this_moment }},
+                        з-{{ record.balance_semis_on_this_moment }})
+                    </td>
+                    <td><strong>{{ record.employee.get_full_name }}</strong></td>
+                    <td>
+                        {% with record.warehousecomment_set.all|first as comment %}
+                        <abbr data-title="{{ comment.body }}">{{ comment.body|truncatechars:10 }}</abbr>
+                        {% endwith %}
+                    </td>
+        </tbody>
+    </table>
+    <form method="POST">
+        {% csrf_token %}
+        <input type="submit" value="Удалить" class="btn btn-danger">
+        <input type=button class="btn btn-primary" value="Назад" onClick="javascript:history.go(-1);">
+    </form>
+{% endblock content %}

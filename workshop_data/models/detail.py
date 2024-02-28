@@ -50,9 +50,8 @@ class Detail(models.Model):
             return f'{self.name}уз'
         return f'{self.name}'
 
-    def get_balance_in_warehouse(self):
+    def get_balance_on_this_moment(self):
         return self.balance_semis_in_warehouse + self.balance_intermediate_detail_in_warehouse
-
 
 class Prefix(models.Model):
     """Приставка к названию Детали"""
