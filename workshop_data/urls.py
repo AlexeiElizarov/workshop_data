@@ -140,7 +140,7 @@ urlpatterns = [
     path('image-<pk>/', DetailImageView.as_view(), name='image_detail'),
 
     path('<product>/add-detail/', ProductAddDetailView.as_view(), name='product_add_detail'),
-    path('<product>/detail/', ProductDataView.as_view(), name='product_detail_data'),
+    path('<str:slug>/detail/', ProductDataView.as_view(), name='product_detail_data'),
     path('<product>/delete-<detail>/',DeleteDetailFromProductView.as_view(), name='delete_detail_from_product'),
     path('product/all/', ProductAllView.as_view(), name='product_list_all'),
     path('new-product/', ProductCreateView.as_view(), name='create_new_product'),
@@ -159,7 +159,7 @@ urlpatterns = [
     path('master/all_orders/month_<month>/', AllOrderForAllWorker.as_view(), name='all_orders_list_for_all_workers_month'),
     path('master/all_orders/orders-<username>/', AllOrderForAllWorker.as_view(), name='orders-worker-surname-for-master'),
     path('master/all_orders/product_<str:product>/', AllOrderForAllWorker.as_view(), name='all_orders_list_for_all_workers_product'),
-    path('master/all_orders/detail_<str:detail>/', AllOrderForAllWorker.as_view(), name='all_orders_list_for_all_workers_detail'),
+    path('master/all_orders/detail_<str:detail_id>/', AllOrderForAllWorker.as_view(), name='all_orders_list_for_all_workers_detail'),
     path('master/all_orders/category_<str:category>/', AllOrderForAllWorker.as_view(), name='all_orders_list_for_all_workers_category'),
     path('<username>/all_orders/', OrderUserParametrListView.as_view(), name='orders_user_list_all'),
     path('<username>/<id>/edit/', OrderUserEditView.as_view(), name='order_user_edit'),
@@ -200,7 +200,7 @@ urlpatterns = [
 
     path('master/task_list/', ShiftTask.as_view(), name='task_list'),
     path('master/commentupdate/', CommentUpdateView.as_view(), name='update_comment'),
-    path('master/new-comment-create/plan-<object>/', WorkshopPlanCommentCreateView.as_view(), name='create_new_comment_workshop_plan'),
+    path('master/new-comment-create/plan-<object>/<month>/', WorkshopPlanCommentCreateView.as_view(), name='create_new_comment_workshop_plan'),
 
     path('master/create-new-bonus/', CreateNewBonusView.as_view(), name='create_new_bonus'),
     path('master/create-bonus-complete/', create_bonus_complete, name='create_bonus_complete'),
@@ -241,8 +241,9 @@ urlpatterns = [
     path('plan/product-add-in-plan/', WorkshopPlanCreateView.as_view(), name='product_add_plan'),
     path('plan/add-existing-batch-in-<object>/', WorkshopPlanAddExistingBatchView.as_view(), name='add_existing_batch_in_plan'),
     path('plan/', WorkshopPlanView.as_view(), name='plan'),
+    path('plan/<year>-<month>/', WorkshopPlanView.as_view(), name='plan_year_month'),
     path('plan/<year>-<month>/delete-<object>/', WorkshopPlanDeleteView.as_view(), name='delete_object_from_workshopplan'),
-    path('plan/<year>-<month>/update-<object>/', WorkshopPlanUpdateView.as_view(), name='update_object_from_workshopplan'),
+    path('plan/update/<id>/', WorkshopPlanUpdateView.as_view(), name='update_object_from_workshopplan'),
 
     path('plan/<year>-<month>/batch-<id>/ready/', batch_ready, name='batch_ready_in_plan'),
     path('plan/<year>-<month>/batch-<id>/ready_cancel/', batch_cancel_ready, name='batch_cancel_ready_in_plan'),
@@ -255,7 +256,7 @@ urlpatterns = [
     path('plan/warehouse/delete-record/<id>', WarehouseDeleteView.as_view(), name='delete_record_in_warehouse'),
     path('plan/warehouse/exeption-integrity-error/', exeption_integrity_error, name='exeption_integrity_error'),
     path('plan/warehouse/edit-<object_id>/', WarehouseUpdateView.as_view(), name='edit_object_in_warehouse'), # используется в Plan
-    path('plan/warehouse/all-record/<product>-<detail>', WarehouseListView.as_view(), name='all_record_in_warehouse'),
+    path('plan/warehouse/all-record/<product>_<detail>', WarehouseListView.as_view(), name='all_record_in_warehouse'),
     path('plan/warehouse/view-record/', ViewWarehouseRecord.as_view(), name='view_record_in_warehouse'),
 
     path('test_view/<username>/<id>/', TimeOfWorkInStage.as_view(), name='order_user_edit_test'),

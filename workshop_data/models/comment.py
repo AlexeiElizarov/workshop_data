@@ -16,7 +16,8 @@ class Comment(models.Model):
 class WorkshopPlanComment(Comment):
     workshop_plan = models.ForeignKey("workshop_data.WorkshopPlan",
                                       on_delete=models.SET_NULL,
-                                      null=True)
+                                      null=True,
+                                      related_name='workshopplan_comment')
     objects = models.Manager()
 
 

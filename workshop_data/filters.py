@@ -60,9 +60,20 @@ class WorkshopPlanFilter(FilterSet):
         widget=forms.CheckboxSelectMultiple()
     )
 
+    # def __init__(self, *args, **kwargs):
+    #     if 'mon' in kwargs:
+    #         mon = kwargs.pop('mon')
+    #         super(WorkshopPlanFilter, self).__init__(*args, **kwargs)
+    #         self.form.initial['month'] = mon
+    #     else:
+    #         super(WorkshopPlanFilter, self).__init__(*args, **kwargs)
+
+
+
     class Meta:
         model = WorkshopPlan
         fields = ['product', 'detail', 'month']
+
 
 
 class BatchFilter(FilterSet):

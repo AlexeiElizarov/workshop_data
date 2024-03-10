@@ -10,7 +10,8 @@ class WorkshopPlan(models.Model):
     """Класс описывает Детали входящие в План цеха"""
     product = models.ForeignKey("workshop_data.Product",
                                 on_delete=models.PROTECT,
-                                verbose_name='Изделие')
+                                verbose_name='Изделие',
+                                )
     detail = models.ForeignKey("workshop_data.Detail",
                                on_delete=models.PROTECT,
                                verbose_name="Деталь",
@@ -25,10 +26,6 @@ class WorkshopPlan(models.Model):
     sos = models.BooleanField(default=False)
     year = models.PositiveIntegerField(
         default=current_year(), validators=[MinValueValidator(2022), max_value_current_year])
-    # comment = models.ForeignKey("workshop_data.Comment",
-    #                             blank=True,
-    #                             on_delete=models.PROTECT,
-    #                             verbose_name='Заметки')
     author = models.ForeignKey(User, on_delete=models.PROTECT, related_name='user_workshopplan')
 
     objects = models.Manager()

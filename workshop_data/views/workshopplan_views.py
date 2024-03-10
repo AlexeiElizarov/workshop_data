@@ -16,23 +16,33 @@ class WorkshopPlanView(LoginRequiredMixin, ListView):
     """Отображает страницу План цеха"""
     model = WorkshopPlan
     template_name = 'workshop_data/plan/plan_list_all.html'
-    context_object_name = 'plan'
+    # context_object_name = 'plan'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
-        context['filter'] = WorkshopPlanFilter(
-            self.request.GET,
-            queryset=self.get_queryset().
-            order_by('product', 'detail'))
+        if 'month' in self.kwargs:
+            context['filter'] = WorkshopPlanFilter(
+                self.request.GET,
+                queryset=WorkshopPlan.objects.filter(month=self.kwargs.get('month')))
+        else:
+            context['filter'] = WorkshopPlanFilter(
+                self.request.GET,
+                queryset=self.get_queryset().
+                order_by('product', 'detail'))
         wps = context['filter'].qs.select_related('product', 'detail__prefix')
         products = Product.objects.filter(workshopplan__in=wps).distinct()
         context['products'] = products.prefetch_related(
             'detail',
             'detail__prefix',
             'detail__secondary_detail',
-
+            'detail__secondary_detail__prefix',
+            'detail__secondary_detail__secondary_detail',
+            'detail__secondary_detail__secondary_detail__prefix',
+            'detail__secondary_detail__secondary_detail__secondary_detail',
+            'detail__secondary_detail__secondary_detail__secondary_detail__prefix',
             )#'detail__in_warehouse'
-        # self.request.session['month'] = self.request.GET['month']
+
+
         return context
 
 
@@ -82,10 +92,10 @@ class WorkshopPlanUpdateView(LoginRequiredMixin, UpdateView):
     success_url = reverse_lazy('product_add_detail_complete') #FIXME
 
     def get_object(self, **kwargs):
-        object = self.kwargs.get('object')
-        product = object.split('_')[0]
-        detail = object.split('_')[1]
-        obj = WorkshopPlan.objects.get(product__name=product, detail__name=detail)
+        id = self.kwargs.get('id')
+        # product = object.split('_')[0]
+        # detail = object.split('_')[1]
+        obj = WorkshopPlan.objects.get(id=id)
         return obj
 
 

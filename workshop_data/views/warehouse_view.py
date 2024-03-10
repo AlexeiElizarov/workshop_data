@@ -83,7 +83,7 @@ class WarehouseCreateSelectedDetailView(WarehouseCreateView):
         context = super().get_context_data(**kwargs)
         context['records'] = ((Warehouse.objects.filter(detail=self.detail).
                                select_related('employee', 'product', 'detail__prefix')).
-                              prefetch_related('warehousecomment_set')).order_by('-id')[:15][::-1]
+                              prefetch_related('warehousecomment_set')).order_by('-id')[:14][::-1]
         context['detail'] = self.detail
         context['product'] = self.product
         context['button_name'] = 'create'
@@ -210,7 +210,7 @@ class WarehouseUpdateView(LoginRequiredMixin, UpdateView):
         context = super().get_context_data(**kwargs)
         context['records'] = ((Warehouse.objects.filter(detail=self.detail).
                                select_related('employee', 'product', 'detail__prefix')).
-                              prefetch_related('warehousecomment_set')).order_by('-id')[:12][::-1]
+                              prefetch_related('warehousecomment_set')).order_by('-id')[:14][::-1]
         context['detail'] = self.detail
         context['products'] = self.detail.detail_in_product
         context['button_name'] = 'update'
@@ -231,15 +231,18 @@ class WarehouseListView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
+        self.detail = return_detail_by_product_detail_for_name(self.kwargs['detail'], self.kwargs['product'])
+        self.product = Product.objects.get(name=self.kwargs['product'])
         context['filter'] = WarehouseRecordsFilter(
             self.request.GET,
-            queryset=self.get_queryset().
+            queryset=Warehouse.objects.filter(detail=self.detail).
             select_related('employee', 'product', 'detail__prefix').
             prefetch_related('warehousecomment_set'))
-        # detail = return_detail_by_product_detail_for_name(self.kwargs['detail'], self.kwargs['product'])
-        # context['records'] = Warehouse.objects.filter(detail=detail)
-        context['detail'] = self.kwargs.get('detail')
-        context['product'] = self.kwargs.get('product')
+        context['detail'] = self.detail
+        context['product'] = self.product
+        context['records'] = ((Warehouse.objects.filter(detail=self.detail).
+                               select_related('employee', 'product', 'detail__prefix')).
+                              prefetch_related('warehousecomment_set')).order_by('-id')[:14][::-1]
         context['all'] = 'all'
         return context
 

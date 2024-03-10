@@ -1,4 +1,5 @@
 from django.db import models
+from django.shortcuts import reverse
 
 
 class Product(models.Model):
@@ -11,7 +12,7 @@ class Product(models.Model):
         
     order_number_commercial = models.SmallIntegerField(blank=True, verbose_name='Коммерция')
     order_number_state = models.SmallIntegerField(blank=True, verbose_name='Г/з')
-
+    slug = models.SlugField(max_length=50, blank=True, unique=True)
     detail = models.ManyToManyField(
         "workshop_data.Detail",
         through='workshop_data.ProductDetail',
@@ -21,6 +22,8 @@ class Product(models.Model):
     objects = models.Manager()
 
     class Meta:
+        verbose_name = 'Изделие'
+        verbose_name_plural = 'Изделия'
         ordering = ['name']
 
     def __str__(self):
@@ -28,6 +31,14 @@ class Product(models.Model):
 
     def __unicode__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('product_detail_data', kwargs={'slug': self.slug})
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            self.slug = self.name
+        super().save(*args, **kwargs)
 
 
 class ProductDetail(models.Model):

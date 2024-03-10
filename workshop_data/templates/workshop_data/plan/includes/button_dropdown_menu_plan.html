@@ -5,6 +5,9 @@
     <ul class="dropdown-menu">
 
         {% if request.user.position == 'MSR' %}
+        {% if object %}
+
+
             <li>
                 <a class="dropdown-item"
                    href="{% url 'create_new_batch' object %}">
@@ -13,7 +16,7 @@
             </li>
             <li>
                 <a class="dropdown-item"
-                   href="{% url 'create_new_comment_workshop_plan' object.id %}">
+                   href="{% url 'create_new_comment_workshop_plan' object.id month %}">
                     Новый комментарий к {{ object.detail }}
                 </a>
             </li>
@@ -25,20 +28,27 @@
             </li>
             <li>
                 <a class="dropdown-item"
+                   href="{% url 'all_record_in_warehouse' object.product object.detail %}">
+                    В кладовой...
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item"
                    href="{% url 'delete_object_from_workshopplan' year=current_year month=current_month object=object %}">
                     Удалить
                 </a>
             </li>
 
-        {% elif request.user.position == 'PDB' %}
+
             <li>
                 <a class="dropdown-item"
-                   href="{% url 'update_object_from_workshopplan' current_year current_month object %}">
+                   href="{% url 'update_object_from_workshopplan' id=object.id %}">
                     Редактировать
                 </a>
             </li>
         {% endif %}
 <!--        <li><a class="dropdown-item" >Something else here</a></li>-->
+        {% endif %}
     </ul>
 </div>
 {% comment %}

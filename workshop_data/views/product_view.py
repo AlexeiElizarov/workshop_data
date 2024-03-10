@@ -18,7 +18,7 @@ class ProductAllView(LoginRequiredMixin, ListView):
     """Отображает страницу со всеми Изделиями"""
     model = Product
     template_name = 'workshop_data/product/product_list_all.html'
-    context_object_name = 'products'
+    # context_object_name = 'products'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
@@ -75,19 +75,6 @@ class ProductAddDetailView(LoginRequiredMixin, UpdateView):
         return redirect('product_add_detail_complete')
 
 
-# class ProductAddNodeView(LoginRequiredMixin, UpdateView):
-#     """Отображает страницу добавления Узла в Изделие"""
-#     model = Product
-#     form_class = ProductAddNodeForm
-#     template_name = 'workshop_data/product/product_add_node.html'
-#     success_url = reverse_lazy('product_add_detail_complete')
-#     context_object_name = 'product'
-#
-#     def get_object(self, **kwargs):
-#         obj = Product.objects.filter(name=self.kwargs['product']).prefetch_related('detail__category')
-#         return obj.first()
-
-
 class ProductDataView(LoginRequiredMixin, DetailView):
     """Отображает Детали входящие в Изделие"""
     model = Product
@@ -95,7 +82,8 @@ class ProductDataView(LoginRequiredMixin, DetailView):
     context_object_name = 'product'
 
     def get_object(self, **kwargs):
-        return Product.objects.get(name=self.kwargs.get('product'))
+        # return Product.objects.get(name=self.kwargs.get('product'))
+        return Product.objects.get(slug__iexact=self.kwargs.get('slug'))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()

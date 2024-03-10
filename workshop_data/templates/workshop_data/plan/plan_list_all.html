@@ -29,7 +29,7 @@
     </div>
 
     <hr>
-    <h4>План цеха на {% now "F" %} </h4>
+    <h4>План цеха на {{ month }} </h4>
 
     <table class="table table-primary table-hover ">
         <thead>
@@ -37,10 +37,10 @@
                 <th scope="col">#</th>
                 <th scope="col"></th>
                 <th scope="col">Месяц</th>
-                <th scope="col" style="width: 136px;">Деталь</th>
-                <th scope="col" style="width: 135px;">Входящие</th>
-                <th scope="col" style="width: 135px;">Входящие</th>
-                <th scope="col" style="width: 135px;">Входящие</th>
+                <th scope="col" style="width: 140px;">Деталь</th>
+                <th scope="col" style="width: 140px;">Входящие</th>
+                <th scope="col" style="width: 140px;">Входящие</th>
+                <th scope="col" style="width: 140px;">Входящие</th>
                 <th scope="col">Всего - Гос/Ком</th>
                 <th scope="col" style="width: 93px;">заготовки</th>
                 <th scope="col" style="width: 70px;">п/ф</th>
@@ -72,7 +72,7 @@
         {% for month in filter.form.month.value %}
             {% for detail1 in product.detail.all %}
                 {% object_workshopplan product=product detail=detail1 month=month as object %}
-                {% if object %}
+
                     <tr class="{% if object.sos == True %}table-danger
                                            {% else %}{% endif %}"
                         style="{% if object %}color:#E32636{% endif %}">
@@ -80,26 +80,21 @@
                         <td></td>
                         <td>{{ object.get_month_display }}</td>
                         <td>{% if detail1.prefix %} {{ detail1.prefix }}. {% endif %} {{ detail1.get_name_detail }}
-                            <a title="Подробнее" data-bs-toggle="modal" data-bs-target="" href="#{{object.id}}">&#9776;</a>
+                            <a title="Комментарии" data-bs-toggle="modal" data-bs-target="" href="#{{object.id}}">&#9776;</a>
                             {% include 'workshop_data/plan/includes/workshop_plan_modal_window_comments_list.html' %}
                         </td>
                         <td></td>
                         <td></td>
                         <td></td>
-                        <td>{{ object.get_quantity }} -
-                            {{ object.quantity_state_order }}гз/
-                            {{ object.quantity_commercial_order }}ком
-                        </td>
-                        <td title="{{ detail1.in_warehouse.comment.body }}">
-                            {% if detail1.in_warehouse %}
-                            <a href="{% url 'edit_object_in_warehouse' object_id=detail1.in_warehouse.id %}">
-                                {{ detail1.in_warehouse.semis }}заг
-                            </a>
-                            {% else %}
-                                {{ detail1.in_warehouse.semis }}заг
+                        <td>
+                            {% if object %}
+                                {{ object.get_quantity }} -
+                                {{ object.quantity_state_order }}гз/
+                                {{ object.quantity_commercial_order }}ком
                             {% endif %}
                         </td>
-                        <td>{{ detail1.in_warehouse.intermediate_detail }}п/ф</td>
+                        <td>{{ detail1.balance_semis_in_warehouse }}заг</td>
+                        <td>{{ detail1.balance_intermediate_detail_in_warehouse }}п/ф</td>
                         <td>{{ detail1.in_warehouse.get_unit_display }}</td>
                         <td></td>
                         <td>{% include 'workshop_data/plan/includes/button_dropdown_menu_plan.html' %}</td>
@@ -107,35 +102,40 @@
 
                     {% if detail1.secondary_detail.all %}
                         {% for detail2 in detail1.secondary_detail.all %}
-                        {% with detail2 as object %}
+                        {% object_workshopplan product=product detail=detail2 month=month as object2 %}
+                        {% with object=object2 %}
                                 <tr class="{% if object.sos == True %}table-danger
                                            {% else %}{% endif %}">
                                 <th scope="row">{% total_count %}</th>
                                 <td></td>
                                 <td></td>
                                 <td></td>
-                                <td> {{ detail2 }}</td>
+                                <td>{% if detail2.prefix %} {{ detail2.prefix }}. {% endif %} {{ detail2.get_name_detail }}
+                                    <a title="Комментарии" data-bs-toggle="modal" data-bs-target="" href="#{{object.id}}">&#9776;</a>
+                                    {% include 'workshop_data/plan/includes/workshop_plan_modal_window_comments_list.html' %}
+                                </td>
                                 <td></td>
                                 <td></td>
-                                <td></td>
-                                <td title="{{ detail2.in_warehouse.comment.body }}">
-                                    {% if detail2.in_warehouse %}
-                                    <a href="{% url 'edit_object_in_warehouse' object_id=detail2.in_warehouse.id %}">
-                                        {{ detail2.in_warehouse.semis }}заг
-                                    </a>
-                                    {% else %}
-                                        {{ detail2.in_warehouse.semis }}заг
+                                <td>
+                                    {% if object %}
+                                        {{ object.get_quantity }} -
+                                        {{ object.quantity_state_order }}гз/
+                                        {{ object.quantity_commercial_order }}ком
                                     {% endif %}
                                 </td>
-                                <td>{{ detail2.in_warehouse.intermediate_detail }}п/ф</td>
+                                <td>{{ detail2.balance_semis_in_warehouse }}заг</td>
+                                <td>{{ detail2.balance_intermediate_detail_in_warehouse }}п/ф</td>
                                 <td>{{ detail2.in_warehouse.get_unit_display }}</td>
                                 <td></td>
                                 <td>{% include 'workshop_data/plan/includes/button_dropdown_menu_plan.html' %}</td>
                             </tr>
+
                         {% endwith %}
                                 {% if detail2.secondary_detail.all %}
                                     {% for detail3 in detail2.secondary_detail.all %}
-                                    {% with detail3 as object %}
+                                    {% object_workshopplan product=product detail=detail3 month=month as object3 %}
+                                    {% with object=object3 %}
+
                                             <tr class="{% if object.sos == True %}table-danger
                                                        {% else %}{% endif %}">
                                             <th scope="row">{% total_count %}</th>
@@ -143,20 +143,30 @@
                                             <td></td>
                                             <td></td>
                                             <td></td>
-                                            <td>{{ detail3 }}</td>
+                                            <td>{% if detail3.prefix %} {{ detail3.prefix }}. {% endif %} {{ detail3.get_name_detail }}
+                                                <a title="Комментарии" data-bs-toggle="modal" data-bs-target="" href="#{{object.id}}">&#9776;</a>
+                                                {% include 'workshop_data/plan/includes/workshop_plan_modal_window_comments_list.html' %}
+                                            </td>
                                             <td></td>
-                                            <td></td>
-                                            <td title="{{ detail3.in_warehouse.comment }}">{{ detail2.in_warehouse.semis }}заг</td>
-                                            <td>{{ detail2.in_warehouse.intermediate_detail }}п/ф</td>
-                                            <td>{{ detail2.in_warehouse.get_unit_display }}</td>
+                                            <td>
+                                                {% if object %}
+                                                    {{ object.get_quantity }} -
+                                                    {{ object.quantity_state_order }}гз/
+                                                    {{ object.quantity_commercial_order }}ком
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ detail3.balance_semis_in_warehouse }}заг</td>
+                                            <td>{{ detail3.balance_intermediate_detail_in_warehouse }}п/ф</td>
+                                            <td>{{ detail3.in_warehouse.get_unit_display }}</td>
                                             <td></td>
                                             <td>{% include 'workshop_data/plan/includes/button_dropdown_menu_plan.html' %}</td>
                                         </tr>
+
                                     {% endwith %}
                                             {% if detail3.secondary_detail.all %}
                                                 {% for detail4 in detail3.secondary_detail.all %}
-                                                {% with detail4 as object %}
-
+                                                {% object_workshopplan product=product detail=detail4 month=month as object4 %}
+                                                {% with object=object4 %}
                                                         <tr class="{% if object.sos == True %}table-danger
                                                                    {% else %}{% endif %}">
                                                         <th scope="row">{% total_count %}</th>
@@ -165,11 +175,20 @@
                                                         <td></td>
                                                         <td></td>
                                                         <td></td>
-                                                        <td>{{ detail4 }}</td>
-                                                        <td></td>
-                                                        <td>{{ detail2.in_warehouse.semis }}заг,</td>
-                                                        <td>{{ detail2.in_warehouse.intermediate_detail }}п/ф</td>
-                                                        <td>{{ detail2.in_warehouse.get_unit_display }}</td>
+                                                        <td>{% if detail4.prefix %} {{ detail4.prefix }}. {% endif %} {{ detail4.get_name_detail }}
+                                                            <a title="Комментарии" data-bs-toggle="modal" data-bs-target="" href="#{{object.id}}">&#9776;</a>
+                                                            {% include 'workshop_data/plan/includes/workshop_plan_modal_window_comments_list.html' %}
+                                                        </td>
+                                                        <td>
+                                                            {% if object %}
+                                                                {{ object.get_quantity }} -
+                                                                {{ object.quantity_state_order }}гз/
+                                                                {{ object.quantity_commercial_order }}ком
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>{{ detail4.balance_semis_in_warehouse }}заг</td>
+                                                        <td>{{ detail4.balance_intermediate_detail_in_warehouse }}п/ф</td>
+                                                        <td>{{ detail4.in_warehouse.get_unit_display }}</td>
                                                         <td></td>
                                                         <td>{% include 'workshop_data/plan/includes/button_dropdown_menu_plan.html' %}</td>
                                                         </tr>
@@ -180,7 +199,7 @@
                                 {% endif %}
                         {% endfor %}
                     {% endif %}
-                {% endif %}
+
             {% endfor %}
             {% endfor %}
             </tbody>

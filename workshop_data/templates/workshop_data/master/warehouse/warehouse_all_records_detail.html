@@ -33,9 +33,15 @@
             <table class="table table-active table-hover ">
                 {% include 'workshop_data/master/warehouse/includes/table_header_records_warehouse.html' %}
                 <tbody>
-                {% for record in filter.qs %}
-                    {% include 'workshop_data/master/warehouse/includes/table_body_warehouse_record.html' %}
-                {% endfor %}
+                {% if filter.qs %}
+                    {% for record in filter.qs %}
+                        {% include 'workshop_data/master/warehouse/includes/table_body_warehouse_record.html' %}
+                    {% endfor %}
+                {% else %}
+                    {% for record in records %}
+                        {% include 'workshop_data/master/warehouse/includes/table_body_warehouse_record.html' %}
+                    {% endfor %}
+                {% endif %}
                 </tbody>
             </table>
             {% if all %}

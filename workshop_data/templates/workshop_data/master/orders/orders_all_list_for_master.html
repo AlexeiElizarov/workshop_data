@@ -91,7 +91,7 @@
             </td>
 
             <td>
-                <a href="{% url 'all_orders_list_for_all_workers_detail' detail=order.detail %}">
+                <a href="{% url 'all_orders_list_for_all_workers_detail' detail_id=order.detail.id %}">
                     {{ order.detail }}
                 </a>
             </td>

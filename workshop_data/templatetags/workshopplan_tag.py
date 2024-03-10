@@ -11,7 +11,7 @@ register = template.Library()
 def get_workshopplan_object_for_month_tag(product: Product, detail: Detail, month):
     """Возвращает """
     try:
-        return WorkshopPlan.objects.select_related('product', 'detail', 'detail__prefix', ).\
+        return WorkshopPlan.objects.select_related('product', 'detail', 'detail__prefix',).\
             get(product=product, detail=detail, month__in=month)
     except ObjectDoesNotExist:
         # запросу не соответствует ни один элемент.

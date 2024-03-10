@@ -1,6 +1,7 @@
 from django.db import models
 from sign.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.shortcuts import reverse
 
 
 def product_image_directory(instance, filename):
@@ -15,7 +16,11 @@ class Detail(models.Model):
         unique=True,
         verbose_name='Деталь',
         db_index=True)
-    prefix = models.ForeignKey("workshop_data.Prefix", on_delete=models.PROTECT, blank=True, null=True)
+    prefix = models.ForeignKey(
+        "workshop_data.Prefix",
+        on_delete=models.PROTECT,
+        blank=True, null=True,
+        verbose_name="Префикс")
     secondary_detail = models.ManyToManyField(
         "workshop_data.Detail",
         through='workshop_data.DetailDetail',
@@ -25,13 +30,15 @@ class Detail(models.Model):
         upload_to='images/',
         blank=True,
         default=None,
-        null=True)
+        null=True,
+        verbose_name="Изображение")
     category = models.ForeignKey(
         'workshop_data.CategoryDetail',
         on_delete=models.PROTECT,
         null=True,
         blank=True,
         verbose_name='Категория')
+    # slug = models.SlugField(max_length=50, unique=True)
     balance_semis_in_warehouse = models.PositiveSmallIntegerField(default=0)
     balance_intermediate_detail_in_warehouse = models.PositiveSmallIntegerField(default=0)
     parameters_for_spu = models.OneToOneField("workshop_data.ParametersDetailForSPU",
@@ -39,8 +46,15 @@ class Detail(models.Model):
                                               )
     objects = models.Manager()
 
+    class Meta:
+        verbose_name = 'Деталь'
+        verbose_name_plural = 'Детали'
+
     def __str__(self):
         return f'{self.prefix}.{self.name}' if self.prefix else self.name
+
+    def get_absolute_url(self):
+        return reverse('', kwargs={'slug': self.slug})
 
     def __unicode__(self):
         return self.name
@@ -53,6 +67,7 @@ class Detail(models.Model):
     def get_balance_on_this_moment(self):
         return self.balance_semis_in_warehouse + self.balance_intermediate_detail_in_warehouse
 
+
 class Prefix(models.Model):
     """Приставка к названию Детали"""
     name = models.CharField(max_length=10, blank=True)
@@ -61,6 +76,10 @@ class Prefix(models.Model):
 
     def __str__(self):
         return f'{self.name}'
+
+    class Meta:
+        verbose_name = 'Префикс'
+        verbose_name_plural = 'Префиксы'
 
 
 class ParametersDetailForSPU(models.Model):
