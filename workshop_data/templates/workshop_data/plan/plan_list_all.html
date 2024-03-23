@@ -96,7 +96,8 @@
                         <td>{{ detail1.balance_semis_in_warehouse }}заг</td>
                         <td>{{ detail1.balance_intermediate_detail_in_warehouse }}п/ф</td>
                         <td>{{ detail1.in_warehouse.get_unit_display }}</td>
-                        <td></td>
+                        <td><a href="{% url 'batchs_in_plan' object %}">в работе</a></td>
+
                         <td>{% include 'workshop_data/plan/includes/button_dropdown_menu_plan.html' %}</td>
                     </tr>
 

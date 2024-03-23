@@ -9,6 +9,7 @@ from django.urls import reverse_lazy, reverse
 from django.views import View
 from django.views.generic import UpdateView, CreateView, DeleteView, ListView, TemplateView, FormView
 
+from sign.forms import User
 from workshop_data.filters import WarehouseRecordsFilter
 from workshop_data.models import Warehouse, Detail, Product
 from workshop_data.forms.warehouse_form import WarehouseCreateForm, ViewWarehouseRecordForm

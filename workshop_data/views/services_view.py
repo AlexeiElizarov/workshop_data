@@ -34,6 +34,27 @@ class WorkerSPUAutocomplete(autocomplete.Select2QuerySetView):
         return qs
 
 
+class WorkerQRAutocomplete(autocomplete.Select2QuerySetView):
+    """Реализует поле авто подсказки Рабочего(оператора) по вводимым символам"""
+    def get_result_label(self, result):
+        """Меняет __str__() представление модели на get_full_name()"""
+        return result.get_full_name()
+
+    # def get_selected_result_label(self, item):
+    #     return item.name
+
+    def get_queryset(self):
+        if not self.request.user.is_authenticated:
+            return User.objects.none()
+        qs = User.objects.filter(position__in=LIST_POSITION_WORKER)
+
+        if self.q:
+            qs = qs.filter(personal_qr_str=self.q)
+            return qs
+
+
+
+
 class ProductAutocomplete(autocomplete.Select2QuerySetView):
     """Реализует поле авто подсказки Изделий по вводимым символам"""
 

@@ -1,6 +1,11 @@
+from io import BytesIO
+
+import qrcode
 from django.contrib.auth.models import AbstractUser
+from django.core.files import File
 from django.db import models
 
+from sign.utils import generate_random_string, salted_hash
 
 LIST_POSITION_WORKER = [
     '866',
@@ -45,6 +50,8 @@ class User(AbstractUser):
     birthday = models.DateTimeField(verbose_name='День Рождения')
     gender = models.CharField(max_length=2, choices=Gender.choices, default=Gender.MAN, verbose_name='Пол')
     average_coefficient_operator = models.FloatField(default=0)
+    qr_code = models.ImageField(blank=True, null=True, upload_to="qr_codes/")
+    personal_qr_str = models.CharField(max_length=151, null=True, blank=True)
     # salary = models.OneToOneField('sign.CalculatinsOfTheOperatorSalary',
     #                               on_delete=models.SET_NULL,
     #                               null=True, blank=True,
@@ -52,6 +59,33 @@ class User(AbstractUser):
 
     def __str__(self):
         return f'{self.username}'
+
+    def generate_qr(self, *args, **kwargs):
+        # url = f'http://your_url/{self.id}'
+        string = generate_random_string(150)
+        # string_solted_hash = salted_hash(string)
+        qr = qrcode.QRCode(
+            version=1,
+            error_correction=qrcode.constants.ERROR_CORRECT_L,
+            box_size=10,
+            border=4,
+        )
+        qr.add_data(salted_hash(string))
+        qr.make(fit=True)
+
+        filename = f'qr_code-{self.surname}_{self.employee_number}.png'
+
+        img = qr.make_image()
+        buffer = BytesIO()
+        img.save(buffer, 'PNG')
+        self.qr_code.save(filename, File(buffer), save=False)
+        self.personal_qr_str = salted_hash(string)
+        super().save(*args, **kwargs)
+
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.generate_qr()
 
     def get_full_name(self):
         return f'{self.surname} {self.name[0]}.{self.patronymic[0]}.'

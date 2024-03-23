@@ -32,14 +32,26 @@ class WarehouseCreateForm(forms.ModelForm):
     detail = forms.ModelChoiceField(
         queryset=Detail.objects.all(),
         label="Деталь",
+
         widget=autocomplete.ModelSelect2(url='data_autocomplete_detail_for_product',
                                          forward=('product',))
     )
-    employee = forms.ModelChoiceField(
+    # employee = forms.ModelChoiceField(
+    #     label='Сотрудник',
+    #     queryset=User.objects.all(),
+    #     widget=autocomplete.ModelSelect2(url='data_autocomplete_worker_qr')
+    # )
+    employee = forms.CharField(
         label='Сотрудник',
-        queryset=User.objects.all(),
-        widget=autocomplete.ModelSelect2(url='data_autocomplete_worker_cpu')
-    )
+        required=False,
+        widget=forms.PasswordInput(
+            attrs={"class": "form-control",
+                   # 'placeholder':'Комментарий',
+                   'rows': 4,
+                   'cols': 5},
+            render_value=True
+        ))
+
     income = forms.DecimalField(
         label='Приход',
         widget=NumberInput(
@@ -62,7 +74,7 @@ class WarehouseCreateForm(forms.ModelForm):
                               ))
 
     class Meta:
-        prefix="form1"
+        prefix = "form1"
         model = Warehouse
         fields = ['section', 'product', 'detail', 'employee', 'income', 'expenditures', 'semis', 'intermediate_detail', 'cell', 'unit', 'comment']
 
@@ -80,6 +92,7 @@ class WarehouseCreateForm(forms.ModelForm):
 
     def clean(self):
         comment = self.cleaned_data.pop('comment')
+        self.cleaned_data['employee'] = User.objects.get(personal_qr_str=self.cleaned_data['employee'])
         if comment:
             new_comment = WarehouseComment.objects.create(body=comment, author=self.user)
             self.cleaned_data.update({'comment': new_comment})
